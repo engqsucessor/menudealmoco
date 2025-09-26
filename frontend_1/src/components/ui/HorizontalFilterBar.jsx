@@ -1,8 +1,10 @@
 import React from 'react';
+import { useAuth } from '../../contexts/AuthContext';
 import styles from './HorizontalFilterBar.module.css';
 import Button from './Button';
 
 const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters }) => {
+  const { user } = useAuth();
 
   const handleQuickFilter = (category, key, value) => {
     onFilterChange(category, key, value);
@@ -54,6 +56,9 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
     if (activeFilters?.openNow) {
         tags.push(createTag('openNow', 'Open Now', () => handleQuickFilter('openNow', null, false)));
     }
+    if (activeFilters?.showOnlyFavorites) {
+        tags.push(createTag('favorites', 'Favorites ❤️', () => onFilterChange('showOnlyFavorites', null, false)));
+    }
     if (activeFilters?.overallRating > 0) {
       tags.push(createTag('overall-rating', `Rating ${activeFilters.overallRating}+`, () => onFilterChange('overallRating', null, 0)));
     }
@@ -103,22 +108,14 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
         >
             Open Now
         </Button>
-        <Button
-            variant={activeFilters.minPrice > 6 || activeFilters.maxPrice < 25 ? "primary" : "secondary"}
-            onClick={() => {
-              // Toggle between budget prices and all prices
-              const isCustomActive = activeFilters.minPrice > 6 || activeFilters.maxPrice < 25;
-              if (isCustomActive) {
-                onFilterChange('priceRange', null, 'any');
-              } else {
-                onFilterChange('priceRange', null, 'budget');
-              }
-            }}
-        >
-            {activeFilters.minPrice > 6 || activeFilters.maxPrice < 25 
-              ? `€${activeFilters.minPrice}-€${activeFilters.maxPrice}` 
-              : 'Price'}
-        </Button>
+        {user && (
+          <Button
+              variant={activeFilters.showOnlyFavorites ? "primary" : "secondary"}
+              onClick={() => onFilterChange('showOnlyFavorites', null, !activeFilters.showOnlyFavorites)}
+          >
+              Favorites ❤️
+          </Button>
+        )}
       </div>
 
       <div className={styles.activeFiltersContainer}>

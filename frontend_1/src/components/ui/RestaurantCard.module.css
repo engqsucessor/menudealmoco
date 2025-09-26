@@ -122,6 +122,43 @@
   text-transform: uppercase;
 }
 
+/* Header Actions */
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.favoriteButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  border-radius: 4px;
+}
+
+.favoriteButton:hover {
+  transform: scale(1.1);
+}
+
+.favoriteButton:active {
+  transform: scale(0.95);
+}
+
+.favoriteButton.favorited {
+  animation: heartbeat 0.6s ease-in-out;
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 /* Info Boxes Grid */
 .infoBoxes {
   display: grid;

@@ -76,7 +76,8 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
       minZomatoRating: 0,
       overallRating: 0,
       hasMenuReviews: false,
-      lastUpdatedDays: ''
+      lastUpdatedDays: '',
+      showOnlyFavorites: false
     };
     setLocalFilters(clearedFilters);
     onFiltersChange(clearedFilters);

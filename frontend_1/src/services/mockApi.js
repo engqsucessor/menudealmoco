@@ -1,6 +1,8 @@
 // Test file to verify server is working
 console.log('Test mockApi loaded successfully!');
 
+import { favoriteRestaurants } from './localStorage';
+
 export const test = () => {
   console.log('MockAPI test function called');
   return 'Working!';
@@ -167,6 +169,17 @@ export const getRestaurants = (filters = {}) => {
         }
       }
     });
+  }
+
+  // Filter by favorites (show only favorites)
+  if (filters.showOnlyFavorites) {
+    const favoriteIds = favoriteRestaurants.get(); // This returns array of IDs directly
+    filteredRestaurants = filteredRestaurants.filter(restaurant =>
+      favoriteIds.includes(restaurant.id)
+    );
+    console.log(`Filtered by favorites:`, filteredRestaurants.length, 'restaurants');
+    console.log('Favorite IDs:', favoriteIds);
+    console.log('Available restaurant IDs:', filteredRestaurants.map(r => r.id));
   }
 
   // Sorting

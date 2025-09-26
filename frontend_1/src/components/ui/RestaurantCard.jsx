@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { favoriteRestaurants } from '../../services/localStorage';
 import styles from './RestaurantCard.module.css';
 
 const RestaurantCard = ({ restaurant, style }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const {
     id,
@@ -26,6 +28,11 @@ const RestaurantCard = ({ restaurant, style }) => {
     description = '',
   } = restaurant;
 
+  // Check if this restaurant is already favorited
+  useEffect(() => {
+    setIsFavorite(favoriteRestaurants.isFavorite(id));
+  }, [id]);
+
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
@@ -33,6 +40,14 @@ const RestaurantCard = ({ restaurant, style }) => {
   const handleImageError = () => {
     setImageError(true);
     setImageLoaded(true);
+  };
+
+  const handleFavoriteToggle = (e) => {
+    e.preventDefault(); // Prevent navigation to restaurant detail
+    e.stopPropagation(); // Stop event bubbling
+    
+    favoriteRestaurants.toggle(id);
+    setIsFavorite(!isFavorite);
   };
 
   const renderStars = (rating) => {
@@ -91,10 +106,21 @@ const RestaurantCard = ({ restaurant, style }) => {
               <span className={styles.priceLabel}>MENU</span>
             </div>
 
-            <div className={styles.statusSection}>
-              <span className={`${styles.status} ${isOpenNow ? styles.open : styles.closed}`}>
-                {isOpenNow ? '● OPEN' : '● CLOSED'}
-              </span>
+            <div className={styles.headerActions}>
+              <button
+                className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+                onClick={handleFavoriteToggle}
+                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              >
+                {isFavorite ? '❤️' : '🤍'}
+              </button>
+              
+              <div className={styles.statusSection}>
+                <span className={`${styles.status} ${isOpenNow ? styles.open : styles.closed}`}>
+                  {isOpenNow ? '● OPEN' : '● CLOSED'}
+                </span>
+              </div>
             </div>
           </header>
 

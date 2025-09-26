@@ -118,6 +118,11 @@ export const favoriteRestaurants = {
     return storage.get(STORAGE_KEYS.FAVORITE_RESTAURANTS) || [];
   },
 
+  getAll() {
+    // Alias for get() for consistency
+    return this.get();
+  },
+
   add(restaurantId) {
     const favorites = this.get();
     if (!favorites.includes(restaurantId)) {

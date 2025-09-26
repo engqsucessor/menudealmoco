@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import ReviewerDashboard from './ReviewerDashboard';
 import styles from './UserProfile.module.css';
 
 const UserProfile = () => {
@@ -37,8 +36,6 @@ const UserProfile = () => {
             <p>You haven't saved any favorite restaurants yet.</p>
           </div>
         );
-      case 'reviewer':
-        return <ReviewerDashboard />;
       case 'settings':
         return (
           <div className={styles.contentSection}>
@@ -66,11 +63,6 @@ const UserProfile = () => {
             <li className={activeTab === 'favorites' ? styles.active : ''} onClick={() => setActiveTab('favorites')}>
               My Favorites
             </li>
-            {user.isReviewer && (
-              <li className={activeTab === 'reviewer' ? styles.active : ''} onClick={() => setActiveTab('reviewer')}>
-                Reviewer Dashboard
-              </li>
-            )}
             <li className={activeTab === 'settings' ? styles.active : ''} onClick={() => setActiveTab('settings')}>
               Settings
             </li>

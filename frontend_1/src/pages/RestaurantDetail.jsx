@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
 import { getRestaurant } from '../services/mockApi';
+import { favoriteRestaurants } from '../services/localStorage';
 import MenuRating from '../components/ui/MenuRating';
 import { getMenuRatings } from '../services/menuRatingService';
 
@@ -12,6 +13,7 @@ const RestaurantDetail = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [reviewType, setReviewType] = useState('menu');
   const [menuRatingData, setMenuRatingData] = useState(null);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     getRestaurant(id).then(data => {
@@ -23,7 +25,15 @@ const RestaurantDetail = () => {
     getMenuRatings(id).then(data => {
       setMenuRatingData(data);
     });
+
+    // Check if restaurant is favorited
+    setIsFavorite(favoriteRestaurants.isFavorite(id));
   }, [id]);
+
+  const handleFavoriteToggle = () => {
+    favoriteRestaurants.toggle(id);
+    setIsFavorite(!isFavorite);
+  };
 
   const handleRatingSubmitted = (newAverageRating) => {
     // Refresh menu ratings data
@@ -57,7 +67,17 @@ const RestaurantDetail = () => {
           )}
         </div>
         <div className={styles.info}>
-          <h1>{name}</h1>
+          <div className={styles.titleSection}>
+            <h1>{name}</h1>
+            <button
+              className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+              onClick={handleFavoriteToggle}
+              aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              {isFavorite ? '❤️' : '🤍'}
+            </button>
+          </div>
           <p>{location}</p>
           <p className={styles.price}>€{menuPrice.toFixed(2)}</p>
           <div className={styles.included}>

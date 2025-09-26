@@ -12,6 +12,7 @@ import AddRestaurant from './pages/AddRestaurant';
 import About from './pages/About';
 import Auth from './pages/Auth';
 import UserProfile from './pages/UserProfile';
+import ReviewerDashboard from './pages/ReviewerDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -35,6 +36,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <UserProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reviewer"
+            element={
+              <ProtectedRoute>
+                <ReviewerDashboard />
               </ProtectedRoute>
             }
           />

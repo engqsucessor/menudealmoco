@@ -45,7 +45,8 @@ const SearchPage = () => {
     minZomatoRating: 0,
     overallRating: 0,
     hasMenuReviews: false,
-    lastUpdatedDays: ''
+    lastUpdatedDays: '',
+    showOnlyFavorites: false
   });
 
   const fetchRestaurants = useCallback(async () => {
@@ -121,10 +122,9 @@ const SearchPage = () => {
 
   const clearAllFilters = () => {
     const clearedFilters = {
-      query: filters.query,
-      location: filters.location,
-      userLocation: filters.userLocation,
-      maxDistance: 50,
+      ...filters,
+      query: '',
+      location: '',
       priceRange: 'any',
       minPrice: 6,
       maxPrice: 25,
@@ -140,14 +140,13 @@ const SearchPage = () => {
       minZomatoRating: 0,
       overallRating: 0,
       hasMenuReviews: false,
-      lastUpdatedDays: ''
+      lastUpdatedDays: '',
+      showOnlyFavorites: false
     };
     setFilters(clearedFilters);
-  };
-
-  const getActiveFiltersCount = () => {
+  };  const getActiveFiltersCount = () => {
     let count = 0;
-    if (filters.priceRange && filters.priceRange !== 'any') count++;
+    if (filters.showOnlyFavorites) count++;
     count += filters.foodTypes.length;
     count += Object.values(filters.features).filter(Boolean).length;
     count += Object.values(filters.practicalFilters).filter(Boolean).length;
