@@ -7,10 +7,14 @@ const Home = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const searchQuery = e.target.elements.search.value;
+    const searchQuery = e.target.elements.search.value.trim();
+    
     if (searchQuery) {
       // Send as location parameter since most searches will be location-based
       navigate(`/search?location=${encodeURIComponent(searchQuery)}`);
+    } else {
+      // Show all restaurants when searching without a query
+      navigate('/search');
     }
   };
 

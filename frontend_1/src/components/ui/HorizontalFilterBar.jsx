@@ -105,9 +105,17 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
         </Button>
         <Button
             variant={activeFilters.minPrice > 6 || activeFilters.maxPrice < 25 ? "primary" : "secondary"}
-            onClick={() => onFilterChange('priceRange', 'cheap', true)} // Example toggle
+            onClick={() => {
+              // Toggle between budget prices and all prices
+              const isBudgetActive = activeFilters.minPrice === 6 && activeFilters.maxPrice === 10;
+              if (isBudgetActive) {
+                onFilterChange('priceRange', null, 'any');
+              } else {
+                onFilterChange('priceRange', null, 'budget');
+              }
+            }}
         >
-            Price
+            Budget (€6-10)
         </Button>
       </div>
 

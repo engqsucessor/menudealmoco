@@ -16,7 +16,7 @@ const useQuery = () => {
 const SearchPage = () => {
   const query = useQuery();
   const initialQuery = query.get('query') || '';
-  const initialLocation = query.get('location') || 'Lisboa';
+  const initialLocation = query.get('location') || '';
 
   const [restaurants, setRestaurants] = useState([]);
   const [totalResults, setTotalResults] = useState(0);
@@ -87,11 +87,11 @@ const SearchPage = () => {
     if (category === 'priceRange') {
       // Handle price range changes with proper min/max updates
       const priceRanges = {
-        'budget': { min: 6, max: 8 },
-        'standard': { min: 8, max: 10 },
-        'good': { min: 10, max: 12 },
-        'premium': { min: 12, max: 15 },
-        'high-end': { min: 15, max: 25 },
+        'budget': { min: 6, max: 10 },
+        'standard': { min: 10, max: 12 },
+        'good': { min: 12, max: 15 },
+        'premium': { min: 15, max: 20 },
+        'high-end': { min: 20, max: 25 },
         'any': { min: 6, max: 25 }
       };
       const range = priceRanges[value] || priceRanges['any'];
@@ -212,7 +212,7 @@ const SearchPage = () => {
           <div className={styles.resultsHeader}>
             <div className={styles.resultsInfo}>
               <h1 className={styles.resultsCount}>
-                {totalResults} Restaurants in {filters.location}
+                {totalResults} Restaurants{filters.location ? ` in ${filters.location}` : ''}
               </h1>
             </div>
             <div className={styles.sortingControls}>

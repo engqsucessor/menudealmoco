@@ -87,7 +87,7 @@ export const getRestaurants = (filters = {}) => {
   let filteredRestaurants = allRestaurants;
 
   // Filter by location (city or district)
-  if (filters.location && filters.location !== 'Lisboa') { // Default was Lisboa
+  if (filters.location) {
     const searchLocation = filters.location.toLowerCase();
     filteredRestaurants = filteredRestaurants.filter(restaurant => 
       restaurant.city.toLowerCase().includes(searchLocation) ||
@@ -112,6 +112,95 @@ export const getRestaurants = (filters = {}) => {
     filteredRestaurants = filteredRestaurants.filter(restaurant => restaurant.isOpenNow);
   }
 
+  // Filter by price range
+  if (filters.minPrice && filters.maxPrice) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.menuPrice >= filters.minPrice && restaurant.menuPrice <= filters.maxPrice
+    );
+  }
+
+  // Filter by food types
+  if (filters.foodTypes && filters.foodTypes.length > 0) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant =>
+      filters.foodTypes.some(type => 
+        restaurant.foodType.toLowerCase().includes(type.toLowerCase())
+      )
+    );
+  }
+
+  // Filter by minimum Google rating
+  if (filters.minGoogleRating && filters.minGoogleRating > 0) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.googleRating && restaurant.googleRating >= filters.minGoogleRating
+    );
+  }
+
+  // Filter by minimum Zomato rating
+  if (filters.minZomatoRating && filters.minZomatoRating > 0) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.zomatoRating && restaurant.zomatoRating >= filters.minZomatoRating
+    );
+  }
+
+  // Filter by overall rating
+  if (filters.overallRating && filters.overallRating > 0) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.overallRating >= filters.overallRating
+    );
+  }
+
+  // Filter by practical features
+  if (filters.practicalFilters) {
+    Object.entries(filters.practicalFilters).forEach(([key, value]) => {
+      if (value) {
+        const practicalMap = {
+          takesCards: 'cardsAccepted',
+          hasParking: 'parking',
+          quickService: 'quickService',
+          groupFriendly: 'groupFriendly'
+        };
+        const practicalKey = practicalMap[key];
+        if (practicalKey) {
+          filteredRestaurants = filteredRestaurants.filter(restaurant =>
+            restaurant.practical && restaurant.practical[practicalKey]
+          );
+        }
+      }
+    });
+  }
+
+  // Sorting
+  if (filters.sortBy) {
+    filteredRestaurants.sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (filters.sortBy) {
+        case 'rating':
+          aValue = a.menuRating || a.overallRating || 0;
+          bValue = b.menuRating || b.overallRating || 0;
+          break;
+        case 'price':
+          aValue = a.menuPrice || 0;
+          bValue = b.menuPrice || 0;
+          break;
+        case 'name':
+          aValue = a.name.toLowerCase();
+          bValue = b.name.toLowerCase();
+          break;
+        default:
+          aValue = a.menuRating || 0;
+          bValue = b.menuRating || 0;
+      }
+
+      const order = filters.sortOrder === 'asc' ? 1 : -1;
+      
+      if (aValue < bValue) return -order;
+      if (aValue > bValue) return order;
+      return 0;
+    });
+  }
+
+  console.log(`Final filtered results: ${filteredRestaurants.length} restaurants`);
   return Promise.resolve(filteredRestaurants);
 };
 
