@@ -137,7 +137,15 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
             ? localFilters.foodTypes?.includes(key)
             : localFilters[category]?.[key] || false
         }
-        onChange={(e) => handleChange(category, key, e.target.checked)}
+        onChange={(e) => {
+          if (category === 'foodTypes') {
+            // For foodTypes, pass the key (food type string) as value
+            handleChange(category, key, key);
+          } else {
+            // For other categories, pass the checked boolean
+            handleChange(category, key, e.target.checked);
+          }
+        }}
         className={styles.checkboxInput}
       />
       <span className={styles.checkboxCustom}></span>
