@@ -5,7 +5,9 @@ import { getRestaurant } from '../services/mockApi';
 import { favoriteRestaurants } from '../services/localStorage';
 import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
+import EditSuggestionModal from '../components/ui/EditSuggestionModal';
 import { getRestaurantMenuReviews, upvoteMenuReview, downvoteMenuReview } from '../services/menuRatingService';
+import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
 
 const RestaurantDetail = () => {
   const { id } = useParams();
@@ -16,6 +18,8 @@ const RestaurantDetail = () => {
   const [menuReviewsData, setMenuReviewsData] = useState([]);
   const [sortBy, setSortBy] = useState('recent'); // 'recent', 'upvotes', 'rating', 'lowestRating', 'controversial'
   const [isFavorite, setIsFavorite] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editSuggestions, setEditSuggestions] = useState([]);
 
   useEffect(() => {
     getRestaurant(id).then(data => {
@@ -25,6 +29,9 @@ const RestaurantDetail = () => {
     
     // Load menu reviews
     loadMenuReviews();
+
+    // Load edit suggestions
+    loadEditSuggestions();
 
     // Check if restaurant is favorited
     setIsFavorite(favoriteRestaurants.isFavorite(id));
@@ -36,6 +43,15 @@ const RestaurantDetail = () => {
       setMenuReviewsData(reviews);
     } catch (error) {
       console.error('Error loading menu reviews:', error);
+    }
+  };
+
+  const loadEditSuggestions = async () => {
+    try {
+      const suggestions = getEditSuggestions(id, 'pending');
+      setEditSuggestions(suggestions);
+    } catch (error) {
+      console.error('Error loading edit suggestions:', error);
     }
   };
 
@@ -110,6 +126,11 @@ const RestaurantDetail = () => {
     loadMenuReviews();
   };
 
+  const handleEditSuggestionSubmitted = () => {
+    // Refresh edit suggestions
+    loadEditSuggestions();
+  };
+
   const handleUpvote = async (reviewId) => {
     if (!user) return;
     
@@ -133,6 +154,20 @@ const RestaurantDetail = () => {
       }
     } catch (error) {
       console.error('Error downvoting review:', error);
+    }
+  };
+
+  const handleVoteOnSuggestion = async (suggestionId, voteType) => {
+    if (!user) return;
+    
+    try {
+      const result = await voteOnEditSuggestion(suggestionId, user.displayName || user.email, voteType);
+      
+      if (result.success) {
+        loadEditSuggestions(); // Refresh suggestions to show updated votes
+      }
+    } catch (error) {
+      console.error('Error voting on suggestion:', error);
     }
   };
 
@@ -163,14 +198,23 @@ const RestaurantDetail = () => {
         <div className={styles.info}>
           <div className={styles.titleSection}>
             <h1>{name}</h1>
-            <button
-              className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
-              onClick={handleFavoriteToggle}
-              aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-            >
-              {isFavorite ? '❤️' : '🤍'}
-            </button>
+            <div className={styles.actionButtons}>
+              <button
+                className={styles.editButton}
+                onClick={() => setShowEditModal(true)}
+                title="Suggest edit to restaurant information"
+              >
+                ✏️ Edit
+              </button>
+              <button
+                className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+                onClick={handleFavoriteToggle}
+                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+              >
+                {isFavorite ? '❤️' : '🤍'}
+              </button>
+            </div>
           </div>
           <p>{location}</p>
           <p className={styles.price}>€{menuPrice.toFixed(2)}</p>
@@ -301,9 +345,61 @@ const RestaurantDetail = () => {
                 <p>No menu reviews yet. Be the first to rate this lunch menu!</p>
               )}
             </div>
+
+            {/* Edit Suggestions Section */}
+            <div className={styles.editSuggestionsSection}>
+              <div className={styles.sectionHeader}>
+                <h3>Suggested Edits</h3>
+                <button 
+                  className={styles.suggestEditBtn}
+                  onClick={() => setShowEditModal(true)}
+                >
+                  Suggest Edit
+                </button>
+              </div>
+              
+              {editSuggestions.length > 0 ? (
+                <div className={styles.editSuggestionsList}>
+                  {editSuggestions.map(suggestion => (
+                    <div key={suggestion.id} className={styles.editSuggestion}>
+                      <div className={styles.suggestionHeader}>
+                        <span className={styles.suggestionAuthor}>{suggestion.author}</span>
+                        <span className={styles.suggestionDate}>{new Date(suggestion.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <p className={styles.suggestionReason}>{suggestion.reason}</p>
+                      <div className={styles.suggestionChanges}>
+                        {Object.entries(suggestion.changes).map(([field, value]) => (
+                          <div key={field} className={styles.changeItem}>
+                            <strong>{field}:</strong> {value}
+                          </div>
+                        ))}
+                      </div>
+                      <div className={styles.suggestionActions}>
+                        <button 
+                          className={styles.voteBtn}
+                          onClick={() => handleVoteOnSuggestion(suggestion.id, 'up')}
+                        >
+                          ↑ {suggestion.votes}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className={styles.noSuggestions}>No edit suggestions yet.</p>
+              )}
+            </div>
           </div>
         )}
       </div>
+
+      {/* Edit Suggestion Modal */}
+      <EditSuggestionModal
+        restaurant={restaurant}
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSubmitted={handleEditSuggestionSubmitted}
+      />
     </div>
   );
 };
