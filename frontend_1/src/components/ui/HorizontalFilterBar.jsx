@@ -107,15 +107,17 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
             variant={activeFilters.minPrice > 6 || activeFilters.maxPrice < 25 ? "primary" : "secondary"}
             onClick={() => {
               // Toggle between budget prices and all prices
-              const isBudgetActive = activeFilters.minPrice === 6 && activeFilters.maxPrice === 10;
-              if (isBudgetActive) {
+              const isCustomActive = activeFilters.minPrice > 6 || activeFilters.maxPrice < 25;
+              if (isCustomActive) {
                 onFilterChange('priceRange', null, 'any');
               } else {
                 onFilterChange('priceRange', null, 'budget');
               }
             }}
         >
-            Budget (€6-10)
+            {activeFilters.minPrice > 6 || activeFilters.maxPrice < 25 
+              ? `€${activeFilters.minPrice}-€${activeFilters.maxPrice}` 
+              : 'Price'}
         </Button>
       </div>
 

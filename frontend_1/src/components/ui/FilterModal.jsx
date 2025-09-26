@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styles from './FilterModal.module.css';
 import Button from './Button';
 import RatingSlider from './RatingSlider';
+import BudgetSlider from './BudgetSlider';
+import MinimumRatingSlider from './MinimumRatingSlider';
 
 const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -43,6 +45,15 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
       priceRange: value,
       minPrice: range.min, 
       maxPrice: range.max 
+    }));
+  };
+
+  const handleBudgetSliderChange = (priceRange) => {
+    setLocalFilters(prev => ({
+      ...prev,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
+      priceRange: 'custom' // Set to custom to indicate slider usage
     }));
   };
 
@@ -176,14 +187,14 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 </button>
               </div>
               <div className={styles.sectionContent}>
-                {renderRadioGroup('priceRange', 'priceRange', [
-                  { value: 'any', label: 'Any Price' },
-                  { value: 'budget', label: 'Budget (€6-8)' },
-                  { value: 'standard', label: 'Standard (€8-10)' },
-                  { value: 'good', label: 'Good (€10-12)' },
-                  { value: 'premium', label: 'Premium (€12-15)' },
-                  { value: 'high-end', label: 'High-end (€15+)' }
-                ], handlePriceRangeChange)}
+                <BudgetSlider
+                  min={6}
+                  max={25}
+                  value={[localFilters.minPrice || 6, localFilters.maxPrice || 25]}
+                  onChange={handleBudgetSliderChange}
+                  step={0.5}
+                  label="Your budget (per meal)"
+                />
               </div>
             </div>
 
@@ -200,10 +211,11 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 </button>
               </div>
               <div className={styles.sectionContent}>
-                <RatingSlider
+                <MinimumRatingSlider
                   value={localFilters.overallRating || 0}
                   onChange={(value) => handleRatingChange('overallRating', value)}
-                  label="Minimum Rating"
+                  label="Menu de Almoço rating"
+                  step={0.1}
                 />
               </div>
             </div>
@@ -214,10 +226,11 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 <h3 className={styles.sectionTitle}>Google Rating</h3>
               </div>
               <div className={styles.sectionContent}>
-                <RatingSlider
+                <MinimumRatingSlider
                   value={localFilters.minGoogleRating || 0}
                   onChange={(value) => handleRatingChange('minGoogleRating', value)}
-                  label="Google Minimum"
+                  label="Google rating"
+                  step={0.1}
                 />
               </div>
             </div>
@@ -228,10 +241,11 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 <h3 className={styles.sectionTitle}>Zomato Rating</h3>
               </div>
               <div className={styles.sectionContent}>
-                <RatingSlider
+                <MinimumRatingSlider
                   value={localFilters.minZomatoRating || 0}
                   onChange={(value) => handleRatingChange('minZomatoRating', value)}
-                  label="Zomato Minimum"
+                  label="Zomato rating"
+                  step={0.1}
                 />
               </div>
             </div>
