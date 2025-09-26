@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import styles from './Auth.module.css';
 
@@ -10,6 +10,11 @@ const Auth = () => {
   const [name, setName] = useState('');
   const { login, signup } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get redirect URL from query parameters
+  const searchParams = new URLSearchParams(location.search);
+  const redirectUrl = searchParams.get('redirect') || '/profile';
 
   useEffect(() => {
     if (isLogin) {
@@ -30,14 +35,14 @@ const Auth = () => {
     if (isLogin) {
       const user = login(email, password);
       if (user) {
-        navigate('/profile');
+        navigate(redirectUrl);
       } else {
         alert('Invalid credentials');
       }
     } else {
       const user = signup(name, email, password);
       if (user) {
-        navigate('/profile');
+        navigate(redirectUrl);
       } else {
         alert('Signup failed');
       }

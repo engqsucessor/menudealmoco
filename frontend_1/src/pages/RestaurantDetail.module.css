@@ -215,22 +215,204 @@
   gap: 16px;
 }
 
+.reviewsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #000;
+}
+
+.reviewsHeader h3 {
+  margin: 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sortSelect {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid #000;
+  background: white;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+.sortSelect:focus {
+  outline: none;
+  border: 2px solid #000;
+}
+
+.netScore {
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.positiveScore {
+  color: #4CAF50;
+}
+
+.negativeScore {
+  color: #f44336;
+}
+
+.neutralScore {
+  color: #666;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .reviewsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .sortControls {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+  
+  .sortSelect {
+    flex: 1;
+    margin-left: 8px;
+  }
+  
+  .reviewHeader {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .voteButtons {
+    flex-direction: row;
+    align-self: flex-start;
+    gap: 8px;
+  }
+  
+  .netScore {
+    display: block;
+    margin-top: 2px;
+  }
+}
+
 .menuReviewsList .review {
   background: white;
   border: 1px solid #000;
   border-radius: 0;
   color: #000;
   font-family: 'Space Mono', monospace;
+  padding: 20px;
 }
 
 .reviewHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-  font-size: 12px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.reviewInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.rating {
+  font-size: 12px;
+  color: #666;
+}
+
+.reviewComment {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  margin: 0;
+}
+
+.voteButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.voteButton {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 40px;
+}
+
+.upvoteButton {
+  color: #666;
+}
+
+.upvoteButton:hover {
+  background: #f0f8f0;
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+.downvoteButton {
+  color: #666;
+}
+
+.downvoteButton:hover {
+  background: #fdf0f0;
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.voteButton.voted.upvoteButton {
+  background: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.voteButton.voted.downvoteButton {
+  background: #f44336;
+  color: white;
+  border-color: #f44336;
 }
 
 .reviewDate {

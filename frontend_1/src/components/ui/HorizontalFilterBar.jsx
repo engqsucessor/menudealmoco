@@ -46,11 +46,8 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
 
     Object.entries(activeFilters?.practicalFilters || {}).forEach(([key, value]) => {
       if (value) {
-        const labels = {
-          takesCards: 'Takes Cards', hasParking: 'Has Parking', quickService: 'Quick Service',
-          groupFriendly: 'Group Friendly', nearMetro: 'Near Metro'
-        };
-        tags.push(createTag(`practical-${key}`, labels[key], () => handleQuickFilter('practicalFilters', key, false)));
+        const label = getPracticalFeatureLabel(key, false, false); // No emoji, full label
+        tags.push(createTag(`practical-${key}`, label, () => handleQuickFilter('practicalFilters', key, false)));
       }
     });
     

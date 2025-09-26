@@ -45,39 +45,80 @@
 
 .stars {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
-.star {
+.starButton {
   background: none;
   border: none;
   font-size: 24px;
   cursor: pointer;
-  padding: 4px;
+  padding: 2px;
   transition: all 0.2s ease;
-  color: #ccc;
   font-family: 'Space Mono', monospace;
+  color: #ccc;
+  position: relative;
 }
 
-.star:hover {
+.starButton:hover {
   transform: scale(1.1);
+  color: #555 !important;
 }
 
-.star.filled {
+.starButton.filled {
   color: #000;
 }
 
-.star.empty {
+.starButton.empty {
   color: #ccc;
+}
+
+.starButton.empty:hover {
+  color: #555 !important;
+}
+
+.starIcon {
+  display: inline-block;
+  position: relative;
+}
+
+.starIcon.halfFilled {
+  color: #ccc;
+}
+
+.starIcon.halfFilled::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #000;
+  z-index: 1;
+}
+
+.starButton:hover .starIcon.halfFilled {
+  color: #ccc;
+}
+
+.starButton:hover .starIcon.halfFilled::before {
+  color: #555 !important;
 }
 
 .ratingText {
   font-size: 12px;
   color: #666;
-  margin-left: 12px;
+  margin-top: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+.ratingText.hovering {
+  color: #333;
 }
 
 .commentSection {
@@ -145,6 +186,79 @@
   letter-spacing: 0.5px;
 }
 
+.loginButton {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #000;
+  color: white;
+  text-decoration: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid #000;
+  transition: all 0.2s ease;
+}
+
+.loginButton:hover {
+  background: white;
+  color: #000;
+}
+
+.userReviews {
+  margin-top: 32px;
+  border-top: 1px solid #000;
+  padding-top: 24px;
+}
+
+.reviewsTitle {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.userReview {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reviewRating {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+}
+
+.reviewDate {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reviewComment {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: #333;
+  margin: 0;
+  line-height: 1.4;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .menuRating {
@@ -168,5 +282,11 @@
   .submitButton {
     align-self: stretch;
     text-align: center;
+  }
+
+  .reviewHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 }

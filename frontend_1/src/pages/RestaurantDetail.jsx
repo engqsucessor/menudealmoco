@@ -3,16 +3,18 @@ import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
 import { getRestaurant } from '../services/mockApi';
 import { favoriteRestaurants } from '../services/localStorage';
+import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
-import { getMenuRatings } from '../services/menuRatingService';
+import { getRestaurantMenuReviews, upvoteMenuReview, downvoteMenuReview } from '../services/menuRatingService';
 
 const RestaurantDetail = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [reviewType, setReviewType] = useState('menu');
-  const [menuRatingData, setMenuRatingData] = useState(null);
+  const [menuReviewsData, setMenuReviewsData] = useState([]);
+  const [sortBy, setSortBy] = useState('recent'); // 'recent', 'upvotes', 'rating', 'lowestRating', 'controversial'
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -21,14 +23,82 @@ const RestaurantDetail = () => {
       setLoading(false);
     });
     
-    // Load menu ratings
-    getMenuRatings(id).then(data => {
-      setMenuRatingData(data);
-    });
+    // Load menu reviews
+    loadMenuReviews();
 
     // Check if restaurant is favorited
     setIsFavorite(favoriteRestaurants.isFavorite(id));
   }, [id]);
+
+  const loadMenuReviews = async () => {
+    try {
+      const reviews = await getRestaurantMenuReviews(id);
+      setMenuReviewsData(reviews);
+    } catch (error) {
+      console.error('Error loading menu reviews:', error);
+    }
+  };
+
+  const sortReviews = (reviews, sortType) => {
+    const sortedReviews = [...reviews];
+    
+    switch (sortType) {
+      case 'recent':
+        return sortedReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      case 'upvotes':
+        return sortedReviews.sort((a, b) => {
+          const scoreA = (a.upvotes || 0) - (a.downvotes || 0);
+          const scoreB = (b.upvotes || 0) - (b.downvotes || 0);
+          return scoreB - scoreA; // Highest score first
+        });
+      
+      case 'rating':
+        return sortedReviews.sort((a, b) => {
+          if (b.rating !== a.rating) {
+            return b.rating - a.rating; // Highest rating first
+          }
+          // If ratings are equal, sort by upvotes as tiebreaker
+          const scoreA = (a.upvotes || 0) - (a.downvotes || 0);
+          const scoreB = (b.upvotes || 0) - (b.downvotes || 0);
+          return scoreB - scoreA;
+        });
+      
+      case 'lowestRating':
+        return sortedReviews.sort((a, b) => {
+          if (a.rating !== b.rating) {
+            return a.rating - b.rating; // Lowest rating first
+          }
+          // If ratings are equal, sort by downvotes (most downvoted first)
+          const scoreA = (a.downvotes || 0) - (a.upvotes || 0);
+          const scoreB = (b.downvotes || 0) - (b.upvotes || 0);
+          return scoreB - scoreA;
+        });
+      
+      case 'controversial':
+        return sortedReviews.sort((a, b) => {
+          // Controversial = high engagement (lots of both up and down votes)
+          const engagementA = (a.upvotes || 0) + (a.downvotes || 0);
+          const engagementB = (b.upvotes || 0) + (b.downvotes || 0);
+          
+          if (engagementB !== engagementA) {
+            return engagementB - engagementA;
+          }
+          
+          // Secondary sort: closer to 50/50 split = more controversial
+          const ratioA = Math.abs(0.5 - ((a.upvotes || 0) / Math.max(1, engagementA)));
+          const ratioB = Math.abs(0.5 - ((b.upvotes || 0) / Math.max(1, engagementB)));
+          return ratioA - ratioB;
+        });
+      
+      default:
+        return sortedReviews;
+    }
+  };
+
+  const getSortedReviews = () => {
+    return sortReviews(menuReviewsData, sortBy);
+  };
 
   const handleFavoriteToggle = () => {
     favoriteRestaurants.toggle(id);
@@ -36,10 +106,34 @@ const RestaurantDetail = () => {
   };
 
   const handleRatingSubmitted = (newAverageRating) => {
-    // Refresh menu ratings data
-    getMenuRatings(id).then(data => {
-      setMenuRatingData(data);
-    });
+    // Refresh menu reviews data
+    loadMenuReviews();
+  };
+
+  const handleUpvote = async (reviewId) => {
+    if (!user) return;
+    
+    try {
+      const result = await upvoteMenuReview(reviewId, user.email);
+      if (result.success) {
+        loadMenuReviews(); // Refresh reviews to show updated votes
+      }
+    } catch (error) {
+      console.error('Error upvoting review:', error);
+    }
+  };
+
+  const handleDownvote = async (reviewId) => {
+    if (!user) return;
+    
+    try {
+      const result = await downvoteMenuReview(reviewId, user.email);
+      if (result.success) {
+        loadMenuReviews(); // Refresh reviews to show updated votes
+      }
+    } catch (error) {
+      console.error('Error downvoting review:', error);
+    }
   };
 
   if (loading) {
@@ -116,73 +210,95 @@ const RestaurantDetail = () => {
 
         {activeTab === 'reviews' && (
           <div>
-            <div className={styles.reviewTypeSelector}>
-              <button 
-                className={`${styles.reviewTypeButton} ${reviewType === 'menu' ? styles.active : ''}`}
-                onClick={() => setReviewType('menu')}
-              >
-                Menu Reviews
-              </button>
-              <button 
-                className={`${styles.reviewTypeButton} ${reviewType === 'general' ? styles.active : ''}`}
-                onClick={() => setReviewType('general')}
-              >
-                General Reviews
-              </button>
-            </div>
-            <div className={styles.reviewsList}>
-              {reviewType === 'menu' && (
-                <div>
-                  <h2>Menu de Almoço Reviews</h2>
+            <div>
+              <h2>Menu de Almoço Reviews</h2>
+              
+              {/* Menu Rating Component */}
+              <MenuRating 
+                restaurantId={id} 
+                restaurantName={name}
+                onRatingSubmitted={handleRatingSubmitted}
+              />
+              
+              {/* Display current average and reviews */}
+              {menuReviewsData.length > 0 && (
+                <div className={styles.menuRatingStats}>
+                  <div className={styles.reviewsHeader}>
+                    <h3>Menu de Almoço Reviews ({menuReviewsData.length})</h3>
+                    
+                    <div className={styles.sortControls}>
+                      <label className={styles.sortLabel}>Sort by:</label>
+                      <select 
+                        value={sortBy} 
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className={styles.sortSelect}
+                      >
+                        <option value="recent">Most Recent</option>
+                        <option value="upvotes">Best (Upvotes)</option>
+                        <option value="rating">Highest Rating</option>
+                        <option value="lowestRating">Lowest Rating</option>
+                        <option value="controversial">Controversial</option>
+                      </select>
+                    </div>
+                  </div>
                   
-                  {/* Menu Rating Component */}
-                  <MenuRating 
-                    restaurantId={id} 
-                    restaurantName={name}
-                    onRatingSubmitted={handleRatingSubmitted}
-                  />
-                  
-                  {/* Display current average and reviews */}
-                  {menuRatingData && menuRatingData.totalReviews > 0 && (
-                    <div className={styles.menuRatingStats}>
-                      <h3>Current Menu Rating: {menuRatingData.averageRating}/5</h3>
-                      <p>Based on {menuRatingData.totalReviews} reviews</p>
+                  <div className={styles.menuReviewsList}>
+                    {getSortedReviews().map(review => {
+                      const netScore = (review.upvotes || 0) - (review.downvotes || 0);
+                      const totalVotes = (review.upvotes || 0) + (review.downvotes || 0);
                       
-                      <div className={styles.menuReviewsList}>
-                        {menuRatingData.ratings.map(rating => (
-                          <div key={rating.id} className={styles.review}>
-                            <div className={styles.reviewHeader}>
-                              <strong>{rating.userId}</strong> - {rating.rating}/5 stars
+                      return (
+                        <div key={review.id} className={styles.review}>
+                          <div className={styles.reviewHeader}>
+                            <div className={styles.reviewInfo}>
+                              <strong className={styles.username}>{review.displayName}</strong>
+                              <span className={styles.rating}>
+                                {'★'.repeat(Math.floor(review.rating))}
+                                {review.rating % 1 !== 0 ? '☆' : ''}
+                                {' '}({review.rating}/5)
+                              </span>
                               <span className={styles.reviewDate}>
-                                {new Date(rating.timestamp).toLocaleDateString()}
+                                {new Date(review.createdAt).toLocaleDateString()}
+                                {totalVotes > 0 && (
+                                  <span className={styles.netScore}>
+                                    {' • '}
+                                    <span className={netScore > 0 ? styles.positiveScore : netScore < 0 ? styles.negativeScore : styles.neutralScore}>
+                                      {netScore > 0 ? '+' : ''}{netScore} points
+                                    </span>
+                                  </span>
+                                )}
                               </span>
                             </div>
-                            {rating.comment && <p>{rating.comment}</p>}
+                            
+                            {user && (
+                              <div className={styles.voteButtons}>
+                                <button 
+                                  className={`${styles.voteButton} ${styles.upvoteButton} ${review.upvotedBy?.includes(user.email) ? styles.voted : ''}`}
+                                  onClick={() => handleUpvote(review.id)}
+                                  title="Upvote this review"
+                                >
+                                  ▲ {review.upvotes || 0}
+                                </button>
+                                <button 
+                                  className={`${styles.voteButton} ${styles.downvoteButton} ${review.downvotedBy?.includes(user.email) ? styles.voted : ''}`}
+                                  onClick={() => handleDownvote(review.id)}
+                                  title="Downvote this review"
+                                >
+                                  ▼ {review.downvotes || 0}
+                                </button>
+                              </div>
+                            )}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {menuRatingData && menuRatingData.totalReviews === 0 && (
-                    <p>No menu reviews yet. Be the first to rate this lunch menu!</p>
-                  )}
+                          {review.comment && <p className={styles.reviewComment}>{review.comment}</p>}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
-              {reviewType === 'general' && (
-                <div>
-                  <h2>General Reviews</h2>
-                  {reviews && reviews.length > 0 ? (
-                    reviews.map(review => (
-                      <div key={review.id} className={styles.review}>
-                        <h3>{review.author} - {review.rating}/5</h3>
-                        <p>{review.comment}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p>No general reviews yet.</p>
-                  )}
-                </div>
+              
+              {menuReviewsData.length === 0 && (
+                <p>No menu reviews yet. Be the first to rate this lunch menu!</p>
               )}
             </div>
           </div>
