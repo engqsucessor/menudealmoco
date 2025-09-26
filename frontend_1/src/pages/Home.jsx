@@ -7,9 +7,10 @@ const Home = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    const query = e.target.elements.search.value;
-    if (query) {
-      navigate(`/search?q=${query}`);
+    const searchQuery = e.target.elements.search.value;
+    if (searchQuery) {
+      // Send as location parameter since most searches will be location-based
+      navigate(`/search?location=${encodeURIComponent(searchQuery)}`);
     }
   };
 

@@ -7,15 +7,25 @@ const SearchBar = ({
   onLocationSelect,
   placeholder = "Search by restaurant name or location...",
   showLocationButton = true,
-  className = ''
+  className = '',
+  initialQuery = '',
+  initialLocation = ''
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(initialQuery || initialLocation || '');
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
+
+  // Update search term when initial values change
+  useEffect(() => {
+    const newValue = initialQuery || initialLocation || '';
+    if (newValue && newValue !== searchTerm) {
+      setSearchTerm(newValue);
+    }
+  }, [initialQuery, initialLocation]);
 
   // Mock location suggestions - in real app would come from API
   const mockSuggestions = [

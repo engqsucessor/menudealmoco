@@ -6,22 +6,193 @@ export const test = () => {
   return 'Working!';
 };
 
-export const getRestaurants = () => {
-  console.log('getRestaurants called');
-  return Promise.resolve([{
-    id: "1",
-    name: "Test Restaurant", 
-    menuRating: 4.5
-  }]);
+export const getRestaurants = (filters = {}) => {
+  console.log('getRestaurants called with filters:', filters);
+  
+  const allRestaurants = [
+    {
+      id: "1",
+      name: "Tasquinha do João", 
+      district: "Cedofeita",
+      city: "Porto",
+      menuPrice: 8.50,
+      foodType: "Traditional Portuguese",
+      whatsIncluded: ["soup", "main", "drink", "coffee"],
+      overallRating: 4.3,
+      menuRating: 4.5,
+      menuReviews: 92,
+      googleRating: 4.2,
+      googleReviews: 89,
+      zomatoRating: 4.4,
+      zomatoReviews: 38,
+      totalReviews: 127,
+      practical: {
+        cardsAccepted: true,
+        parking: false,
+        quickService: true,
+        groupFriendly: true
+      },
+      isOpenNow: true
+    },
+    {
+      id: "2",
+      name: "Mesa Real",
+      district: "Chiado", 
+      city: "Lisboa",
+      menuPrice: 15.50,
+      foodType: "Modern/Contemporary",
+      whatsIncluded: ["soup", "main", "dessert", "coffee"],
+      overallRating: 4.6,
+      menuRating: 4.7,
+      menuReviews: 45,
+      googleRating: 4.4,
+      googleReviews: 142,
+      zomatoRating: 4.6,
+      zomatoReviews: 78,
+      totalReviews: 67,
+      practical: {
+        cardsAccepted: true,
+        parking: false,
+        quickService: false,
+        groupFriendly: false
+      },
+      isOpenNow: true
+    },
+    {
+      id: "3",
+      name: "Cantina Universitária",
+      district: "Asprela",
+      city: "Porto", 
+      menuPrice: 6.80,
+      foodType: "Traditional Portuguese",
+      whatsIncluded: ["soup", "main", "salad", "drink"],
+      overallRating: 3.8,
+      menuRating: 4.1,
+      menuReviews: 156,
+      googleRating: 3.9,
+      googleReviews: 203,
+      zomatoRating: 3.7,
+      zomatoReviews: 94,
+      totalReviews: 203,
+      practical: {
+        cardsAccepted: false,
+        parking: true,
+        quickService: true,
+        groupFriendly: true
+      },
+      isOpenNow: true
+    }
+  ];
+
+  let filteredRestaurants = allRestaurants;
+
+  // Filter by location (city or district)
+  if (filters.location && filters.location !== 'Lisboa') { // Default was Lisboa
+    const searchLocation = filters.location.toLowerCase();
+    filteredRestaurants = filteredRestaurants.filter(restaurant => 
+      restaurant.city.toLowerCase().includes(searchLocation) ||
+      restaurant.district.toLowerCase().includes(searchLocation)
+    );
+    console.log(`Filtered by location "${filters.location}":`, filteredRestaurants.length, 'restaurants');
+  }
+
+  // Filter by search query (name or other fields)
+  if (filters.query) {
+    const searchQuery = filters.query.toLowerCase();
+    filteredRestaurants = filteredRestaurants.filter(restaurant =>
+      restaurant.name.toLowerCase().includes(searchQuery) ||
+      restaurant.foodType.toLowerCase().includes(searchQuery) ||
+      restaurant.district.toLowerCase().includes(searchQuery) ||
+      restaurant.city.toLowerCase().includes(searchQuery)
+    );
+  }
+
+  // Filter by open now
+  if (filters.openNow) {
+    filteredRestaurants = filteredRestaurants.filter(restaurant => restaurant.isOpenNow);
+  }
+
+  return Promise.resolve(filteredRestaurants);
 };
 
 export const getRestaurant = (id) => {
   console.log('getRestaurant called with id:', id);
-  return Promise.resolve({
-    id: "1",
-    name: "Test Restaurant", 
-    menuRating: 4.5
-  });
+  const restaurants = [
+    {
+      id: "1",
+      name: "Tasquinha do João", 
+      district: "Cedofeita",
+      city: "Porto",
+      menuPrice: 8.50,
+      foodType: "Traditional Portuguese",
+      whatsIncluded: ["soup", "main", "drink", "coffee"],
+      overallRating: 4.3,
+      menuRating: 4.5,
+      menuReviews: 92,
+      googleRating: 4.2,
+      googleReviews: 89,
+      zomatoRating: 4.4,
+      zomatoReviews: 38,
+      totalReviews: 127,
+      practical: {
+        cardsAccepted: true,
+        parking: false,
+        quickService: true,
+        groupFriendly: true
+      },
+      isOpenNow: true
+    },
+    {
+      id: "2",
+      name: "Mesa Real",
+      district: "Chiado", 
+      city: "Lisboa",
+      menuPrice: 15.50,
+      foodType: "Modern/Contemporary",
+      whatsIncluded: ["soup", "main", "dessert", "coffee"],
+      overallRating: 4.6,
+      menuRating: 4.7,
+      menuReviews: 45,
+      googleRating: 4.4,
+      googleReviews: 142,
+      zomatoRating: 4.6,
+      zomatoReviews: 78,
+      totalReviews: 67,
+      practical: {
+        cardsAccepted: true,
+        parking: false,
+        quickService: false,
+        groupFriendly: false
+      },
+      isOpenNow: true
+    },
+    {
+      id: "3",
+      name: "Cantina Universitária",
+      district: "Asprela",
+      city: "Porto", 
+      menuPrice: 6.80,
+      foodType: "Traditional Portuguese",
+      whatsIncluded: ["soup", "main", "salad", "drink"],
+      overallRating: 3.8,
+      menuRating: 4.1,
+      menuReviews: 156,
+      googleRating: 3.9,
+      googleReviews: 203,
+      zomatoRating: 3.7,
+      zomatoReviews: 94,
+      totalReviews: 203,
+      practical: {
+        cardsAccepted: false,
+        parking: true,
+        quickService: true,
+        groupFriendly: true
+      },
+      isOpenNow: true
+    }
+  ];
+  
+  return Promise.resolve(restaurants.find(r => r.id === id) || restaurants[0]);
 };
 
 export const login = (email, password) => {

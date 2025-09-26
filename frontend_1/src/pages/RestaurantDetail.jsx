@@ -40,20 +40,28 @@ const RestaurantDetail = () => {
     return <div>Restaurant not found</div>;
   }
 
-  const { name, location, menuPrice, included, photo, reviews, foodType, googleRating, googleReviews, zomatoRating, zomatoReviews, menuReviews } = restaurant;
+  const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, zomatoRating, zomatoReviews, menuReviews } = restaurant;
+
+  const location = `${district}, ${city}`;
 
   return (
     <div className={styles.detailPage}>
       <header className={styles.header}>
         <div className={styles.imageContainer}>
-          <img src={photo} alt={name} className={styles.image} />
+          {photo ? (
+            <img src={photo} alt={name} className={styles.image} />
+          ) : (
+            <div className={styles.placeholderImage}>
+              <span>No image available</span>
+            </div>
+          )}
         </div>
         <div className={styles.info}>
           <h1>{name}</h1>
           <p>{location}</p>
           <p className={styles.price}>€{menuPrice.toFixed(2)}</p>
           <div className={styles.included}>
-            <strong>Included:</strong> {included.join(' + ')}
+            <strong>Included:</strong> {whatsIncluded && whatsIncluded.join(' + ')}
           </div>
           <p><strong>Cuisine:</strong> {foodType}</p>
           <div className={styles.externalReviews}>

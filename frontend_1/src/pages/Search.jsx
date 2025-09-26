@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './Search.module.css';
-import { restaurantService } from '@services/restaurantService';
+import { getRestaurants } from '../services/mockApi';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import FilterModal from '../components/ui/FilterModal';
@@ -52,9 +52,9 @@ const SearchPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const results = await restaurantService.searchRestaurants(filters);
-      setRestaurants(results.restaurants);
-      setTotalResults(results.pagination.total);
+      const restaurants = await getRestaurants(filters);
+      setRestaurants(restaurants);
+      setTotalResults(restaurants.length);
     } catch (err) {
       setError('Failed to fetch restaurants. Please try again.');
       console.error(err);
