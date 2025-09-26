@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { getPracticalFeatureLabel } from '../../constants/labels';
 import styles from './HorizontalFilterBar.module.css';
 import Button from './Button';
 

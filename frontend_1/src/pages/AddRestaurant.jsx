@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PRACTICAL_FEATURES, INCLUDED_FEATURES, getPracticalFeatureLabel, getIncludedFeatureLabel } from '../constants/labels';
 import styles from './AddRestaurant.module.css';
 
 const AddRestaurant = () => {
@@ -133,7 +134,7 @@ const AddRestaurant = () => {
               {Object.keys(formData.included).map(item => (
                 <label key={item} className={styles.checkboxLabel}>
                   <input type="checkbox" name={`included.${item}`} checked={formData.included[item]} onChange={handleCheckboxChange} />
-                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                  {getIncludedFeatureLabel(item, true)}
                 </label>
               ))}
             </div>
@@ -169,7 +170,7 @@ const AddRestaurant = () => {
               {Object.keys(formData.practical).map(item => (
                 <label key={item} className={styles.checkboxLabel}>
                   <input type="checkbox" name={`practical.${item}`} checked={formData.practical[item]} onChange={handleCheckboxChange} />
-                  {item.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  {getPracticalFeatureLabel(item, true, false)}
                 </label>
               ))}
             </div>

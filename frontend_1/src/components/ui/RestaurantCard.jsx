@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { favoriteRestaurants } from '../../services/localStorage';
+import { getPracticalFeatureLabel } from '../../constants/labels';
 import styles from './RestaurantCard.module.css';
 
 const RestaurantCard = ({ restaurant, style }) => {
@@ -71,10 +72,10 @@ const RestaurantCard = ({ restaurant, style }) => {
 
   // Get practical features and amenities
   const practicalFeatures = [];
-  if (restaurant.practical?.cardsAccepted) practicalFeatures.push('💳 Cards');
-  if (restaurant.practical?.parking) practicalFeatures.push('🚗 Parking');
-  if (restaurant.practical?.quickService) practicalFeatures.push('⚡ Quick Service');
-  if (restaurant.practical?.groupFriendly) practicalFeatures.push('👥 Group Friendly');
+  if (restaurant.practical?.cardsAccepted) practicalFeatures.push(getPracticalFeatureLabel('takesCards', true, true));
+  if (restaurant.practical?.parking) practicalFeatures.push(getPracticalFeatureLabel('hasParking', true, true));
+  if (restaurant.practical?.quickService) practicalFeatures.push(getPracticalFeatureLabel('quickService', true, true));
+  if (restaurant.practical?.groupFriendly) practicalFeatures.push(getPracticalFeatureLabel('groupFriendly', true, true));
 
   // Get food features from included
   const foodFeatures = [];
