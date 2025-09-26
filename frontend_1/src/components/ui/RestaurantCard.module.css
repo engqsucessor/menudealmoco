@@ -443,3 +443,9 @@
   outline: 2px solid #000000;
   outline-offset: 2px;
 }
+
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: contents;
+}

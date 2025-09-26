@@ -1,0 +1,132 @@
+.detailPage {
+  padding: 2rem 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .header {
+    grid-template-columns: 1fr 2fr;
+  }
+}
+
+.imageContainer {
+  width: 100%;
+  height: 250px;
+  background-color: #333;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.info p {
+  color: #aaa;
+  margin-bottom: 1rem;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f8f8f2;
+  margin-bottom: 1rem;
+}
+
+.included {
+  margin-bottom: 1rem;
+}
+
+.tabs {
+  border-bottom: 1px solid #333;
+  margin-bottom: 2rem;
+}
+
+.tabButton {
+  font-family: 'Space Mono', monospace;
+  background: none;
+  border: none;
+  color: #aaa;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  border-bottom: 2px solid transparent;
+}
+
+.tabButton.active {
+  color: #f8f8f2;
+  border-bottom-color: #f8f8f2;
+}
+
+.tabContent h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.reviewsList .review {
+  border-bottom: 1px solid #333;
+  padding: 1rem 0;
+}
+
+.review:last-child {
+  border-bottom: none;
+}
+
+.review h3 {
+  font-weight: 700;
+}
+
+.review p {
+  color: #aaa;
+}
+
+.externalReviews {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.externalReview {
+  background-color: #222;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.reviewTypeSelector {
+  margin-bottom: 1rem;
+}
+
+.reviewTypeButton {
+  font-family: 'Space Mono', monospace;
+  background: none;
+  border: 1px solid #555;
+  color: #aaa;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.reviewTypeButton.active {
+  background-color: #555;
+  color: #fff;
+}

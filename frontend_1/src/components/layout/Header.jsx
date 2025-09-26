@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navigation from './Navigation';
 import styles from './Header.module.css';
 
@@ -13,10 +14,10 @@ const Header = () => {
     <header className={styles.header}>
       <div className={styles.container}>
         {/* Logo */}
-        <div className={styles.logo}>
+        <Link to="/" className={styles.logo}>
           <span className={styles.logoText}>MENU</span>
           <span className={styles.logoSubtext}>DEAL MOÇO</span>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <div className={styles.desktopNav}>

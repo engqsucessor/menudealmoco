@@ -177,3 +177,21 @@
 - Accurate address and basic info
 - Recent information (updated within 6 months)
 
+
+It would be nice that when we add a restaurant we can add
+the gogole review and the number of reviews the restaurants have as well as zomato and so on if they exist,
+
+this will go to a reviewer, before adding we have the reviewer.
+
+The ideia is to have it checked. And we have the review regarding the menu de almoco, so we have the
+
+restaurant review and the menu de almoco review, and they can filter by which they want.
+Also i want the filter for the cost for it to be like i can select not to be a range
+
+
+I want to add a login part and sigunp so users can login and add reviews regarding the menu de almoco, only that part
+and to make the users name random like reddit, here they can then get upvotes as well, and they can if they choose become a moderator
+where they will see if the reviews are true or not, the reviews before beign added are reviewed, like in reddit basiclally use the 
+reddit community feature for this.
+
+So that the reviews can then be added for the menu de almco, and then we can add it after review by the moreadtors basically

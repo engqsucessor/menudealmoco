@@ -1,0 +1,66 @@
+.searchPage {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.filters {
+  background-color: #222;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #333;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.filterGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.filterInput, .filterSelect {
+  width: 100%;
+  font-family: 'Space Mono', monospace;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.resultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.resultsCount {
+  font-size: 1.25rem;
+}
+
+.sortSelect {
+  font-family: 'Space Mono', monospace;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 0.5rem;
+}
+
+.restaurantList {
+  display: grid;
+  gap: 1rem;
+}

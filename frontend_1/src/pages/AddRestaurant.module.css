@@ -1,0 +1,83 @@
+.addRestaurantPage {
+  padding: 2rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #aaa;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.input, .select, .textarea {
+  width: 100%;
+  font-family: 'Space Mono', monospace;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.textarea {
+  min-height: 120px;
+}
+
+.submitButton {
+  font-family: 'Space Mono', monospace;
+  background-color: #f8f8f2;
+  color: #1a1a1a;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  justify-self: center;
+  width: 100%;
+  max-width: 300px;
+}
+
+.submitButton:hover {
+  background-color: #ccc;
+}
+
+.submittedMessage {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.submittedMessage h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.submittedMessage p {
+  color: #aaa;
+  margin-bottom: 2rem;
+}
