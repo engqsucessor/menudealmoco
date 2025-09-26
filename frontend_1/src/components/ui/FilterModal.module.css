@@ -1,0 +1,152 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 1000;
+}
+
+.modal {
+  width: 400px;
+  height: 100%;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.modalHeader {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.closeButton:hover {
+  background-color: #333;
+}
+
+.modalContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section h3 {
+  margin: 0 0 16px 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.toggleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.toggle input[type="checkbox"] {
+  appearance: none;
+  width: 44px;
+  height: 24px;
+  background-color: #333;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 2px;
+}
+
+.toggle input[type="checkbox"]:checked {
+  background-color: #00a79d;
+}
+
+.toggle input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.toggle input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
+}
+
+.toggleLabel {
+  flex: 1;
+}
+
+.toggleLabel strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.toggleLabel p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #999;
+}
+
+.modalFooter {
+  padding: 20px;
+  border-top: 1px solid #333;
+}
+
+.applyButton {
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Slider styles will be in Slider.module.css */

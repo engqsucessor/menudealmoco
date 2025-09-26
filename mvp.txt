@@ -194,4 +194,6 @@ and to make the users name random like reddit, here they can then get upvotes as
 where they will see if the reviews are true or not, the reviews before beign added are reviewed, like in reddit basiclally use the 
 reddit community feature for this.
 
-So that the reviews can then be added for the menu de almco, and then we can add it after review by the moreadtors basically
+Please add the complex filtering please.. at the moment this is too basic its not what i have in my mvp, again, here is the thing, i would like to be able to see multiple restarautns in a page in 
+  thre broswer not just one, you know, it should be good for that, again this is only useful if it has the multiple filtering, and in addition, it should be clear that they can filter by mmultiple 
+  things including, the google ones and so on, and then in the retsaurant name they can see all the ratings, as well as when zomtato and so on were last updated

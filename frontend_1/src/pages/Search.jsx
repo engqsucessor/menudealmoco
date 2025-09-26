@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './Search.module.css';
 import RestaurantCard from '../components/ui/RestaurantCard';
+import FilterPanel from '../components/ui/FilterPanel'; // Import FilterPanel
+import SearchBar from '../components/ui/SearchBar'; // Import SearchBar
+import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import { getRestaurants } from '../services/mockApi';
 
 const useQuery = () => {
@@ -12,81 +15,147 @@ const Search = () => {
   const query = useQuery();
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchLocation, setSearchLocation] = useState(query.get('q') || '');
-  const [priceRange, setPriceRange] = useState('');
-  const [foodType, setFoodType] = useState('');
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  // Initialize filters to match FilterPanel's initial state
+  const [filters, setFilters] = useState({
+    location: query.get('q') || '',
+    priceRange: '',
+    foodType: [],
+    distance: '',
+    includes: {
+      coffee: false,
+      dessert: false,
+      wine: false,
+      bread: false,
+    },
+    practical: {
+      openNow: false,
+      takesCards: false,
+      quickService: false,
+      groupFriendly: false,
+      hasParking: false,
+    },
+    minGoogleRating: '',
+    minZomatoRating: '',
+    hasMenuReviews: false,
+    lastUpdatedDays: '',
+  });
 
   useEffect(() => {
     setLoading(true);
-    getRestaurants({ 
-      location: searchLocation, 
-      price: priceRange, 
-      cuisine: foodType 
-    }).then(data => {
+    getRestaurants(filters).then(data => {
       setRestaurants(data);
       setLoading(false);
     });
-  }, [searchLocation, priceRange, foodType]);
+  }, [filters]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    // The useEffect hook will handle the search
+  const handleFilterChange = (newFilters) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      ...newFilters,
+      includes: { ...prevFilters.includes, ...newFilters.includes },
+      practical: { ...prevFilters.practical, ...newFilters.practical },
+    }));
+  };
+
+  const handleSearch = (searchTerm) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      location: searchTerm,
+    }));
+  };
+
+  const handleLocationSelect = (locationData) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      location: locationData.address,
+    }));
+  };
+
+  const handleQuickFilterChange = (category, key, value) => {
+    let newFilters;
+
+    if (category === 'includes' || category === 'practical') {
+      newFilters = {
+        ...filters,
+        [category]: {
+          ...filters[category],
+          [key]: value,
+        },
+      };
+    } else {
+      newFilters = {
+        ...filters,
+        [category]: value,
+      };
+    }
+    setFilters(newFilters);
   };
 
   return (
     <div className={styles.searchPage}>
-      <h1 className={styles.title}>Search Restaurants</h1>
+      <h1 className={styles.title}>Find Your Lunch Deal</h1>
 
-      <form onSubmit={handleSearch} className={styles.filters}>
-        <div className={styles.filterGrid}>
-          <div className={styles.filterGroup}>
-            <label htmlFor="location">Location</label>
-            <input
-              id="location"
-              type="text"
-              className={styles.filterInput}
-              placeholder="e.g., Porto, Lisboa"
-              value={searchLocation}
-              onChange={(e) => setSearchLocation(e.target.value)}
-            />
-          </div>
+      <SearchBar
+        onSearch={handleSearch}
+        onLocationSelect={handleLocationSelect}
+        placeholder="Search by location or restaurant name..."
+        className={styles.mainSearchBar}
+      />
 
-          <div className={styles.filterGroup}>
-            <label htmlFor="price">Max Price</label>
-            <select 
-              id="price" 
-              className={styles.filterSelect} 
-              value={priceRange} 
-              onChange={(e) => setPriceRange(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="8">€8</option>
-              <option value="10">€10</option>
-              <option value="12">€12</option>
-              <option value="15">€15</option>
-              <option value="20">€20</option>
-            </select>
-          </div>
+      <HorizontalFilterBar
+        onToggleAllFilters={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
+        onFilterChange={handleQuickFilterChange}
+        activeFilters={filters}
+      />
 
-          <div className={styles.filterGroup}>
-            <label htmlFor="foodType">Food Type</label>
-            <select 
-              id="foodType" 
-              className={styles.filterSelect} 
-              value={foodType} 
-              onChange={(e) => setFoodType(e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="Traditional Portuguese">Traditional Portuguese</option>
-              <option value="Modern/Contemporary">Modern/Contemporary</option>
-              <option value="Seafood">Seafood</option>
-              <option value="Meat-focused">Meat-focused</option>
-              <option value="Vegetarian-friendly">Vegetarian-friendly</option>
-              <option value="International">International</option>
-            </select>
-          </div>
-        </div>
-      </form>
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        filters={filters}
+        onFiltersChange={handleFilterChange}
+      />
+
+      {/* Active Filters Display */}
+      <div className={styles.activeFilters}>
+        <button 
+          className={styles.filterButton}
+          onClick={() => setIsFilterModalOpen(true)}
+        >
+          Filtros
+        </button>
+        {Object.entries(filters).map(([key, value]) => {
+          if (!value) return null;
+          if (typeof value === 'object') {
+            const activeItems = Object.entries(value).filter(([_, v]) => v);
+            return activeItems.map(([itemKey]) => (
+              <span key={`${key}-${itemKey}`} className={styles.filterTag}>
+                {itemKey}
+                <button 
+                  onClick={() => handleFilterChange(key, itemKey, false)}
+                  className={styles.removeFilter}
+                >
+                  ×
+                </button>
+              </span>
+            ));
+          }
+          if (value) {
+            return (
+              <span key={key} className={styles.filterTag}>
+                {key}: {value}
+                <button 
+                  onClick={() => handleFilterChange(key, null, '')}
+                  className={styles.removeFilter}
+                >
+                  ×
+                </button>
+              </span>
+            );
+          }
+          return null;
+        })}
 
       <div className={styles.resultsHeader}>
         <p className={styles.resultsCount}>
@@ -101,7 +170,7 @@ const Search = () => {
       {loading ? (
         <p>Loading restaurants...</p>
       ) : (
-        <div className={styles.restaurantList}>
+        <div className={styles.restaurantGrid}>
           {restaurants.map(r => (
             <RestaurantCard key={r.id} restaurant={r} />
           ))}

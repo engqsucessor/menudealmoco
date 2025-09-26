@@ -1,0 +1,74 @@
+.filterBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 12px 16px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.selectors {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.selector {
+  padding: 8px 12px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-width: 100px;
+}
+
+.cuisineSelector {
+  min-width: 150px;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  height: 38px;
+}
+
+.filterIcon {
+  font-size: 1.1rem;
+}
+
+/* Hover states */
+.selector:hover {
+  border-color: #444;
+  background-color: #333;
+}
+
+/* Focus states */
+.selector:focus {
+  outline: none;
+  border-color: #00a79d;
+}
+
+/* Custom dropdown arrow */
+.selector {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23fff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}

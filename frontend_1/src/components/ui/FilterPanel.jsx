@@ -7,11 +7,12 @@ const FilterPanel = ({
   initialFilters = {},
   isOpen = false,
   onToggle,
-  className = ''
+  className = '',
+  hideToggleButton = false,
 }) => {
   const [filters, setFilters] = useState({
     priceRange: initialFilters.priceRange || '',
-    foodType: initialFilters.foodType || '',
+    foodType: initialFilters.foodType || [], // Changed to array for multi-select
     distance: initialFilters.distance || '',
     includes: {
       coffee: initialFilters.includes?.coffee || false,
@@ -25,7 +26,11 @@ const FilterPanel = ({
       quickService: initialFilters.practical?.quickService || false,
       groupFriendly: initialFilters.practical?.groupFriendly || false,
       hasParking: initialFilters.practical?.hasParking || false
-    }
+    },
+    minGoogleRating: initialFilters.minGoogleRating || '',
+    minZomatoRating: initialFilters.minZomatoRating || '',
+    hasMenuReviews: initialFilters.hasMenuReviews || false,
+    lastUpdatedDays: initialFilters.lastUpdatedDays || '',
   });
 
   // Filter options from MVP specification
@@ -80,6 +85,11 @@ const FilterPanel = ({
           [key]: value
         }
       };
+    } else if (category === 'foodType') {
+      const newFoodTypes = filters.foodType.includes(key)
+        ? filters.foodType.filter(item => item !== key)
+        : [...filters.foodType, key];
+      newFilters = { ...filters, foodType: newFoodTypes };
     } else {
       newFilters = {
         ...filters,
@@ -91,37 +101,17 @@ const FilterPanel = ({
     onFiltersChange?.(newFilters);
   };
 
-  const clearAllFilters = () => {
-    const clearedFilters = {
-      priceRange: '',
-      foodType: '',
-      distance: '',
-      includes: {
-        coffee: false,
-        dessert: false,
-        wine: false,
-        bread: false
-      },
-      practical: {
-        openNow: false,
-        takesCards: false,
-        quickService: false,
-        groupFriendly: false,
-        hasParking: false
-      }
-    };
-
-    setFilters(clearedFilters);
-    onFiltersChange?.(clearedFilters);
-  };
-
   const getActiveFiltersCount = () => {
     let count = 0;
     if (filters.priceRange) count++;
-    if (filters.foodType) count++;
+    if (filters.foodType.length > 0) count++;
     if (filters.distance) count++;
     count += Object.values(filters.includes).filter(Boolean).length;
     count += Object.values(filters.practical).filter(Boolean).length;
+    if (filters.minGoogleRating) count++;
+    if (filters.minZomatoRating) count++;
+    if (filters.hasMenuReviews) count++;
+    if (filters.lastUpdatedDays) count++;
     return count;
   };
 
@@ -134,19 +124,21 @@ const FilterPanel = ({
   return (
     <div className={panelClasses}>
       {/* Toggle Button for Mobile */}
-      <button
-        className={styles.toggleButton}
-        onClick={onToggle}
-        type="button"
-      >
-        <span className={styles.toggleIcon}>⚙</span>
-        <span className={styles.toggleText}>
-          FILTERS {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
-        </span>
-        <span className={styles.toggleArrow}>
-          {isOpen ? '▲' : '▼'}
-        </span>
-      </button>
+      {!hideToggleButton && (
+        <button
+          className={styles.toggleButton}
+          onClick={onToggle}
+          type="button"
+        >
+          <span className={styles.toggleIcon}>⚙</span>
+          <span className={styles.toggleText}>
+            FILTERS {getActiveFiltersCount() > 0 && `(${getActiveFiltersCount()})`}
+          </span>
+          <span className={styles.toggleArrow}>
+            {isOpen ? '▲' : '▼'}
+          </span>
+        </button>
+      )}
 
       {/* Filter Content */}
       <div className={styles.filterContent}>
@@ -211,20 +203,22 @@ const FilterPanel = ({
         {/* Food Type */}
         <div className={styles.filterSection}>
           <h4 className={styles.sectionTitle}>FOOD TYPE</h4>
-          <div className={styles.optionList}>
+          <div className={styles.checkboxGrid}>
             {foodTypes.map((type) => (
-              <button
+              <label
                 key={type}
-                className={`${styles.listButton} ${
-                  filters.foodType === type ? styles.active : ''
+                className={`${styles.checkboxLabel} ${
+                  filters.foodType.includes(type) ? styles.checked : ''
                 }`}
-                onClick={() => handleFilterChange('foodType', null,
-                  filters.foodType === type ? '' : type
-                )}
-                type="button"
               >
-                {type}
-              </button>
+                <input
+                  type="checkbox"
+                  className={styles.checkbox}
+                  checked={filters.foodType.includes(type)}
+                  onChange={() => handleFilterChange('foodType', type, null)}
+                />
+                <span className={styles.checkboxText}>{type}</span>
+              </label>
             ))}
           </div>
         </div>
@@ -275,6 +269,62 @@ const FilterPanel = ({
               </label>
             ))}
           </div>
+        </div>
+
+        {/* Additional Filters */}
+        <div className={styles.filterSection}>
+          <h4 className={styles.sectionTitle}>RATINGS & REVIEWS</h4>
+          <div className={styles.inputGroup}>
+            <label htmlFor="minGoogleRating">Min Google Rating</label>
+            <select
+              id="minGoogleRating"
+              className={styles.selectInput}
+              value={filters.minGoogleRating}
+              onChange={(e) => handleFilterChange('minGoogleRating', null, e.target.value)}
+            >
+              <option value="">Any</option>
+              <option value="4.5">4.5+</option>
+              <option value="4.0">4.0+</option>
+              <option value="3.5">3.5+</option>
+            </select>
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="minZomatoRating">Min Zomato Rating</label>
+            <select
+              id="minZomatoRating"
+              className={styles.selectInput}
+              value={filters.minZomatoRating}
+              onChange={(e) => handleFilterChange('minZomatoRating', null, e.target.value)}
+            >
+              <option value="">Any</option>
+              <option value="4.5">4.5+</option>
+              <option value="4.0">4.0+</option>
+              <option value="3.5">3.5+</option>
+            </select>
+          </div>
+          <label className={`${styles.checkboxLabel} ${styles.fullWidth} ${filters.hasMenuReviews ? styles.checked : ''}`}>
+            <input
+              type="checkbox"
+              className={styles.checkbox}
+              checked={filters.hasMenuReviews}
+              onChange={(e) => handleFilterChange('hasMenuReviews', null, e.target.checked)}
+            />
+            <span className={styles.checkboxText}>Has "Menu de Almoço" Reviews</span>
+          </label>
+        </div>
+
+        <div className={styles.filterSection}>
+          <h4 className={styles.sectionTitle}>LAST UPDATED</h4>
+          <select
+            className={styles.selectInput}
+            value={filters.lastUpdatedDays}
+            onChange={(e) => handleFilterChange('lastUpdatedDays', null, e.target.value)}
+          >
+            <option value="">Anytime</option>
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
         </div>
       </div>
     </div>
