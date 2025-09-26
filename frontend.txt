@@ -1,0 +1,143 @@
+# LLM Prompt: Create MONO Design System React Website
+
+Create a full React website using the MONO design system with simulated backend functionality. Follow these exact specifications:
+
+## Design System Constraints (MONO)
+- **Colors**: ONLY black, white, and gray shades - no other colors allowed
+- **Typography**: Use Space Mono font exclusively
+- **Philosophy**: "Strip away the non-essential. Color, decoration, complexity—gone."
+- **Focus**: Typography, spacing, proportion, and layout only
+
+## Technical Requirements
+- Use React with JSX
+- Include simulated backend functionality in frontend (no real backend)
+- Use modern CSS (CSS modules, styled-components, or inline styles)
+- Make it fully functional and interactive
+- Include routing between pages
+- Simulate API calls with setTimeout and mock data
+
+## MONO Template Structure
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MONO Project</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+      * {
+        font-family: "Space Mono", monospace;
+      }
+    </style>
+  </head>
+  <body style="background: white; color: black; min-height: 100vh;">
+    <!-- React app goes here -->
+  </body>
+</html>
+```
+
+## MONO Core Principles to Follow
+1. **Reduction**: Strip away non-essential elements
+2. **Refinement**: Perfect typography, spacing, and proportion
+3. **Rhythm**: Create patterns with limited elements
+4. **Reaction**: Make it communicate effectively
+
+## Typography Guidelines
+- Vary font sizes dramatically (from small to massive)
+- Use different weights (400, 700)
+- Play with spacing (letter-spacing, line-height)
+- Use italic and normal styles
+- Text can be rotated or positioned creatively
+- Text IS the visual element
+
+## Layout Techniques
+- Deliberate grid systems
+- Asymmetrical compositions  
+- Strategic negative space
+- Geometric compositions
+- Rotated elements
+- Pattern-based designs
+
+## Required Pages/Sections
+1. **Home** - Bold landing page showcasing MONO principles
+2. **About** - Typography-focused content presentation
+3. **Projects/Gallery** - Grid-based project showcase
+4. **Contact** - Interactive form with validation
+5. **Blog/Articles** - Text-heavy content display
+
+## Simulated Backend Features
+- Mock user authentication
+- Fake API calls with loading states
+- Local storage for persistence
+- Form submissions with validation
+- Dynamic content loading
+- Search functionality
+- Comment system simulation
+
+## Interactive Elements
+- Navigation that transforms on interaction
+- Hover effects using only typography and spacing
+- Loading animations using text/shapes
+- Modal windows
+- Expandable content sections
+- Filter/sort functionality
+
+## Code Structure
+```
+src/
+  components/
+    Header.jsx
+    Footer.jsx
+    Navigation.jsx
+    Layout.jsx
+  pages/
+    Home.jsx
+    About.jsx
+    Projects.jsx
+    Contact.jsx
+    Blog.jsx
+  services/
+    mockApi.js
+    localStorage.js
+  styles/
+    global.css
+    components.css
+  App.jsx
+  index.js
+```
+
+## Example Color Palette (Monochromatic Only)
+- Pure White: #FFFFFF
+- Light Gray: #F5F5F5, #E5E5E5
+- Medium Gray: #999999, #666666
+- Dark Gray: #333333, #1A1A1A
+- Pure Black: #000000
+
+## Animation Guidelines
+- Use CSS transforms and transitions
+- Typography-based animations
+- Geometric shape morphing
+- Spacing and scale changes
+- No color transitions (since we don't use color)
+
+## Success Criteria
+The website should:
+- Be visually striking using ONLY typography and spacing
+- Feel modern and professional
+- Have smooth interactions and animations
+- Include realistic backend simulation
+- Work perfectly without any colors
+- Demonstrate that "if it works in monochrome, it'll work anywhere"
+
+## Remember
+"Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away." - Make every element intentional and purposeful.
+
+Create a complete, production-ready React application that showcases the power of monochromatic design through excellent typography, spacing, and user experience.
+
+Create a frontend diretory. Each compoenent is one file.
+
+Divide into directories that make sense for the join of compoenets.
+
+
+use vite for pamcagae management

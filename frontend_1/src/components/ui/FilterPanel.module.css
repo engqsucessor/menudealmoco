@@ -1,0 +1,379 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.filterPanel {
+  font-family: 'Space Mono', monospace;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  transition: all 0.3s ease;
+}
+
+/* Toggle Button (Mobile) */
+.toggleButton {
+  display: none;
+  width: 100%;
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.toggleButton:hover {
+  background: #e5e5e5;
+}
+
+.toggleIcon {
+  font-size: 16px;
+}
+
+.toggleText {
+  flex: 1;
+  text-align: left;
+  margin-left: 12px;
+}
+
+.toggleArrow {
+  font-size: 10px;
+  transition: transform 0.2s ease;
+}
+
+.open .toggleArrow {
+  transform: rotate(180deg);
+}
+
+/* Filter Content */
+.filterContent {
+  padding: 24px;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.filterTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.clearButton {
+  font-size: 10px;
+  padding: 6px 12px;
+}
+
+/* Filter Sections */
+.filterSection {
+  margin-bottom: 32px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 16px 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Option Grids */
+.optionGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.optionButton {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  padding: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: #666666;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.optionButton:hover {
+  border-color: #000000;
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+.optionButton.active {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.optionLabel {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.optionSubtitle {
+  font-size: 9px;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+/* Option Lists */
+.optionList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.listButton {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  padding: 12px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: #666666;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.listButton:hover {
+  border-color: #000000;
+  color: #000000;
+  transform: translateX(4px);
+}
+
+.listButton.active {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+/* Checkbox Grid */
+.checkboxGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.checkboxLabel:hover {
+  border-color: #000000;
+  transform: translateX(2px);
+}
+
+.checkboxLabel.checked {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.checkbox {
+  display: none;
+}
+
+.checkboxIcon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.checkboxText {
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.checkboxLabel.checked .checkboxText {
+  color: #ffffff;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .toggleButton {
+    display: flex;
+  }
+
+  .filterContent {
+    display: none;
+    animation: slideDown 0.3s ease;
+  }
+
+  .open .filterContent {
+    display: block;
+  }
+
+  .filterContent {
+    padding: 20px;
+  }
+
+  .filterHeader {
+    margin-bottom: 24px;
+  }
+
+  .filterSection {
+    margin-bottom: 24px;
+  }
+
+  .optionGrid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .optionButton,
+  .listButton {
+    padding: 10px 12px;
+    font-size: 10px;
+  }
+
+  .checkboxLabel {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .checkboxIcon {
+    font-size: 14px;
+  }
+
+  .checkboxText {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toggleButton {
+    padding: 12px 16px;
+    font-size: 11px;
+  }
+
+  .filterContent {
+    padding: 16px;
+  }
+
+  .filterTitle {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .sectionTitle {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .filterSection {
+    margin-bottom: 20px;
+  }
+
+  .optionButton,
+  .listButton {
+    padding: 8px 10px;
+    font-size: 9px;
+  }
+
+  .optionSubtitle {
+    font-size: 8px;
+  }
+
+  .checkboxLabel {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .checkboxIcon {
+    font-size: 12px;
+  }
+
+  .checkboxText {
+    font-size: 9px;
+  }
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Desktop Sidebar Layout */
+.sidebar {
+  width: 300px;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.sidebar .toggleButton {
+  display: none;
+}
+
+.sidebar .filterContent {
+  display: block;
+}
+
+/* Compact variant */
+.compact .filterContent {
+  padding: 16px;
+}
+
+.compact .filterSection {
+  margin-bottom: 20px;
+}
+
+.compact .sectionTitle {
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+
+/* Focus styles for accessibility */
+.optionButton:focus,
+.listButton:focus,
+.checkboxLabel:focus {
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+}
+
+.toggleButton:focus {
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+}

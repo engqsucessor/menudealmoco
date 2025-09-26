@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.header {
+  font-family: 'Space Mono', monospace;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  position: relative;
+}
+
+/* Logo Styles */
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: translateY(-1px);
+}
+
+.logoText {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.logoSubtext {
+  font-size: 10px;
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: 4px;
+  margin-top: -2px;
+  text-align: center;
+}
+
+/* Desktop Navigation */
+.desktopNav {
+  display: flex;
+}
+
+/* Mobile Menu Toggle */
+.menuToggle {
+  display: none;
+  background: none;
+  border: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 20px;
+  color: #000000;
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.menuToggle:hover {
+  color: #666666;
+  transform: scale(1.1);
+}
+
+.menuIcon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+}
+
+/* Mobile Navigation */
+.mobileNav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+    height: 70px;
+  }
+
+  .logoText {
+    font-size: 20px;
+    letter-spacing: 1px;
+  }
+
+  .logoSubtext {
+    font-size: 8px;
+    letter-spacing: 3px;
+  }
+
+  .desktopNav {
+    display: none;
+  }
+
+  .menuToggle {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 12px;
+    height: 60px;
+  }
+
+  .logoText {
+    font-size: 18px;
+  }
+
+  .logoSubtext {
+    font-size: 7px;
+    letter-spacing: 2px;
+  }
+}

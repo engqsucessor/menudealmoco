@@ -1,0 +1,366 @@
+/* MONO Design System - Global Styles */
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+:root {
+  --color-white: #ffffff;
+  --color-light-gray: #f5f5f5;
+  --color-medium-light-gray: #e5e5e5;
+  --color-medium-gray: #999999;
+  --color-dark-gray: #666666;
+  --color-darker-gray: #333333;
+  --color-darkest-gray: #1a1a1a;
+  --color-black: #000000;
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-xxxl: 64px;
+
+  --font-size-xs: 10px;
+  --font-size-sm: 12px;
+  --font-size-md: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 20px;
+  --font-size-xxl: 24px;
+  --font-size-xxxl: 32px;
+  --font-size-4xl: 48px;
+  --font-size-5xl: 64px;
+  --font-size-6xl: 96px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Space Mono", monospace;
+  font-weight: 400;
+  background: var(--color-white);
+  color: var(--color-black);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Typography */
+.mono-heading-1 {
+  font-size: var(--font-size-6xl);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.mono-heading-2 {
+  font-size: var(--font-size-5xl);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.mono-heading-3 {
+  font-size: var(--font-size-4xl);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.mono-heading-4 {
+  font-size: var(--font-size-xxxl);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.mono-heading-5 {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.mono-heading-6 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.mono-body-large {
+  font-size: var(--font-size-xl);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.mono-body {
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.mono-body-small {
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.mono-caption {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.mono-label {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Utility Classes */
+.mono-bold { font-weight: 700; }
+.mono-italic { font-style: italic; }
+.mono-uppercase { text-transform: uppercase; }
+.mono-center { text-align: center; }
+.mono-right { text-align: right; }
+
+/* Layout */
+.mono-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.mono-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+}
+
+.mono-flex {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.mono-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mono-flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mono-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Spacing */
+.mono-mt-xs { margin-top: var(--spacing-xs); }
+.mono-mt-sm { margin-top: var(--spacing-sm); }
+.mono-mt-md { margin-top: var(--spacing-md); }
+.mono-mt-lg { margin-top: var(--spacing-lg); }
+.mono-mt-xl { margin-top: var(--spacing-xl); }
+.mono-mt-xxl { margin-top: var(--spacing-xxl); }
+.mono-mt-xxxl { margin-top: var(--spacing-xxxl); }
+
+.mono-mb-xs { margin-bottom: var(--spacing-xs); }
+.mono-mb-sm { margin-bottom: var(--spacing-sm); }
+.mono-mb-md { margin-bottom: var(--spacing-md); }
+.mono-mb-lg { margin-bottom: var(--spacing-lg); }
+.mono-mb-xl { margin-bottom: var(--spacing-xl); }
+.mono-mb-xxl { margin-bottom: var(--spacing-xxl); }
+.mono-mb-xxxl { margin-bottom: var(--spacing-xxxl); }
+
+.mono-p-xs { padding: var(--spacing-xs); }
+.mono-p-sm { padding: var(--spacing-sm); }
+.mono-p-md { padding: var(--spacing-md); }
+.mono-p-lg { padding: var(--spacing-lg); }
+.mono-p-xl { padding: var(--spacing-xl); }
+.mono-p-xxl { padding: var(--spacing-xxl); }
+
+/* Buttons */
+.mono-button {
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md) var(--spacing-xl);
+  border: 2px solid var(--color-black);
+  background: var(--color-white);
+  color: var(--color-black);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mono-button:hover {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+.mono-button:focus {
+  outline: 3px solid var(--color-medium-gray);
+  outline-offset: 2px;
+}
+
+.mono-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mono-button--large {
+  font-size: var(--font-size-lg);
+  padding: var(--spacing-lg) var(--spacing-xxl);
+}
+
+.mono-button--small {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+}
+
+.mono-button--ghost {
+  background: transparent;
+  border-color: var(--color-medium-gray);
+  color: var(--color-dark-gray);
+}
+
+.mono-button--ghost:hover {
+  border-color: var(--color-black);
+  background: var(--color-light-gray);
+  color: var(--color-black);
+}
+
+/* Forms */
+.mono-input {
+  font-family: "Space Mono", monospace;
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-medium-gray);
+  background: var(--color-white);
+  color: var(--color-black);
+  width: 100%;
+  transition: border-color 0.2s ease;
+}
+
+.mono-input:focus {
+  outline: none;
+  border-color: var(--color-black);
+}
+
+.mono-input::placeholder {
+  color: var(--color-medium-gray);
+}
+
+.mono-textarea {
+  font-family: "Space Mono", monospace;
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-medium-gray);
+  background: var(--color-white);
+  color: var(--color-black);
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.mono-textarea:focus {
+  outline: none;
+  border-color: var(--color-black);
+}
+
+.mono-select {
+  font-family: "Space Mono", monospace;
+  font-size: var(--font-size-md);
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-medium-gray);
+  background: var(--color-white);
+  color: var(--color-black);
+  width: 100%;
+  cursor: pointer;
+}
+
+.mono-select:focus {
+  outline: none;
+  border-color: var(--color-black);
+}
+
+/* Cards */
+.mono-card {
+  border: 2px solid var(--color-medium-light-gray);
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  transition: all 0.2s ease;
+}
+
+.mono-card:hover {
+  border-color: var(--color-black);
+  transform: translateY(-2px);
+}
+
+.mono-card--featured {
+  border-color: var(--color-black);
+  border-width: 3px;
+}
+
+/* Loading States */
+.mono-loading {
+  display: inline-block;
+  font-weight: 700;
+  animation: mono-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes mono-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Error States */
+.mono-error {
+  color: var(--color-darker-gray);
+  background: var(--color-light-gray);
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-medium-gray);
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mono-container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .mono-heading-1 {
+    font-size: var(--font-size-4xl);
+  }
+
+  .mono-heading-2 {
+    font-size: var(--font-size-xxxl);
+  }
+
+  .mono-heading-3 {
+    font-size: var(--font-size-xxl);
+  }
+}
+
+@media (max-width: 480px) {
+  .mono-heading-1 {
+    font-size: var(--font-size-xxxl);
+  }
+
+  .mono-heading-2 {
+    font-size: var(--font-size-xxl);
+  }
+}

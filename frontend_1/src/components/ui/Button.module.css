@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.button {
+  font-family: 'Space Mono', monospace;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Variants */
+.primary {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
+}
+
+.primary:hover:not(.disabled):not(.loading) {
+  background: #ffffff;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.secondary {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+.secondary:hover:not(.disabled):not(.loading) {
+  background: #000000;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.ghost {
+  background: transparent;
+  color: #666666;
+  border: 2px solid #e5e5e5;
+}
+
+.ghost:hover:not(.disabled):not(.loading) {
+  color: #000000;
+  border-color: #000000;
+  transform: translateY(-1px);
+}
+
+.outline {
+  background: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+.outline:hover:not(.disabled):not(.loading) {
+  background: #000000;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Sizes */
+.small {
+  padding: 8px 16px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+
+.medium {
+  padding: 12px 24px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.large {
+  padding: 16px 32px;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+}
+
+/* States */
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none !important;
+}
+
+.loading {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.loadingText {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loadingDots {
+  display: flex;
+  gap: 2px;
+}
+
+.loadingDots span {
+  animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.loadingDots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loadingDots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Special button styles */
+.iconButton {
+  padding: 12px;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.rounded {
+  border-radius: 4px;
+}
+
+/* Hover effects */
+.button:active:not(.disabled):not(.loading) {
+  transform: translateY(0) !important;
+}
+
+/* Focus styles for accessibility */
+.button:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .large {
+    padding: 14px 28px;
+    font-size: 13px;
+  }
+
+  .medium {
+    padding: 10px 20px;
+    font-size: 11px;
+  }
+
+  .small {
+    padding: 6px 12px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .large {
+    padding: 12px 24px;
+    font-size: 12px;
+  }
+
+  .medium {
+    padding: 8px 16px;
+    font-size: 10px;
+  }
+
+  .small {
+    padding: 6px 10px;
+    font-size: 8px;
+  }
+}
+
+/* Button group styles */
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.buttonGroup .button {
+  flex: 1;
+  min-width: 120px;
+}
+
+@media (max-width: 480px) {
+  .buttonGroup {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .buttonGroup .button {
+    min-width: auto;
+  }
+}

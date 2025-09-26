@@ -1,0 +1,296 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.searchBar {
+  font-family: 'Space Mono', monospace;
+  width: 100%;
+  position: relative;
+}
+
+.searchForm {
+  width: 100%;
+  position: relative;
+}
+
+.inputContainer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  padding: 4px;
+  transition: border-color 0.2s ease;
+}
+
+.inputContainer:focus-within {
+  border-color: #000000;
+}
+
+.searchInput {
+  font-family: 'Space Mono', monospace;
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+  background: transparent;
+  letter-spacing: 0.5px;
+}
+
+.searchInput::placeholder {
+  color: #999999;
+  font-style: italic;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.locationButton {
+  white-space: nowrap;
+  min-width: auto;
+}
+
+.searchButton {
+  min-width: 80px;
+}
+
+/* Suggestions Dropdown */
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 2px solid #e5e5e5;
+  border-top: none;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideDown 0.2s ease;
+}
+
+.suggestion {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.suggestion:hover {
+  background: #f5f5f5;
+  color: #000000;
+  transform: translateX(4px);
+}
+
+.suggestion:last-child {
+  border-bottom: none;
+}
+
+.suggestionIcon {
+  font-size: 14px;
+  color: #999999;
+  flex-shrink: 0;
+}
+
+.suggestionText {
+  flex: 1;
+  letter-spacing: 0.5px;
+}
+
+/* Error Message */
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border: 1px solid #e5e5e5;
+  animation: fadeIn 0.3s ease;
+}
+
+.errorIcon {
+  font-size: 14px;
+  color: #666666;
+}
+
+.errorText {
+  font-size: 10px;
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Loading state for input */
+.inputContainer.loading {
+  pointer-events: none;
+}
+
+.inputContainer.loading .searchInput {
+  color: #999999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .inputContainer {
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .searchInput {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .buttonGroup {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .locationButton,
+  .searchButton {
+    flex: 1;
+    min-width: auto;
+  }
+
+  .suggestion {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .suggestionIcon {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .inputContainer {
+    padding: 6px;
+  }
+
+  .searchInput {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .suggestion {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+
+  .errorMessage {
+    padding: 6px 10px;
+  }
+
+  .errorText {
+    font-size: 9px;
+  }
+}
+
+/* Focus and accessibility */
+.searchInput:focus {
+  outline: none;
+}
+
+.suggestion:focus {
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+  background: #f5f5f5;
+}
+
+/* Compact variant */
+.compact .inputContainer {
+  padding: 2px;
+}
+
+.compact .searchInput {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.compact .buttonGroup {
+  gap: 4px;
+}
+
+/* Full width variant */
+.fullWidth {
+  width: 100%;
+}
+
+.fullWidth .inputContainer {
+  width: 100%;
+}
+
+/* Dark theme support (for MONO consistency) */
+.dark .inputContainer {
+  background: #000000;
+  border-color: #333333;
+}
+
+.dark .searchInput {
+  color: #ffffff;
+}
+
+.dark .searchInput::placeholder {
+  color: #666666;
+}
+
+.dark .suggestions {
+  background: #000000;
+  border-color: #333333;
+}
+
+.dark .suggestion {
+  color: #999999;
+  border-color: #333333;
+}
+
+.dark .suggestion:hover {
+  background: #1a1a1a;
+  color: #ffffff;
+}

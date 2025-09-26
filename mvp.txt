@@ -1,0 +1,179 @@
+# Menu Deal Moço - Simple MVP Specification
+
+## Product Concept
+
+**What:** A website ranking Portuguese restaurant lunch menus ("menu de almoço") by value-for-money, based on user reviews and submissions.
+
+**Target User:** Anyone in Portugal looking for good lunch deals - office workers, students, budget-conscious diners, tourists.
+
+**Core Promise:** "Find the best lunch deals near you, ranked by real people who've eaten there."
+
+---
+
+## How It Works
+
+### For Users Searching:
+1. Visit website
+2. Enter location or use "near me"  
+3. Browse ranked list of lunch deals
+4. Filter by price, food type, location, what's included
+5. See restaurant details, photos, reviews, exact menu prices
+6. Click to get directions/contact info
+
+### For Users Contributing:
+1. Find "Add Restaurant" button
+2. Fill simple form with restaurant details and menu info
+3. Upload photo of menu board (required)
+4. Submission goes for validation
+5. Once approved, restaurant appears on site
+6. Leave reviews and ratings on restaurants you've visited
+
+---
+
+## What Users See
+
+### Restaurant Card Display:
+- **Restaurant Name & Location**
+- **Menu Price** (e.g., "€9.50")
+- **Value Rating** (★★★★☆ 4.2/5)
+- **What's Included** ("Soup + Main + Drink + Coffee")
+- **Food Type** ("Traditional Portuguese")
+- **Photo** of the menu or food
+- **Quick Info** ("Open now", "Takes cards", "Near metro")
+
+### Restaurant Detail Page:
+- All basic info expanded
+- Multiple photos (menu boards, food, restaurant)
+- All user reviews and ratings
+- Map with exact location
+- Contact info and hours
+- "Claim this restaurant" button for owners
+
+---
+
+## Core Features
+
+### 1. Search & Filtering
+**Location:**
+- Search by city, district, or address
+- "Near me" with GPS
+- Distance selector (walking distance, driving distance)
+
+**Price Range:**
+- €6-8 (Budget deals)
+- €8-10 (Standard)
+- €10-12 (Good value)
+- €12-15 (Premium)
+- €15+ (High-end)
+
+**Food Type:**
+- Traditional Portuguese
+- Modern/Contemporary  
+- Seafood specialist
+- Meat-focused
+- Vegetarian-friendly
+- International
+
+**What's Included:**
+- Coffee included (yes/no)
+- Dessert included (yes/no)
+- Wine available (yes/no)
+- Bread/soup included (yes/no)
+
+**Practical Filters:**
+- Open now
+- Takes credit cards
+- Quick service
+- Group-friendly
+- Has parking
+
+### 2. Restaurant Submissions
+**Required Information:**
+- Restaurant name
+- Full address
+- Menu price(s)
+- What's included in the menu
+- Food type/cuisine
+- Photo of menu board or price display
+
+**Optional Information:**
+- Phone number
+- Website
+- Opening hours
+- Additional photos of food
+- Personal review/description
+- Special notes (vegetarian options, etc.)
+
+### 3. Validation System
+**Simple Validation Process:**
+- Admin checks if restaurant actually exists at given address
+- Verifies menu price from photo or online sources
+- Approves submission if legitimate
+- Rejects fake or duplicate submissions
+
+**Quality Control:**
+- Users can flag incorrect information
+- Regular checks on restaurant status (still open?)
+- Remove closed restaurants
+- Update pricing when flagged as outdated
+
+### 4. Review System
+**Rating Categories:**
+- Overall value-for-money (1-5 stars)
+- Food quality
+- Portion size
+- Service speed
+
+**Review Content:**
+- Written review (optional)
+- Photos encouraged
+- Date visited
+- What they ordered from the menu
+
+---
+
+## User Journey Examples
+
+### Scenario 1: Office Worker Looking for Lunch
+"Maria works in Porto city center, has 1 hour for lunch, budget €10-12"
+1. Opens Menu Deal Moço
+2. Uses "Near me" function
+3. Sets filter: €10-12, within walking distance
+4. Sees ranked list of 15 nearby options
+5. Chooses highest-rated restaurant with good reviews
+6. Gets directions and goes there
+
+### Scenario 2: User Adding New Restaurant
+"João discovers great lunch deal at family restaurant not listed"
+1. Clicks "Add Restaurant"
+2. Fills form with restaurant details and €8.50 menu price
+3. Takes photo of menu board showing the price
+4. Submits for validation
+5. Gets email when approved 2 days later
+6. Restaurant now appears in search results
+
+### Scenario 3: Restaurant Owner Claims Profile
+"Restaurant owner finds their place listed"
+1. Clicks "Is this your restaurant?"
+2. Provides business email for verification
+3. Gets access to update menu prices and photos
+4. Can respond to reviews
+5. Sees how many people viewed their listing
+
+---
+
+## Content Strategy
+
+### Launch Content (100 Restaurants):
+- Focus on one city initially (Porto or Lisboa)
+- Target popular lunch areas: business districts, universities, shopping areas
+- Mix of price ranges: 30% budget (€6-9), 50% standard
+ (€9-12), 20% premium (€12+)
+- Include variety: traditional tasquinhas, modern restaurants, ethnic food
+
+### Quality Standards:
+- Every listing must have verified menu price
+- At least one clear photo per restaurant
+- Accurate address and basic info
+- Recent information (updated within 6 months)
+

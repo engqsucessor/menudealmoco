@@ -1,0 +1,445 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.restaurantCard {
+  font-family: 'Space Mono', monospace;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  height: 100%;
+}
+
+.restaurantCard:hover {
+  border-color: #000000;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.restaurantCard.closed {
+  opacity: 0.7;
+}
+
+.restaurantCard.closed:hover {
+  opacity: 1;
+}
+
+/* Photo Section */
+.photoSection {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: grayscale(100%);
+}
+
+.photo.loaded {
+  opacity: 1;
+}
+
+.photo:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.photoPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  color: #999999;
+}
+
+.placeholderIcon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.placeholderText {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Photo Overlay */
+.photoOverlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.verifiedBadge {
+  background: #000000;
+  color: #ffffff;
+  padding: 4px 8px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.distanceBadge {
+  background: rgba(255, 255, 255, 0.9);
+  color: #000000;
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Status Badge */
+.statusBadge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+}
+
+.status {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status.open {
+  color: #000000;
+}
+
+.status.closed {
+  color: #666666;
+}
+
+/* Content Section */
+.contentSection {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Header */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.nameSection {
+  flex: 1;
+  min-width: 0;
+}
+
+.restaurantName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 4px 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.location {
+  font-size: 10px;
+  font-weight: 400;
+  color: #666666;
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+.priceSection {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.menuPrice {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.priceLabel {
+  font-size: 8px;
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Rating */
+.ratingSection {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stars {
+  font-size: 14px;
+  color: #000000;
+  letter-spacing: 1px;
+}
+
+.ratingText {
+  font-size: 9px;
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* What's Included */
+.includesSection {
+  border-top: 1px solid #f5f5f5;
+  border-bottom: 1px solid #f5f5f5;
+  padding: 12px 0;
+}
+
+.includesTitle {
+  font-size: 9px;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 6px 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.includesText {
+  font-size: 11px;
+  font-weight: 400;
+  color: #666666;
+  margin: 0;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+}
+
+/* Food Type */
+.foodTypeSection {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.foodTypeLabel {
+  font-size: 9px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.foodType {
+  font-size: 10px;
+  font-weight: 400;
+  color: #666666;
+  letter-spacing: 0.5px;
+  font-style: italic;
+}
+
+/* Quick Info Tags */
+.quickInfoSection {
+  margin-top: auto;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  background: #f5f5f5;
+  color: #666666;
+  padding: 4px 8px;
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid #e5e5e5;
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  background: #e5e5e5;
+  color: #000000;
+}
+
+/* Actions */
+.actionsSection {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.detailsButton {
+  flex: 1;
+}
+
+.directionsButton {
+  flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .photoSection {
+    height: 160px;
+  }
+
+  .contentSection {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .cardHeader {
+    gap: 12px;
+  }
+
+  .restaurantName {
+    font-size: 14px;
+  }
+
+  .menuPrice {
+    font-size: 20px;
+  }
+
+  .location {
+    font-size: 9px;
+  }
+
+  .actionsSection {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .detailsButton,
+  .directionsButton {
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .photoSection {
+    height: 140px;
+  }
+
+  .contentSection {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .restaurantName {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  .menuPrice {
+    font-size: 18px;
+  }
+
+  .includesSection {
+    padding: 8px 0;
+  }
+
+  .includesText {
+    font-size: 10px;
+  }
+
+  .placeholderIcon {
+    font-size: 36px;
+  }
+
+  .placeholderText {
+    font-size: 9px;
+  }
+}
+
+/* Grid Layout Support */
+.restaurantCard.gridItem {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* List Layout Support */
+.restaurantCard.listItem {
+  flex-direction: row;
+  height: auto;
+}
+
+.restaurantCard.listItem .photoSection {
+  width: 200px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.restaurantCard.listItem .contentSection {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .restaurantCard.listItem {
+    flex-direction: column;
+  }
+
+  .restaurantCard.listItem .photoSection {
+    width: 100%;
+    height: 160px;
+  }
+}
+
+/* Animation for card entrance */
+.restaurantCard {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Focus styles for accessibility */
+.restaurantCard:focus-within {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+.detailsButton:focus,
+.directionsButton:focus {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
