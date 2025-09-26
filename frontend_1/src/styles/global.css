@@ -1,1 +1,21 @@
-/* No global styles needed as all styles are handled by CSS modules. */
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+:root {
+  /* MONO Color Palette */
+  --primary-color: #000000; /* Black */
+  --secondary-color: #FFFFFF; /* White */
+  --accent-color: #333333; /* Dark Gray */
+  --background-color: #FFFFFF; /* White */
+  --text-color: #000000; /* Black */
+  --light-gray: #F5F5F5;
+  --border-color: #E5E5E5;
+  --white: #FFFFFF;
+}
+
+body {
+  font-family: "Space Mono", monospace;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  margin: 0;
+}
+

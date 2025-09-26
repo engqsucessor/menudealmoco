@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
 import { getRestaurant } from '../services/mockApi';
+import MenuRating from '../components/ui/MenuRating';
+import { getMenuRatings } from '../services/menuRatingService';
 
 const RestaurantDetail = () => {
   const { id } = useParams();
@@ -9,14 +11,26 @@ const RestaurantDetail = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [reviewType, setReviewType] = useState('menu');
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Mocked login state
+  const [menuRatingData, setMenuRatingData] = useState(null);
 
   useEffect(() => {
     getRestaurant(id).then(data => {
       setRestaurant(data);
       setLoading(false);
     });
+    
+    // Load menu ratings
+    getMenuRatings(id).then(data => {
+      setMenuRatingData(data);
+    });
   }, [id]);
+
+  const handleRatingSubmitted = (newAverageRating) => {
+    // Refresh menu ratings data
+    getMenuRatings(id).then(data => {
+      setMenuRatingData(data);
+    });
+  };
 
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
@@ -91,21 +105,39 @@ const RestaurantDetail = () => {
             <div className={styles.reviewsList}>
               {reviewType === 'menu' && (
                 <div>
-                  <h2>Menu Reviews</h2>
-                  {isLoggedIn ? (
-                    <p>Add your review here...</p>
-                  ) : (
-                    <p><Link to="/login">Login</Link> to add a menu review.</p>
-                  )}
-                  {menuReviews && menuReviews.length > 0 ? (
-                    menuReviews.map(review => (
-                      <div key={review.id} className={styles.review}>
-                        <h3>{review.author} - {review.rating}/5</h3>
-                        <p>{review.comment}</p>
+                  <h2>Menu de Almoço Reviews</h2>
+                  
+                  {/* Menu Rating Component */}
+                  <MenuRating 
+                    restaurantId={id} 
+                    restaurantName={name}
+                    onRatingSubmitted={handleRatingSubmitted}
+                  />
+                  
+                  {/* Display current average and reviews */}
+                  {menuRatingData && menuRatingData.totalReviews > 0 && (
+                    <div className={styles.menuRatingStats}>
+                      <h3>Current Menu Rating: {menuRatingData.averageRating}/5</h3>
+                      <p>Based on {menuRatingData.totalReviews} reviews</p>
+                      
+                      <div className={styles.menuReviewsList}>
+                        {menuRatingData.ratings.map(rating => (
+                          <div key={rating.id} className={styles.review}>
+                            <div className={styles.reviewHeader}>
+                              <strong>{rating.userId}</strong> - {rating.rating}/5 stars
+                              <span className={styles.reviewDate}>
+                                {new Date(rating.timestamp).toLocaleDateString()}
+                              </span>
+                            </div>
+                            {rating.comment && <p>{rating.comment}</p>}
+                          </div>
+                        ))}
                       </div>
-                    ))
-                  ) : (
-                    <p>No menu reviews yet.</p>
+                    </div>
+                  )}
+                  
+                  {menuRatingData && menuRatingData.totalReviews === 0 && (
+                    <p>No menu reviews yet. Be the first to rate this lunch menu!</p>
                   )}
                 </div>
               )}

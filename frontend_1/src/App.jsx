@@ -10,12 +10,18 @@ import Search from './pages/Search';
 import RestaurantDetail from './pages/RestaurantDetail';
 import AddRestaurant from './pages/AddRestaurant';
 import About from './pages/About';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
+import Auth from './pages/Auth';
+import UserProfile from './pages/UserProfile';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <Router>
+    <Router 
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -23,8 +29,15 @@ function App() {
           <Route path="/restaurant/:id" element={<RestaurantDetail />} />
           <Route path="/add-restaurant" element={<AddRestaurant />} />
           <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </Router>

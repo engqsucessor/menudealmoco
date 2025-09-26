@@ -1,0 +1,350 @@
+/* MONO Design System for RatingSlider */
+
+.container {
+  font-family: 'Space Mono', monospace;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 1.5rem;
+  border: 1px solid #333;
+  position: relative;
+}
+
+/* Header Section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.valueDisplay {
+  font-size: 0.8rem;
+  color: #cccccc;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #444;
+  background-color: #111;
+  transition: all 0.2s ease;
+}
+
+.valueDisplay:hover {
+  color: #ffffff;
+  border-color: #666;
+}
+
+/* Stars Display - MONO Compliant */
+.starsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 1.5rem 0;
+  padding: 1rem 0;
+  background-color: #111;
+  border: 1px solid #333;
+}
+
+.star {
+  font-size: 1.8rem;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  text-shadow: none;
+  transform-origin: center;
+  font-weight: 400;
+}
+
+.star.filled {
+  color: #FFF;
+  font-weight: 700;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
+  animation: starGlow 0.3s ease-out;
+}
+
+.star.half {
+  color: #CCC;
+  font-weight: 700;
+  text-shadow: 0 0 2px rgba(204, 204, 204, 0.3);
+  opacity: 0.8;
+  animation: starGlow 0.3s ease-out;
+}
+
+.star.empty {
+  color: #666;
+  font-weight: 400;
+  text-shadow: none;
+}
+
+@keyframes starGlow {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Slider Container */
+.sliderContainer {
+  position: relative;
+  margin-top: 2rem;
+  padding: 1rem 0 2rem 0;
+}
+
+/* Track Styling */
+.track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #333;
+  border-radius: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #666 0%, #3391ff 100%);
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+}
+
+.progress::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background-color: #3391ff;
+  transform: translateY(-50%);
+  box-shadow: 0 0 2px rgba(51, 145, 255, 0.4);
+}
+
+/* Range Input */
+.slider {
+  width: 100%;
+  height: 20px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+}
+
+/* Webkit Slider Thumb */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 0;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 0 0 1px #333,
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  background-color: #3391ff;
+  border-color: #000000;
+  box-shadow:
+    0 0 0 2px #3391ff,
+    0 0 4px rgba(51, 145, 255, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.slider::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+/* Firefox Slider Thumb */
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 0;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 0 0 1px #333,
+    0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.slider::-moz-range-thumb:hover {
+  background-color: #3391ff;
+  border-color: #000000;
+  box-shadow:
+    0 0 0 2px #3391ff,
+    0 0 4px rgba(51, 145, 255, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+/* Firefox Track */
+.slider::-moz-range-track {
+  background: transparent;
+  border: none;
+  height: 4px;
+}
+
+/* Tick Marks */
+.tickContainer {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.tick {
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.tickMark {
+  width: 2px;
+  height: 8px;
+  background-color: #444;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease;
+}
+
+.fullTick .tickMark {
+  height: 12px;
+  background-color: #666;
+}
+
+.halfTick .tickMark {
+  height: 6px;
+  background-color: #444;
+}
+
+.tickLabel {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: #888;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* Focus Styles for Accessibility */
+.slider:focus {
+  outline: none;
+}
+
+.slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.slider:focus-visible::-moz-range-thumb {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Hover Effects */
+.container:hover .star.empty {
+  color: #777;
+  transition: color 0.2s ease;
+}
+
+.container:hover .tickMark {
+  background-color: #555;
+}
+
+.container:hover .tickLabel {
+  color: #aaa;
+}
+
+/* Animation for value changes */
+.starsContainer {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.8;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .star {
+    font-size: 1.5rem;
+  }
+
+  .starsContainer {
+    gap: 0.15rem;
+    margin: 1rem 0;
+    padding: 0.75rem 0;
+  }
+
+  .tickLabel {
+    font-size: 0.65rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .valueDisplay {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .star {
+    font-size: 1.3rem;
+  }
+
+  .slider::-webkit-slider-thumb {
+    width: 18px;
+    height: 18px;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+  }
+}

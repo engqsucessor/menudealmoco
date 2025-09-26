@@ -1,0 +1,52 @@
+/* Blue Color System for Filter Selections and Active States - Updated to use #3391ff */
+
+:root {
+  /* Primary blue color - using the specified blue #3391ff */
+  --primary-blue: #3391ff;
+  --hover-blue: #3391ff;
+
+  /* Selection blue color - using the specified blue #3391ff */
+  --selection-blue: #3391ff;
+  --hover-selection: #3391ff;
+
+  /* Blue variants - all using the specified blue #3391ff */
+  --blue-light: rgba(51, 145, 255, 0.1);
+  --blue-dark: #3391ff;
+  --blue-text: #3391ff;
+
+  /* Transition timing */
+  --blue-transition: 0.2s ease;
+}
+
+/* Utility classes for blue styling - Updated to use #3391ff */
+.blue-primary {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.blue-primary:hover {
+  background-color: var(--hover-blue);
+  opacity: 0.8;
+}
+
+.blue-selection {
+  background-color: var(--selection-blue);
+  color: white;
+}
+
+.blue-selection:hover {
+  background-color: var(--hover-selection);
+  opacity: 0.8;
+}
+
+.blue-border {
+  border-color: var(--primary-blue);
+}
+
+.blue-text {
+  color: var(--primary-blue);
+}
+
+.blue-transition {
+  transition: var(--blue-transition);
+}

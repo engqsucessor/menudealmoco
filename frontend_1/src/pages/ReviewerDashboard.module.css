@@ -1,0 +1,295 @@
+.dashboardContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.accessDenied {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.tabNavigation {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-weight: 400;
+  color: #666;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--primary-color);
+}
+
+.activeTab {
+  color: var(--primary-color) !important;
+  border-bottom-color: var(--primary-color) !important;
+  font-weight: 700;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  min-height: 600px;
+}
+
+.submissionsList {
+  border-right: 1px solid var(--border-color);
+  padding-right: 2rem;
+}
+
+.submissionCard {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submissionCard:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.selected {
+  border-color: var(--primary-color) !important;
+  background-color: var(--light-gray);
+}
+
+.submissionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.submissionHeader h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.statusPending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.statusApproved {
+  background-color: #d1f2eb;
+  color: #155724;
+}
+
+.statusRejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.statusNeedsChanges {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.submissionMeta {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+.submissionPreview {
+  font-size: 0.9rem;
+  color: #333;
+  margin: 0;
+}
+
+.emptyState {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+}
+
+.reviewPanel {
+  padding-left: 2rem;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+}
+
+.reviewHeader h2 {
+  margin: 0;
+}
+
+.submissionDetails {
+  margin-bottom: 2rem;
+}
+
+.detailGroup {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.detailGroup:last-child {
+  border-bottom: none;
+}
+
+.reviewActions {
+  border-top: 1px solid var(--border-color);
+  padding-top: 2rem;
+}
+
+.commentSection {
+  margin-bottom: 1.5rem;
+}
+
+.commentSection label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.commentTextarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+}
+
+.actionButton {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.approveButton {
+  background-color: #d1f2eb;
+  border-color: #155724;
+  color: #155724;
+}
+
+.approveButton:hover {
+  background-color: #155724;
+  color: #d1f2eb;
+}
+
+.changesButton {
+  background-color: #fff3cd;
+  border-color: #856404;
+  color: #856404;
+}
+
+.changesButton:hover:not(:disabled) {
+  background-color: #856404;
+  color: #fff3cd;
+}
+
+.rejectButton {
+  background-color: #f8d7da;
+  border-color: #721c24;
+  color: #721c24;
+}
+
+.rejectButton:hover:not(:disabled) {
+  background-color: #721c24;
+  color: #f8d7da;
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.commentsHistory {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+}
+
+.commentsHistory h4 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.commentItem {
+  background-color: var(--light-gray);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.commentItem p {
+  margin: 0 0 0.5rem 0;
+}
+
+.commentItem small {
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+  
+  .submissionsList {
+    border-right: none;
+    padding-right: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .reviewPanel {
+    padding-left: 0;
+  }
+}

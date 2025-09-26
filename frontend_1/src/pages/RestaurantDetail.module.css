@@ -130,3 +130,56 @@
   background-color: #555;
   color: #fff;
 }
+
+/* Menu Rating Specific Styles */
+.menuRatingStats {
+  margin: 24px 0;
+  padding: 20px;
+  background: #f5f5f5;
+  border: 1px solid #000;
+}
+
+.menuRatingStats h3 {
+  font-family: 'Space Mono', monospace;
+  color: #000;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.menuRatingStats > p {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+}
+
+.menuReviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menuReviewsList .review {
+  background: white;
+  border: 1px solid #000;
+  border-radius: 0;
+  color: #000;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reviewDate {
+  font-size: 10px;
+  color: #666;
+}

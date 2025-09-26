@@ -44,7 +44,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #00a79d;
+  background: #3391ff;
   cursor: pointer;
   border: 2px solid #fff;
 }
@@ -54,7 +54,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #00a79d;
+  background: #3391ff;
   cursor: pointer;
   border: 2px solid #fff;
 }
@@ -63,7 +63,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #00a79d;
+  background: #3391ff;
   cursor: pointer;
   border: 2px solid #fff;
 }
@@ -85,9 +85,9 @@
 
 /* Active track */
 .slider:active::-webkit-slider-runnable-track {
-  background: #00a79d;
+  background: #3391ff;
 }
 
 .slider:active::-moz-range-track {
-  background: #00a79d;
+  background: #3391ff;
 }

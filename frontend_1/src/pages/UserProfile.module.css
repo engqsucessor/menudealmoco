@@ -1,0 +1,76 @@
+.profileContainer {
+  display: flex;
+  padding: 2rem;
+  gap: 2rem;
+}
+
+.sidebar {
+  width: 200px;
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebarNav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebarNav li {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.sidebarNav li:hover {
+  background-color: var(--light-gray);
+}
+
+.sidebarNav li.active {
+  font-weight: bold;
+  border-right: 2px solid var(--primary-color);
+}
+
+.mainContent {
+  flex: 1;
+}
+
+.contentSection h2 {
+  margin-top: 0;
+}
+
+.profileInfo {
+  margin-bottom: 2rem;
+}
+
+.reviewsSection h2 {
+  margin-bottom: 1rem;
+}
+
+.reviewCard {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.reviewCard:hover {
+  border-color: var(--primary-color);
+}
+
+.reviewerButton {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.reviewerButton:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+  

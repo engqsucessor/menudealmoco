@@ -12,11 +12,12 @@ const simulateDelay = (min = 300, max = 1000) => {
   );
 };
 
-// Simulate random API failures (5% chance)
+// Simulate random API failures (disabled for testing)
 const simulateFailure = () => {
-  if (Math.random() < 0.05) {
-    throw new Error('Network error: Failed to fetch restaurants');
-  }
+  // Disabled for testing
+  // if (Math.random() < 0.05) {
+  //   throw new Error('Network error: Failed to fetch restaurants');
+  // }
 };
 
 // Local storage keys
@@ -66,7 +67,7 @@ const calculateDistance = (lat1, lng1, lat2, lng2) => {
 // Check if restaurant is currently open
 const isRestaurantOpen = (restaurant) => {
   const now = new Date();
-  const dayOfWeek = now.toLocaleLowerCase().slice(0, 3);
+  const dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'short' }).toLowerCase();
   const currentTime = now.getHours() * 100 + now.getMinutes();
 
   const todayHours = restaurant.businessHours[getDayOfWeek(now.getDay())];
@@ -123,7 +124,9 @@ export const restaurantService = {
       location = null,
       userLocation = null,
       maxDistance = 50, // km
-      priceRange = [],
+      priceRange = 'any',
+      minPrice = 6,
+      maxPrice = 25,
       foodTypes = [],
       features = {},
       practicalFilters = {},
@@ -131,7 +134,12 @@ export const restaurantService = {
       sortOrder = 'desc', // asc, desc
       page = 1,
       limit = 20,
-      openNow = false
+      openNow = false,
+      minRating = 0,
+      minGoogleRating = '',
+      minZomatoRating = '',
+      hasMenuReviews = false,
+      lastUpdatedDays = ''
     } = searchParams;
 
     let restaurants = getRestaurantsFromStorage();
@@ -176,26 +184,96 @@ export const restaurantService = {
       })).filter(restaurant => restaurant.distance <= maxDistance);
     }
 
-    // Filter by price range
-    if (priceRange.length > 0) {
+    // Filter by price range using new radio button system
+    if (priceRange && priceRange !== 'any') {
       restaurants = restaurants.filter(restaurant => {
-        return priceRange.some(range => {
-          switch (range) {
-            case 'budget': return restaurant.menuPrice >= 6 && restaurant.menuPrice <= 8;
-            case 'standard': return restaurant.menuPrice > 8 && restaurant.menuPrice <= 10;
-            case 'good': return restaurant.menuPrice > 10 && restaurant.menuPrice <= 12;
-            case 'premium': return restaurant.menuPrice > 12 && restaurant.menuPrice <= 15;
-            case 'high-end': return restaurant.menuPrice > 15;
-            default: return true;
-          }
-        });
+        switch (priceRange) {
+          case 'budget': return restaurant.menuPrice >= 6 && restaurant.menuPrice <= 8;
+          case 'standard': return restaurant.menuPrice > 8 && restaurant.menuPrice <= 10;
+          case 'good': return restaurant.menuPrice > 10 && restaurant.menuPrice <= 12;
+          case 'premium': return restaurant.menuPrice > 12 && restaurant.menuPrice <= 15;
+          case 'high-end': return restaurant.menuPrice > 15;
+          default: return true;
+        }
       });
+    } else {
+      // Fallback to minPrice/maxPrice if no priceRange is set
+      restaurants = restaurants.filter(restaurant =>
+        restaurant.menuPrice >= minPrice && restaurant.menuPrice <= maxPrice
+      );
     }
 
     // Filter by food types
     if (foodTypes.length > 0) {
       restaurants = restaurants.filter(restaurant =>
         foodTypes.includes(restaurant.foodType)
+      );
+    }
+
+    // Filter by unified average rating (new rating slider)
+    if (minRating > 0) {
+      restaurants = restaurants.filter(restaurant => {
+        const googleRating = restaurant.googleRating || 0;
+        const zomatoRating = restaurant.zomatoRating || 0;
+        const overallRating = restaurant.overallRating || 0;
+
+        // Calculate average rating, handling cases where some sources are missing
+        let averageRating;
+        if (googleRating > 0 && zomatoRating > 0) {
+          // Both Google and Zomato ratings available - use average
+          averageRating = (googleRating + zomatoRating) / 2;
+        } else if (googleRating > 0) {
+          // Only Google rating available
+          averageRating = googleRating;
+        } else if (zomatoRating > 0) {
+          // Only Zomato rating available
+          averageRating = zomatoRating;
+        } else if (overallRating > 0) {
+          // Fall back to overall rating if individual ratings not available
+          averageRating = overallRating;
+        } else {
+          // No ratings available - exclude from results when filtering
+          return false;
+        }
+
+        return averageRating >= minRating;
+      });
+    }
+
+    // Filter by Google rating (backward compatibility)
+    if (minGoogleRating && minGoogleRating !== '') {
+      const minGoogleRatingFloat = parseFloat(minGoogleRating);
+      restaurants = restaurants.filter(restaurant => {
+        const googleRating = restaurant.googleRating || restaurant.overallRating || 0;
+        return googleRating >= minGoogleRatingFloat;
+      });
+    }
+
+    // Filter by Zomato rating (backward compatibility)
+    if (minZomatoRating && minZomatoRating !== '') {
+      const minZomatoRatingFloat = parseFloat(minZomatoRating);
+      restaurants = restaurants.filter(restaurant => {
+        const zomatoRating = restaurant.zomatoRating || restaurant.overallRating || 0;
+        return zomatoRating >= minZomatoRatingFloat;
+      });
+    }
+
+    // Filter by data freshness (last updated days)
+    if (lastUpdatedDays && lastUpdatedDays !== '') {
+      const daysAgo = parseInt(lastUpdatedDays);
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - daysAgo);
+      
+      restaurants = restaurants.filter(restaurant => {
+        const lastUpdated = new Date(restaurant.lastUpdated);
+        return lastUpdated >= cutoffDate;
+      });
+    }
+
+    // Filter by menu reviews
+    if (hasMenuReviews) {
+      restaurants = restaurants.filter(restaurant =>
+        restaurant.totalReviews > 0
       );
     }
 
@@ -262,7 +340,8 @@ export const restaurantService = {
     restaurants = restaurants.map(restaurant => ({
       ...restaurant,
       isOpenNow: isRestaurantOpen(restaurant),
-      priceCategory: getPriceCategory(restaurant.menuPrice)
+      priceCategory: getPriceCategory(restaurant.menuPrice),
+      averageRating: calculateAverageRating(restaurant)
     }));
 
     // Sort results
@@ -310,13 +389,20 @@ export const restaurantService = {
           query,
           location,
           priceRange,
+          minPrice,
+          maxPrice,
           foodTypes,
           features,
           practicalFilters,
-          openNow
+          openNow,
+          minRating,
+          minGoogleRating,
+          minZomatoRating,
+          hasMenuReviews,
+          lastUpdatedDays
         },
         available: {
-          priceRanges: ['budget', 'standard', 'good', 'premium', 'high-end'],
+          priceRanges: ['any', 'budget', 'standard', 'good', 'premium', 'high-end'],
           foodTypes: [...new Set(getRestaurantsFromStorage().map(r => r.foodType))],
           cities: [...new Set(getRestaurantsFromStorage().map(r => r.city))]
         }
@@ -500,4 +586,25 @@ const calculateSimilarity = (restaurant1, restaurant2) => {
   return score;
 };
 
-export default restaurantService;
+// Calculate average rating from Google and Zomato ratings
+const calculateAverageRating = (restaurant) => {
+  const googleRating = restaurant.googleRating || 0;
+  const zomatoRating = restaurant.zomatoRating || 0;
+  const overallRating = restaurant.overallRating || 0;
+
+  if (googleRating > 0 && zomatoRating > 0) {
+    // Both Google and Zomato ratings available - use average
+    return Math.round(((googleRating + zomatoRating) / 2) * 10) / 10;
+  } else if (googleRating > 0) {
+    // Only Google rating available
+    return googleRating;
+  } else if (zomatoRating > 0) {
+    // Only Zomato rating available
+    return zomatoRating;
+  } else {
+    // Fall back to overall rating
+    return overallRating;
+  }
+};
+
+// Named export already defined above

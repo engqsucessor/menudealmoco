@@ -1,100 +1,136 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './HorizontalFilterBar.module.css';
 import Button from './Button';
 
 const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters }) => {
-  const [selectedDate, setSelectedDate] = useState('today');
-  const [selectedTime, setSelectedTime] = useState('12:00');
-  const [selectedPeople, setSelectedPeople] = useState('2');
 
-  const handleQuickFilter = (filter, key, value) => {
-    onFilterChange(filter, key, value);
+  const handleQuickFilter = (category, key, value) => {
+    onFilterChange(category, key, value);
+  };
+
+  const handleFoodTypeToggle = (foodType) => {
+    onFilterChange('foodTypes', null, foodType);
+  };
+
+  const getActiveFilterTags = () => {
+    const tags = [];
+    const createTag = (key, label, onRemove) => ({ key, label, onRemove });
+
+    if (activeFilters?.minPrice !== 6 || activeFilters?.maxPrice !== 25) {
+      tags.push(createTag(
+        'price',
+        `€${activeFilters.minPrice}-${activeFilters.maxPrice}`,
+        () => {
+          onFilterChange('priceRange', null, 'any');
+        }
+      ));
+    }
+
+    (activeFilters?.foodTypes || []).forEach(type => {
+      tags.push(createTag(`food-${type}`, type, () => handleFoodTypeToggle(type)));
+    });
+
+    Object.entries(activeFilters?.features || {}).forEach(([key, value]) => {
+      if (value) {
+        const labels = {
+          coffeeIncluded: 'Coffee Included', dessertIncluded: 'Dessert Included',
+          wineAvailable: 'Wine Available', breadSoupIncluded: 'Bread/Soup Included',
+          vegetarianOptions: 'Vegetarian Options'
+        };
+        tags.push(createTag(`feature-${key}`, labels[key], () => handleQuickFilter('features', key, false)));
+      }
+    });
+
+    Object.entries(activeFilters?.practicalFilters || {}).forEach(([key, value]) => {
+      if (value) {
+        const labels = {
+          takesCards: 'Takes Cards', hasParking: 'Has Parking', quickService: 'Quick Service',
+          groupFriendly: 'Group Friendly', nearMetro: 'Near Metro'
+        };
+        tags.push(createTag(`practical-${key}`, labels[key], () => handleQuickFilter('practicalFilters', key, false)));
+      }
+    });
+    
+    if (activeFilters?.openNow) {
+        tags.push(createTag('openNow', 'Open Now', () => handleQuickFilter('openNow', null, false)));
+    }
+    if (activeFilters?.overallRating > 0) {
+      tags.push(createTag('overall-rating', `Rating ${activeFilters.overallRating}+`, () => onFilterChange('overallRating', null, 0)));
+    }
+    if (activeFilters?.minGoogleRating > 0) {
+      tags.push(createTag('google-rating', `Google ${activeFilters.minGoogleRating}+`, () => onFilterChange('minGoogleRating', null, 0)));
+    }
+    if (activeFilters?.minZomatoRating > 0) {
+      tags.push(createTag('zomato-rating', `Zomato ${activeFilters.minZomatoRating}+`, () => onFilterChange('minZomatoRating', null, 0)));
+    }
+    if (activeFilters?.hasMenuReviews) {
+      tags.push(createTag('menu-reviews', 'Menu Reviews', () => onFilterChange('hasMenuReviews', null, false)));
+    }
+    if (activeFilters?.lastUpdatedDays) {
+      const dayLabels = {
+        '7': 'Last Week',
+        '30': 'Last Month',
+        '90': 'Last 3 Months'
+      };
+      const label = dayLabels[activeFilters.lastUpdatedDays] || `${activeFilters.lastUpdatedDays} days`;
+      tags.push(createTag('data-freshness', label, () => onFilterChange('lastUpdatedDays', null, '')));
+    }
+
+    return tags;
+  };
+
+  const activeFilterTags = getActiveFilterTags();
+  const activeFiltersCount = activeFilterTags.length;
+
+  const clearAllFilters = () => {
+    // Call the parent's clear all function directly
+    onFilterChange('clearAll', null, true);
   };
 
   return (
     <div className={styles.filterBar}>
-      {/* Left section - Selectors */}
-      <div className={styles.selectors}>
-        <select 
-          value={selectedDate} 
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className={styles.selector}
-        >
-          <option value="today">Today</option>
-          <option value="tomorrow">Tomorrow</option>
-          <option value="thisWeek">This Week</option>
-        </select>
-
-        <select 
-          value={selectedTime} 
-          onChange={(e) => setSelectedTime(e.target.value)}
-          className={styles.selector}
-        >
-          <option value="12:00">12:00</option>
-          <option value="12:30">12:30</option>
-          <option value="13:00">13:00</option>
-          <option value="13:30">13:30</option>
-          <option value="14:00">14:00</option>
-        </select>
-
-        <select 
-          value={selectedPeople} 
-          onChange={(e) => setSelectedPeople(e.target.value)}
-          className={styles.selector}
-        >
-          <option value="1">1 person</option>
-          <option value="2">2 people</option>
-          <option value="3">3 people</option>
-          <option value="4">4 people</option>
-          <option value="5+">5+ people</option>
-        </select>
-      </div>
-
-      {/* Right section - Filter buttons */}
-      <div className={styles.filters}>
+      <div className={styles.actions}>
         <Button
           variant="secondary"
           onClick={onToggleAllFilters}
           className={styles.filterButton}
         >
-          <span className={styles.filterIcon}>📊</span> All Filters
+          {`Filters ${activeFiltersCount > 0 ? `(${activeFiltersCount})` : ''}`}
         </Button>
-
         <Button
-          variant={activeFilters?.includes?.coffee ? 'primary' : 'secondary'}
-          onClick={() => handleQuickFilter('includes', 'coffee', !activeFilters?.includes?.coffee)}
-          className={styles.filterButton}
+            variant={activeFilters.openNow ? "primary" : "secondary"}
+            onClick={() => onFilterChange('openNow', null, !activeFilters.openNow)}
         >
-          <span className={styles.filterIcon}>☕</span> Coffee Included
+            Open Now
         </Button>
-
         <Button
-          variant={activeFilters?.practical?.openNow ? 'primary' : 'secondary'}
-          onClick={() => handleQuickFilter('practical', 'openNow', !activeFilters?.practical?.openNow)}
-          className={styles.filterButton}
+            variant={activeFilters.minPrice > 6 || activeFilters.maxPrice < 25 ? "primary" : "secondary"}
+            onClick={() => onFilterChange('priceRange', 'cheap', true)} // Example toggle
         >
-          <span className={styles.filterIcon}>🕐</span> Available Now
+            Price
         </Button>
+      </div>
 
-        <Button
-          variant={activeFilters?.minGoogleRating ? 'primary' : 'secondary'}
-          onClick={() => handleQuickFilter('minGoogleRating', null, activeFilters?.minGoogleRating ? '' : '4.0')}
-          className={styles.filterButton}
-        >
-          <span className={styles.filterIcon}>⭐</span> Best Rated
-        </Button>
-
-        <select 
-          className={`${styles.selector} ${styles.cuisineSelector}`}
-          value={activeFilters?.foodType?.[0] || ''}
-          onChange={(e) => handleQuickFilter('foodType', null, e.target.value ? [e.target.value] : [])}
-        >
-          <option value="">Cuisine Type</option>
-          <option value="Traditional Portuguese">Traditional Portuguese</option>
-          <option value="Modern/Contemporary">Modern/Contemporary</option>
-          <option value="Seafood specialist">Seafood</option>
-          <option value="International">International</option>
-        </select>
+      <div className={styles.activeFiltersContainer}>
+        {activeFiltersCount > 0 && (
+          <div className={styles.activeFilters}>
+            {activeFilterTags.map((tag) => (
+              <div key={tag.key} className={styles.filterTag}>
+                <span className={styles.tagLabel}>{tag.label}</span>
+                <button
+                  onClick={tag.onRemove}
+                  className={styles.tagRemove}
+                  aria-label={`Remove ${tag.label} filter`}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+            <button onClick={clearAllFilters} className={styles.clearAllButton}>
+              Clear All
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

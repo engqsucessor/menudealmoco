@@ -12,9 +12,9 @@
 }
 
 .restaurantCard:hover {
-  border-color: #000000;
+  border-color: #3391ff;
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(51, 145, 255, 0.1);
 }
 
 .restaurantCard.closed {
@@ -25,30 +25,53 @@
   opacity: 1;
 }
 
+/* Status in Header */
+.statusSection {
+  display: flex;
+  align-items: center;
+}
+
+.status {
+  background: #f5f5f5;
+  padding: 6px 12px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #e5e5e5;
+}
+
+.status.open {
+  color: #000000;
+  background: #e8f5e8;
+  border-color: #c3e6c3;
+}
+
+.status.closed {
+  color: #666666;
+  background: #f5f5f5;
+  border-color: #e5e5e5;
+}
+
 /* Content Section */
 .contentSection {
-  padding: 15px;
+  padding: 20px;
   flex: 1;
-  display: grid;
-  grid-template-columns: 1fr auto; /* Two columns: info on left, price on right */
-  grid-template-rows: auto auto auto auto 1fr auto; /* Rows for each info block */
-  grid-template-areas:
-    "header header"
-    "rating external"
-    "includes includes"
-    "foodtype foodtype"
-    "quickinfo quickinfo"
-    "updated updated";
-  gap: 5px 10px; /* Row gap, Column gap */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* Header */
 .cardHeader {
-  grid-area: header;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 10px;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .nameSection {
@@ -57,10 +80,10 @@
 }
 
 .restaurantName {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #000000;
-  margin: 0 0 2px 0;
+  margin: 0 0 4px 0;
   letter-spacing: 1px;
   text-transform: uppercase;
   line-height: 1.2;
@@ -68,7 +91,7 @@
 }
 
 .location {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 400;
   color: #666666;
   margin: 0;
@@ -84,7 +107,7 @@
 
 .menuPrice {
   display: block;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: #000000;
   letter-spacing: 1px;
@@ -92,113 +115,112 @@
 }
 
 .priceLabel {
-  font-size: 7px;
-  font-weight: 400;
-  color: #666666;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* Rating */
-.ratingSection {
-  grid-area: rating;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.stars {
-  font-size: 12px;
-  color: #000000;
-  letter-spacing: 1px;
-}
-
-.ratingText {
   font-size: 8px;
   font-weight: 400;
   color: #666666;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
-/* External Ratings */
-.externalRatings {
-  grid-area: external;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.2rem;
-  font-size: 0.7rem;
-  color: #666;
+/* Info Boxes Grid */
+.infoBoxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
 }
 
-/* What's Included */
-.includesSection {
-  grid-area: includes;
-  border-top: 1px solid #f5f5f5;
-  border-bottom: 1px solid #f5f5f5;
-  padding: 10px 0;
+.infoBox {
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  padding: 12px;
+  transition: all 0.2s ease;
 }
 
-.includesTitle {
+.infoBox:hover {
+  border-color: #3391ff;
+  background: #f5f8ff;
+}
+
+.boxTitle {
   font-size: 8px;
   font-weight: 700;
   color: #000000;
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
+.boxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Rating specific styles */
+.stars {
+  font-size: 14px;
+  color: #000000;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.ratingValue {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin-left: 0.5rem;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.reviewCount {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+/* Text content styles */
 .includesText {
   font-size: 10px;
   font-weight: 400;
   color: #666666;
-  margin: 0;
   line-height: 1.4;
   letter-spacing: 0.5px;
 }
 
-/* Food Type */
-.foodTypeSection {
-  grid-area: foodtype;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.foodTypeLabel {
-  font-size: 8px;
-  font-weight: 700;
-  color: #000000;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.foodType {
-  font-size: 9px;
+.cuisineText {
+  font-size: 11px;
   font-weight: 400;
   color: #666666;
   letter-spacing: 0.5px;
   font-style: italic;
 }
 
+.distanceText {
+  font-size: 12px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 0.5px;
+}
+
 /* Quick Info Tags */
 .quickInfoSection {
-  grid-area: quickinfo;
   margin-top: auto;
 }
 
 .tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
 }
 
 .tag {
   background: #f5f5f5;
   color: #666666;
-  padding: 3px 6px;
-  font-size: 7px;
+  padding: 4px 8px;
+  font-size: 8px;
   font-weight: 400;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -207,53 +229,130 @@
 }
 
 .tag:hover {
-  background: #e5e5e5;
-  color: #000000;
+  background: #3391ff;
+  color: #ffffff;
+  border-color: #3391ff;
 }
 
-/* Last Updated */
-.lastUpdated {
-  grid-area: updated;
-  font-size: 0.6rem;
-  color: #999;
-  text-align: right;
-  padding-top: 0.5rem;
+/* Actions */
+.actionsSection {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.detailsButton {
+  flex: 1;
+}
+
+.directionsButton {
+  flex: 1;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .photoSection {
+    height: 160px;
+  }
+
   .contentSection {
-    padding: 12px;
-    gap: 8px;
-    grid-template-columns: 1fr; /* Stack on small screens */
-    grid-template-areas:
-      "header"
-      "rating"
-      "external"
-      "includes"
-      "foodtype"
-      "quickinfo"
-      "updated";
+    padding: 16px;
+    gap: 12px;
   }
 
   .cardHeader {
-    gap: 8px;
+    gap: 12px;
+  }
+
+  .restaurantName {
+    font-size: 14px;
+  }
+
+  .menuPrice {
+    font-size: 20px;
+  }
+
+  .location {
+    font-size: 9px;
+  }
+
+  .actionsSection {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .detailsButton,
+  .directionsButton {
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .photoSection {
+    height: 140px;
+  }
+
+  .contentSection {
+    padding: 12px;
+    gap: 10px;
   }
 
   .restaurantName {
     font-size: 13px;
+    letter-spacing: 0.5px;
   }
 
   .menuPrice {
     font-size: 18px;
   }
 
-  .location {
-    font-size: 8px;
+  .includesSection {
+    padding: 8px 0;
   }
 
-  .externalRatings {
-    align-items: flex-start;
+  .includesText {
+    font-size: 10px;
+  }
+
+  .placeholderIcon {
+    font-size: 36px;
+  }
+
+  .placeholderText {
+    font-size: 9px;
+  }
+}
+
+/* Grid Layout Support */
+.restaurantCard.gridItem {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* List Layout Support */
+.restaurantCard.listItem {
+  flex-direction: row;
+  height: auto;
+}
+
+.restaurantCard.listItem .photoSection {
+  width: 200px;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.restaurantCard.listItem .contentSection {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .restaurantCard.listItem {
+    flex-direction: column;
+  }
+
+  .restaurantCard.listItem .photoSection {
+    width: 100%;
+    height: 160px;
   }
 }
 
@@ -273,7 +372,13 @@
 
 /* Focus styles for accessibility */
 .restaurantCard:focus-within {
-  outline: 2px solid #000000;
+  outline: 2px solid #3391ff;
+  outline-offset: 2px;
+}
+
+.detailsButton:focus,
+.directionsButton:focus {
+  outline: 2px solid #3391ff;
   outline-offset: 2px;
 }
 

@@ -22,6 +22,12 @@ export const mockRestaurants = [
       "/images/tasquinha-joao-francesinha.jpg"
     ],
     overallRating: 4.3,
+    menuRating: 4.5,
+    menuReviews: 92,
+    googleRating: 4.2,
+    googleReviews: 89,
+    zomatoRating: 4.4,
+    zomatoReviews: 38,
     totalReviews: 127,
     ratings: {
       valueForMoney: 4.5,
@@ -43,9 +49,9 @@ export const mockRestaurants = [
       email: "joao@tasquinha.pt",
       website: null
     },
-    practicalInfo: {
-      takesCards: true,
-      hasParking: false,
+    practical: {
+      cardsAccepted: true,
+      parking: false,
       quickService: true,
       groupFriendly: true,
       nearMetro: true,
@@ -80,6 +86,12 @@ export const mockRestaurants = [
       "/images/marisqueira-central-interior.jpg"
     ],
     overallRating: 4.1,
+    menuRating: 4.3,
+    menuReviews: 67,
+    googleRating: 4.0,
+    googleReviews: 54,
+    zomatoRating: 4.2,
+    zomatoReviews: 35,
     totalReviews: 89,
     ratings: {
       valueForMoney: 3.9,
@@ -101,9 +113,9 @@ export const mockRestaurants = [
       email: "geral@marisqueiracentral.pt",
       website: "www.marisqueiracentral.pt"
     },
-    practicalInfo: {
-      takesCards: true,
-      hasParking: false,
+    practical: {
+      cardsAccepted: true,
+      parking: false,
       quickService: false,
       groupFriendly: true,
       nearMetro: true,
@@ -137,6 +149,10 @@ export const mockRestaurants = [
       "/images/cantina-universitaria-food.jpg"
     ],
     overallRating: 3.8,
+    googleRating: 3.9,
+    googleReviews: 124,
+    zomatoRating: 3.7,
+    zomatoReviews: 79,
     totalReviews: 203,
     ratings: {
       valueForMoney: 4.7,
@@ -158,9 +174,9 @@ export const mockRestaurants = [
       email: null,
       website: null
     },
-    practicalInfo: {
-      takesCards: false,
-      hasParking: true,
+    practical: {
+      cardsAccepted: false,
+      parking: true,
       quickService: true,
       groupFriendly: true,
       nearMetro: false,
@@ -195,6 +211,8 @@ export const mockRestaurants = [
       "/images/diplomata-dish.jpg"
     ],
     overallRating: 4.5,
+    googleRating: 4.4,
+    zomatoRating: 4.6,
     totalReviews: 95,
     ratings: {
       valueForMoney: 4.2,
@@ -253,6 +271,8 @@ export const mockRestaurants = [
       "/images/bifana-afonso-exterior.jpg"
     ],
     overallRating: 4.0,
+    googleRating: 3.8,
+    zomatoRating: 4.2,
     totalReviews: 156,
     ratings: {
       valueForMoney: 4.4,
@@ -487,6 +507,12 @@ export const mockRestaurants = [
       "/images/mesa-real-interior.jpg"
     ],
     overallRating: 4.6,
+    menuRating: 4.7,
+    menuReviews: 45,
+    googleRating: 4.4,
+    googleReviews: 42,
+    zomatoRating: 4.6,
+    zomatoReviews: 25,
     totalReviews: 67,
     ratings: {
       valueForMoney: 4.1,
@@ -508,9 +534,9 @@ export const mockRestaurants = [
       email: "reservas@mesareal.pt",
       website: "www.mesareal.pt"
     },
-    practicalInfo: {
-      takesCards: true,
-      hasParking: false,
+    practical: {
+      cardsAccepted: true,
+      parking: false,
       quickService: false,
       groupFriendly: false,
       nearMetro: true,

@@ -1,142 +1,161 @@
+/* MONO Design System for Search Page */
+
 .searchPage {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #121212;
-  color: #f5f5f5;
-  min-height: 100vh;
-}
-
-.activeFilters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 16px 0;
-  align-items: center;
-}
-
-.filterButton {
-  background-color: #2c2c2c;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filterButton:hover {
-  background-color: #383838;
-}
-
-.filterTag {
-  background-color: #00a79d;
-  color: white;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.removeFilter {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-}
-
-.removeFilter:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 2rem;
-  letter-spacing: -1px;
-}
-
-.filters {
-  background-color: #222;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid #333;
-}
-
-.filterGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.filterGroup label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
-.filterInput, .filterSelect {
-  width: 100%;
+  background-color: #FFFFFF;
+  color: #000000;
   font-family: 'Space Mono', monospace;
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #555;
-  padding: 0.75rem;
-  font-size: 1rem;
+  min-height: 100vh;
+  padding: 0 1rem;
 }
 
+/* Header Section */
+.header {
+  padding: 2rem 0;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.mainSearchBar {
+  width: 100%;
+}
+
+/* Results Container */
+.resultsContainer {
+  width: 100%;
+  padding: 2rem 0;
+}
+
+/* Results Header */
 .resultsHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #333;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.resultsInfo {
+  flex-grow: 1;
 }
 
 .resultsCount {
-  font-size: 1.25rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #666;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sortingControls {
+  display: flex;
+  align-items: center;
 }
 
 .sortSelect {
   font-family: 'Space Mono', monospace;
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #555;
-  padding: 0.5rem;
+  background-color: #FFF;
+  color: #000;
+  border: 1px solid #333;
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8L0.803848 0.5L11.1962 0.5L6 8Z' fill='%23666666'/%3E%3C/svg%3E%0A");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
 }
 
+.sortSelect:focus {
+  outline: 1px solid #666;
+  border-color: #666;
+}
+
+/* Restaurant Grid */
 .restaurantGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
-.checkboxFilters {
+/* Message Containers (Loading, Error, No Results) */
+.messageContainer {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 2rem;
+  border: 1px solid #333;
+  background-color: #1A1A1A;
+  text-align: center;
+}
+
+.messageContainer h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+}
+
+.messageContainer p {
+  color: #CCC;
+  margin-bottom: 1.5rem;
+  max-width: 40ch;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
+  margin: 2rem 0;
+  padding-top: 2rem;
   border-top: 1px solid #333;
 }
 
-.checkboxFilters label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
+.pageInfo {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 1rem;
+  text-transform: uppercase;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .restaurantGrid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .searchPage {
+    padding: 0 0.5rem;
+  }
+
+  .resultsHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .restaurantGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .resultsCount {
+    font-size: 0.9rem;
+  }
+
+  .sortSelect {
+    width: 100%;
+  }
 }
