@@ -424,7 +424,16 @@ class MockBackend {
   // Menu Reviews
   getMenuReviews(restaurantId) {
     const menuReviews = JSON.parse(localStorage.getItem('mmd_menu_reviews') || '{}');
-    return menuReviews[restaurantId] || [];
+    const reports = JSON.parse(localStorage.getItem('mmd_reported_reviews') || '[]');
+    
+    // Get all hidden review IDs from resolved reports
+    const hiddenReviewIds = reports
+      .filter(report => report.status === 'resolved' && report.action === 'review_hidden')
+      .map(report => report.reviewId);
+    
+    // Filter out hidden reviews
+    const reviews = menuReviews[restaurantId] || [];
+    return reviews.filter(review => !hiddenReviewIds.includes(review.id));
   }
 
   addMenuReview(restaurantId, userId, rating, comment, displayName) {

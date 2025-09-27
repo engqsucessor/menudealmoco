@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Search.module.css';
 import { getRestaurants } from '../services/mockApi';
 import RestaurantCard from '../components/ui/RestaurantCard';
@@ -15,6 +15,7 @@ const useQuery = () => {
 
 const SearchPage = () => {
   const query = useQuery();
+  const navigate = useNavigate();
   const initialQuery = query.get('query') || '';
   const initialLocation = query.get('location') || '';
 

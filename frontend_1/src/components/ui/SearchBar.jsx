@@ -5,13 +5,14 @@ import styles from './SearchBar.module.css';
 const SearchBar = ({
   onSearch,
   onLocationSelect,
-  placeholder = "Search by restaurant name or location...",
+  placeholder = "",
   showLocationButton = true,
   className = '',
   initialQuery = '',
   initialLocation = ''
 }) => {
   const [searchTerm, setSearchTerm] = useState(initialQuery || initialLocation || '');
+  const [searchMode, setSearchMode] = useState('location'); // 'location' or 'restaurant'
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -19,11 +20,14 @@ const SearchBar = ({
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
-  // Update search term when initial values change
+  // Update search term and mode when initial values change
   useEffect(() => {
-    const newValue = initialQuery || initialLocation || '';
-    if (newValue && newValue !== searchTerm) {
-      setSearchTerm(newValue);
+    if (initialQuery) {
+      setSearchTerm(initialQuery);
+      setSearchMode('restaurant');
+    } else if (initialLocation) {
+      setSearchTerm(initialLocation);
+      setSearchMode('location');
     }
   }, [initialQuery, initialLocation]);
 
@@ -58,7 +62,8 @@ const SearchBar = ({
     const value = e.target.value;
     setSearchTerm(value);
 
-    if (value.length > 1) {
+    // Only show location suggestions when in location mode
+    if (searchMode === 'location' && value.length > 1) {
       const filtered = mockSuggestions.filter(suggestion =>
         suggestion.toLowerCase().includes(value.toLowerCase())
       );
@@ -72,7 +77,13 @@ const SearchBar = ({
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      onSearch?.(searchTerm.trim());
+      if (searchMode === 'location') {
+        // Search by location
+        onSearch?.('', searchTerm.trim());
+      } else {
+        // Search by restaurant name/description
+        onSearch?.(searchTerm.trim(), '');
+      }
       setShowSuggestions(false);
     }
   };
@@ -80,7 +91,8 @@ const SearchBar = ({
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion);
     setShowSuggestions(false);
-    onSearch?.(suggestion);
+    // Suggestions are always locations
+    onSearch?.('', suggestion);
   };
 
   const handleUseLocation = async () => {
@@ -101,6 +113,7 @@ const SearchBar = ({
           const mockLocation = 'Near you, Portugal';
           setSearchTerm(mockLocation);
           onLocationSelect?.({ latitude, longitude, address: mockLocation });
+          onSearch?.('', mockLocation); // Also trigger search with location
           setIsLocating(false);
         }, 1500);
       },
@@ -133,16 +146,39 @@ const SearchBar = ({
     className
   ].filter(Boolean).join(' ');
 
+  const getPlaceholder = () => {
+    if (placeholder) return placeholder;
+    return searchMode === 'location'
+      ? 'Search by city, district, or address...'
+      : 'Search by restaurant name...';
+  };
+
   return (
     <div className={searchBarClasses}>
       <form onSubmit={handleSearch} className={styles.searchForm}>
+        <div className={styles.searchModeToggle}>
+          <button
+            type="button"
+            className={`${styles.modeButton} ${searchMode === 'location' ? styles.active : ''}`}
+            onClick={() => setSearchMode('location')}
+          >
+            📍 Location
+          </button>
+          <button
+            type="button"
+            className={`${styles.modeButton} ${searchMode === 'restaurant' ? styles.active : ''}`}
+            onClick={() => setSearchMode('restaurant')}
+          >
+            🍽️ Restaurant
+          </button>
+        </div>
         <div className={styles.inputContainer}>
           <input
             ref={inputRef}
             type="text"
             value={searchTerm}
             onChange={handleInputChange}
-            placeholder={placeholder}
+            placeholder={getPlaceholder()}
             className={styles.searchInput}
             autoComplete="off"
           />

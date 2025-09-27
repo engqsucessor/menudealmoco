@@ -11,19 +11,68 @@
   position: relative;
 }
 
+.searchModeToggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 8px;
+  background: black;
+  border: 2px solid black;
+  padding: 0;
+  width: fit-content;
+}
+
+.modeButton {
+  padding: 8px 16px;
+  border: none;
+  background: black;
+  border-right: 1px solid #333;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.modeButton:last-child {
+  border-right: none;
+}
+
+.modeButton:hover {
+  background: #333;
+}
+
+.modeButton.active {
+  background: white;
+  color: black;
+}
+
+.modeButton.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #007bff;
+}
+
 .inputContainer {
   display: flex;
-  gap: 12px;
+  gap: 0;
   align-items: center;
   width: 100%;
-  background: #ffffff;
-  border: 2px solid #e5e5e5;
-  padding: 4px;
+  background: white;
+  border: 2px solid black;
+  padding: 0;
   transition: border-color 0.2s ease;
 }
 
 .inputContainer:focus-within {
-  border-color: #000000;
+  border-color: black;
 }
 
 .searchInput {
@@ -32,21 +81,23 @@
   border: none;
   outline: none;
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
-  color: #000000;
-  background: transparent;
+  color: black;
+  background: white;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .searchInput::placeholder {
-  color: #999999;
-  font-style: italic;
+  color: #666;
+  font-style: normal;
+  text-transform: uppercase;
 }
 
 .buttonGroup {
   display: flex;
-  gap: 8px;
+  gap: 0;
   align-items: center;
   flex-shrink: 0;
 }
@@ -66,8 +117,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border: 2px solid #e5e5e5;
+  background: white;
+  border: 2px solid black;
   border-top: none;
   max-height: 240px;
   overflow-y: auto;
@@ -79,24 +130,25 @@
   width: 100%;
   padding: 12px 16px;
   border: none;
-  background: none;
+  background: white;
   font-family: 'Space Mono', monospace;
   font-size: 12px;
   font-weight: 400;
-  color: #666666;
+  color: black;
   text-align: left;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 12px;
   transition: all 0.2s ease;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid black;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .suggestion:hover {
-  background: #f5f5f5;
-  color: #000000;
-  transform: translateX(4px);
+  background: black;
+  color: white;
 }
 
 .suggestion:last-child {
@@ -105,7 +157,7 @@
 
 .suggestionIcon {
   font-size: 14px;
-  color: #999999;
+  color: inherit;
   flex-shrink: 0;
 }
 
@@ -121,20 +173,20 @@
   gap: 8px;
   margin-top: 8px;
   padding: 8px 12px;
-  background: #f5f5f5;
-  border: 1px solid #e5e5e5;
+  background: white;
+  border: 2px solid black;
   animation: fadeIn 0.3s ease;
 }
 
 .errorIcon {
   font-size: 14px;
-  color: #666666;
+  color: black;
 }
 
 .errorText {
   font-size: 10px;
-  font-weight: 400;
-  color: #666666;
+  font-weight: 600;
+  color: black;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }

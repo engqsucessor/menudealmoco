@@ -536,8 +536,8 @@ const RestaurantDetail = () => {
                           )}
 
                           <div className={styles.reviewActions}>
-                            {user && (
-                              <div className={styles.voteButtons}>
+                            <div className={styles.voteButtons}>
+                              {user && (
                                 <button
                                   className={`${styles.voteButton} ${styles.upvoteButton} ${review.upvotedBy?.includes(user.email) ? styles.voted : ''}`}
                                   onClick={() => handleUpvote(review.id)}
@@ -545,13 +545,15 @@ const RestaurantDetail = () => {
                                 >
                                   ↑
                                 </button>
-                                <span className={`${styles.scoreDisplay} ${
-                                  netScore > 0 ? styles.positiveScore :
-                                  netScore < 0 ? styles.negativeScore :
-                                  styles.neutralScore
-                                }`}>
-                                  {netScore}
-                                </span>
+                              )}
+                              <span className={`${styles.scoreDisplay} ${
+                                netScore > 0 ? styles.positiveScore :
+                                netScore < 0 ? styles.negativeScore :
+                                styles.neutralScore
+                              }`}>
+                                {netScore > 0 ? '+' : ''}{netScore}
+                              </span>
+                              {user && (
                                 <button
                                   className={`${styles.voteButton} ${styles.downvoteButton} ${review.downvotedBy?.includes(user.email) ? styles.voted : ''}`}
                                   onClick={() => handleDownvote(review.id)}
@@ -559,8 +561,8 @@ const RestaurantDetail = () => {
                                 >
                                   ↓
                                 </button>
-                              </div>
-                            )}
+                              )}
+                            </div>
 
                             <button
                               className={styles.reportButton}

@@ -40,11 +40,8 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
       return;
     }
 
-    // Check if comment is empty or only whitespace
-    if (comment.trim().length === 0) {
-      alert('Please write a comment before submitting your review.');
-      return;
-    }
+    // Comments are optional - only validate if user wants to prevent truly empty submissions
+    // Removed comment requirement to allow rating-only reviews
 
     setLoading(true);
     try {
@@ -167,7 +164,7 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
 
         <div className={styles.commentSection}>
           <label className={styles.label} htmlFor="comment">
-            Comment (required):
+            Comment (optional):
           </label>
           <textarea
             id="comment"
@@ -181,7 +178,7 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
 
         <button
           type="submit"
-          disabled={loading || rating === 0 || comment.trim().length === 0}
+          disabled={loading || rating === 0}
           className={styles.submitButton}
         >
           {loading ? 'Submitting...' : 'Submit Review'}
