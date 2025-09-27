@@ -51,6 +51,14 @@ const AddRestaurant = ({
     menuPhoto: restaurant?.menuPhoto || ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
+
+  const showNotification = (message, type = 'error') => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: '' });
+    }, 4000);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -113,14 +121,14 @@ const AddRestaurant = ({
     e.preventDefault();
 
     if (!user) {
-      alert('You must be logged in to submit a restaurant');
+      showNotification('You must be logged in to submit a restaurant', 'error');
       return;
     }
 
     if (isEditMode) {
       // Handle edit mode
       if (!formData.reason.trim()) {
-        alert('Please provide a reason for your edit suggestion');
+        showNotification('Please provide a reason for your edit suggestion', 'error');
         return;
       }
 
@@ -158,9 +166,10 @@ const AddRestaurant = ({
       // Otherwise, submit to backend normally
       const submission = mockBackend.submitRestaurant(submissionData, user.email);
       setSubmitted(true);
+      showNotification('Restaurant submitted successfully!', 'success');
     } catch (error) {
       console.error('Error submitting restaurant:', error);
-      alert('Error submitting restaurant. Please try again.');
+      showNotification('Error submitting restaurant. Please try again.', 'error');
     }
   };
 
@@ -284,14 +293,21 @@ const AddRestaurant = ({
           <legend className={styles.legend}>Daily Dishes</legend>
           <div className={styles.formGroup}>
             <label htmlFor="numberOfDishes">How many daily dishes are usually available?</label>
-            <input id="numberOfDishes" type="number" name="numberOfDishes" className={styles.input} value={formData.numberOfDishes} onChange={handleNumberOfDishesChange} placeholder="e.g., 3" />
+            <input 
+              id="numberOfDishes" 
+              type="number" 
+              name="numberOfDishes" 
+              className={styles.input} 
+              value={formData.numberOfDishes} 
+              onChange={handleNumberOfDishesChange} 
+              placeholder="e.g., 3" 
+              min="0"
+              max="20"
+            />
+            <small className={styles.helpText}>
+              Daily dishes change each day, so we only need to know the typical number available.
+            </small>
           </div>
-          {formData.dishes.map((dish, index) => (
-            <div key={index} className={styles.formGroup}>
-              <label htmlFor={`dish-${index}`}>Dish #{index + 1}</label>
-              <input id={`dish-${index}`} type="text" value={dish} onChange={(e) => handleDishNameChange(index, e.target.value)} className={styles.input} placeholder={`Name of dish ${index + 1}`} />
-            </div>
-          ))}
         </fieldset>
 
         {/* Section 6: Submission */}
@@ -377,6 +393,21 @@ const AddRestaurant = ({
             <button onClick={onClose} className={styles.closeButton}>×</button>
           </div>
           {content}
+          
+          {/* Notification for modal */}
+          {notification.show && (
+            <div className={`${styles.notification} ${styles[notification.type]}`}>
+              <div className={styles.notificationContent}>
+                <span>{notification.message}</span>
+                <button 
+                  className={styles.notificationClose}
+                  onClick={() => setNotification({ show: false, message: '', type: '' })}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -385,6 +416,21 @@ const AddRestaurant = ({
   return (
     <div className={styles.addRestaurantPage}>
       {content}
+      
+      {/* Notification */}
+      {notification.show && (
+        <div className={`${styles.notification} ${styles[notification.type]}`}>
+          <div className={styles.notificationContent}>
+            <span>{notification.message}</span>
+            <button 
+              className={styles.notificationClose}
+              onClick={() => setNotification({ show: false, message: '', type: '' })}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

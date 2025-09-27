@@ -288,3 +288,78 @@
   object-fit: cover;
   display: block;
 }
+
+/* Notification Styles */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  max-width: 400px;
+  border: 2px solid black;
+  font-family: 'Space Mono', monospace;
+  animation: slideInRight 0.3s ease-out;
+}
+
+.notification.success {
+  background: white;
+  color: black;
+}
+
+.notification.error {
+  background: black;
+  color: white;
+}
+
+.notificationContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  gap: 15px;
+}
+
+.notificationContent span {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.notificationClose {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+}
+
+.notification.success .notificationClose {
+  color: black;
+}
+
+.notification.error .notificationClose {
+  color: white;
+}
+
+.notificationClose:hover {
+  opacity: 0.7;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
