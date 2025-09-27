@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
 import { getRestaurant } from '../services/mockApi';
+import { mockBackend } from '../services/mockBackend';
 import { favoriteRestaurants } from '../services/localStorage';
 import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
+import EditButton from '../components/ui/EditButton';
 import AddRestaurant from './AddRestaurant';
 import { getRestaurantMenuReviews, upvoteMenuReview, downvoteMenuReview } from '../services/menuRatingService';
 import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
@@ -20,6 +22,8 @@ const RestaurantDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editSuggestions, setEditSuggestions] = useState([]);
+  const [showAddReview, setShowAddReview] = useState(false);
+  const [expandedReviews, setExpandedReviews] = useState(new Set());
 
   useEffect(() => {
     getRestaurant(id).then(data => {
@@ -33,13 +37,19 @@ const RestaurantDetail = () => {
     // Load edit suggestions
     loadEditSuggestions();
 
-    // Check if restaurant is favorited
-    setIsFavorite(favoriteRestaurants.isFavorite(id));
-  }, [id]);
+    // Check if restaurant is favorited (only if user is logged in)
+    if (user) {
+      const favoriteIds = favoriteRestaurants.get();
+      setIsFavorite(favoriteIds.includes(id));
+    } else {
+      setIsFavorite(false);
+    }
+  }, [id, user]);
 
   const loadMenuReviews = async () => {
     try {
-      const reviews = await getRestaurantMenuReviews(id);
+      // Use mockBackend directly to get menu reviews
+      const reviews = mockBackend.getMenuReviews(id);
       setMenuReviewsData(reviews);
     } catch (error) {
       console.error('Error loading menu reviews:', error);
@@ -117,8 +127,11 @@ const RestaurantDetail = () => {
   };
 
   const handleFavoriteToggle = () => {
-    favoriteRestaurants.toggle(id);
-    setIsFavorite(!isFavorite);
+    if (!user) return;
+
+    // Toggle using the favoriteRestaurants service
+    const newFavoriteStatus = favoriteRestaurants.toggle(id);
+    setIsFavorite(newFavoriteStatus);
   };
 
   const handleRatingSubmitted = (newAverageRating) => {
@@ -133,10 +146,10 @@ const RestaurantDetail = () => {
 
   const handleUpvote = async (reviewId) => {
     if (!user) return;
-    
+
     try {
-      const result = await upvoteMenuReview(reviewId, user.email);
-      if (result.success) {
+      const result = mockBackend.voteOnReview(reviewId, id, user.email, 'up');
+      if (result) {
         loadMenuReviews(); // Refresh reviews to show updated votes
       }
     } catch (error) {
@@ -146,10 +159,10 @@ const RestaurantDetail = () => {
 
   const handleDownvote = async (reviewId) => {
     if (!user) return;
-    
+
     try {
-      const result = await downvoteMenuReview(reviewId, user.email);
-      if (result.success) {
+      const result = mockBackend.voteOnReview(reviewId, id, user.email, 'down');
+      if (result) {
         loadMenuReviews(); // Refresh reviews to show updated votes
       }
     } catch (error) {
@@ -235,6 +248,16 @@ const RestaurantDetail = () => {
     }
   };
 
+  const toggleReviewExpansion = (reviewId) => {
+    const newExpanded = new Set(expandedReviews);
+    if (newExpanded.has(reviewId)) {
+      newExpanded.delete(reviewId);
+    } else {
+      newExpanded.add(reviewId);
+    }
+    setExpandedReviews(newExpanded);
+  };
+
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -263,21 +286,20 @@ const RestaurantDetail = () => {
           <div className={styles.titleSection}>
             <h1>{name}</h1>
             <div className={styles.actionButtons}>
-              <button
-                className={styles.editButton}
+              <EditButton
                 onClick={() => setShowEditModal(true)}
                 title="Suggest edit to restaurant information"
-              >
-                ✏️ Edit
-              </button>
-              <button
-                className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
-                onClick={handleFavoriteToggle}
-                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              >
-                {isFavorite ? '❤️' : '🤍'}
-              </button>
+              />
+              {user && (
+                <button
+                  className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+                  onClick={handleFavoriteToggle}
+                  aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                  title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  {isFavorite ? '❤️' : '🤍'}
+                </button>
+              )}
             </div>
           </div>
           <p>{location}</p>
@@ -368,25 +390,43 @@ const RestaurantDetail = () => {
         {activeTab === 'reviews' && (
           <div>
             <div>
-              <h2>Menu de Almoço Reviews</h2>
-              
-              {/* Menu Rating Component */}
-              <MenuRating 
-                restaurantId={id} 
-                restaurantName={name}
-                onRatingSubmitted={handleRatingSubmitted}
-              />
-              
-              {/* Display current average and reviews */}
-              {menuReviewsData.length > 0 && (
+              <div className={styles.reviewsPageHeader}>
+                <h2>Menu de Almoço Reviews</h2>
+                {user && (
+                  <button
+                    className={styles.addReviewButton}
+                    onClick={() => setShowAddReview(!showAddReview)}
+                  >
+                    {showAddReview ? '✕ Cancel' : '✏️ Write a Review'}
+                  </button>
+                )}
+              </div>
+
+              {/* Add Review Section - Now at the top and collapsible */}
+              {showAddReview && (
+                <div className={styles.addReviewSection}>
+                  <h3>Write a Review</h3>
+                  <MenuRating
+                    restaurantId={id}
+                    restaurantName={name}
+                    onRatingSubmitted={(newRating) => {
+                      handleRatingSubmitted(newRating);
+                      setShowAddReview(false); // Close form after submission
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Display existing reviews */}
+              {menuReviewsData.length > 0 ? (
                 <div className={styles.menuRatingStats}>
                   <div className={styles.reviewsHeader}>
-                    <h3>Menu de Almoço Reviews ({menuReviewsData.length})</h3>
-                    
+                    <h3>Reviews ({menuReviewsData.length})</h3>
+
                     <div className={styles.sortControls}>
                       <label className={styles.sortLabel}>Sort by:</label>
-                      <select 
-                        value={sortBy} 
+                      <select
+                        value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                         className={styles.sortSelect}
                       >
@@ -398,108 +438,102 @@ const RestaurantDetail = () => {
                       </select>
                     </div>
                   </div>
-                  
+
                   <div className={styles.menuReviewsList}>
                     {getSortedReviews().map(review => {
                       const netScore = (review.upvotes || 0) - (review.downvotes || 0);
                       const totalVotes = (review.upvotes || 0) + (review.downvotes || 0);
                       
+                      // Use the displayName stored in the review (set at review creation time)
+                      const displayName = review.displayName || `AnonymousUser${review.id.slice(-3)}`;
+
                       return (
                         <div key={review.id} className={styles.review}>
-                          <div className={styles.reviewHeader}>
-                            <div className={styles.reviewInfo}>
-                              <strong className={styles.username}>{review.displayName}</strong>
-                              <span className={styles.rating}>
-                                {'★'.repeat(Math.floor(review.rating))}
-                                {review.rating % 1 !== 0 ? '☆' : ''}
-                                {' '}({review.rating}/5)
-                              </span>
-                              <span className={styles.reviewDate}>
-                                {new Date(review.createdAt).toLocaleDateString()}
-                                {totalVotes > 0 && (
-                                  <span className={styles.netScore}>
-                                    {' • '}
-                                    <span className={netScore > 0 ? styles.positiveScore : netScore < 0 ? styles.negativeScore : styles.neutralScore}>
-                                      {netScore > 0 ? '+' : ''}{netScore} points
-                                    </span>
-                                  </span>
-                                )}
-                              </span>
+                          <div className={styles.reviewMeta}>
+                            <strong className={styles.username}>{displayName}</strong>
+                            <span className={styles.reviewDate}>
+                              • {new Date(review.createdAt).toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
+                            </span>
+                            <span className={styles.rating}>
+                              • {review.rating}/5 ★
+                            </span>
+                          </div>
+                          
+                          {review.comment && !expandedReviews.has(review.id) && (
+                            <div className={styles.reviewCommentSection}>
+                              <p className={styles.reviewComment}>
+                                {review.comment.length > 200 
+                                  ? review.comment.substring(0, 200) + '...'
+                                  : review.comment
+                                }
+                              </p>
                             </div>
-                            
+                          )}
+
+                          {review.comment && expandedReviews.has(review.id) && (
+                            <div className={styles.reviewCommentSection}>
+                              <p className={styles.reviewComment}>
+                                {review.comment}
+                              </p>
+                            </div>
+                          )}
+
+                          <div className={styles.reviewActions}>
                             {user && (
                               <div className={styles.voteButtons}>
-                                <button 
+                                <button
                                   className={`${styles.voteButton} ${styles.upvoteButton} ${review.upvotedBy?.includes(user.email) ? styles.voted : ''}`}
                                   onClick={() => handleUpvote(review.id)}
-                                  title="Upvote this review"
+                                  title="Upvote"
                                 >
-                                  ▲ {review.upvotes || 0}
+                                  ↑
                                 </button>
-                                <button 
+                                <span className={`${styles.scoreDisplay} ${
+                                  netScore > 0 ? styles.positiveScore :
+                                  netScore < 0 ? styles.negativeScore :
+                                  styles.neutralScore
+                                }`}>
+                                  {netScore}
+                                </span>
+                                <button
                                   className={`${styles.voteButton} ${styles.downvoteButton} ${review.downvotedBy?.includes(user.email) ? styles.voted : ''}`}
                                   onClick={() => handleDownvote(review.id)}
-                                  title="Downvote this review"
+                                  title="Downvote"
                                 >
-                                  ▼ {review.downvotes || 0}
+                                  ↓
                                 </button>
                               </div>
                             )}
+
+                            <button className={styles.actionButton}>
+                              Report
+                            </button>
+
+                            {review.comment && review.comment.length > 200 && (
+                              <button 
+                                className={styles.actionButton}
+                                onClick={() => toggleReviewExpansion(review.id)}
+                              >
+                                {expandedReviews.has(review.id) ? 'Collapse' : 'Expand'}
+                              </button>
+                            )}
                           </div>
-                          {review.comment && <p className={styles.reviewComment}>{review.comment}</p>}
                         </div>
                       );
                     })}
                   </div>
                 </div>
-              )}
-              
-              {menuReviewsData.length === 0 && (
-                <p>No menu reviews yet. Be the first to rate this lunch menu!</p>
-              )}
-            </div>
-
-            {/* Edit Suggestions Section */}
-            <div className={styles.editSuggestionsSection}>
-              <div className={styles.sectionHeader}>
-                <h3>Suggested Edits</h3>
-                <button 
-                  className={styles.suggestEditBtn}
-                  onClick={() => setShowEditModal(true)}
-                >
-                  Suggest Edit
-                </button>
-              </div>
-              
-              {editSuggestions.length > 0 ? (
-                <div className={styles.editSuggestionsList}>
-                  {editSuggestions.map(suggestion => (
-                    <div key={suggestion.id} className={styles.editSuggestion}>
-                      <div className={styles.suggestionHeader}>
-                        <span className={styles.suggestionAuthor}>{suggestion.author}</span>
-                        <span className={styles.suggestionDate}>{new Date(suggestion.createdAt).toLocaleDateString()}</span>
-                      </div>
-                      <p className={styles.suggestionReason}>{suggestion.reason}</p>
-                      <div className={styles.suggestionChanges}>
-                        {Object.entries(suggestion.changes).map(([field, value]) => (
-                          <div key={field} className={styles.changeItem}>
-                            <strong>{field}:</strong> {value}
-                          </div>
-                        ))}
-                      </div>
-                      <div className={styles.suggestionActions}>
-                        <button 
-                          className={styles.voteBtn}
-                          onClick={() => handleVoteOnSuggestion(suggestion.id, 'up')}
-                        >
-                          ↑ {suggestion.votes}
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               ) : (
-                <p className={styles.noSuggestions}>No edit suggestions yet.</p>
+                <div className={styles.noReviewsMessage}>
+                  <p>No menu reviews yet. Be the first to rate this lunch menu!</p>
+                  {!user && (
+                    <p><strong>Login to write the first review!</strong></p>
+                  )}
+                </div>
               )}
             </div>
           </div>

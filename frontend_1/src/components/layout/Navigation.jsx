@@ -45,14 +45,6 @@ const Navigation = ({ mobile = false, onItemClick }) => {
                 <span className={styles.navLabel}>PROFILE</span>
               </Link>
             </li>
-            {user.isReviewer && (
-              <li className={styles.navItem}>
-                <Link to="/reviewer" className={styles.navLink} onClick={onItemClick}>
-                  {mobile && <span className={styles.navIcon}>⚖</span>}
-                  <span className={styles.navLabel}>REVIEWER</span>
-                </Link>
-              </li>
-            )}
             <li className={styles.navItem}>
               <button onClick={handleLogout} className={`${styles.navLink} ${styles.logoutButton}`}>
                 {mobile && <span className={styles.navIcon}>↩</span>}

@@ -68,6 +68,11 @@ const SearchPage = () => {
     fetchRestaurants();
   }, [fetchRestaurants]);
 
+  // Scroll to top when component mounts or query params change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [initialQuery, initialLocation]);
+
   const handleSearch = (searchQuery, searchLocation) => {
     setFilters(prev => ({ ...prev, query: searchQuery, location: searchLocation, page: 1 }));
   };

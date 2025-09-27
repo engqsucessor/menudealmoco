@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
 
 // Layout Components
 import Layout from './components/layout/Layout';
@@ -12,43 +13,56 @@ import AddRestaurant from './pages/AddRestaurant';
 import About from './pages/About';
 import Auth from './pages/Auth';
 import UserProfile from './pages/UserProfile';
-import ReviewerDashboard from './pages/ReviewerDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+
+function AppContent() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '18px'
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
+  return (
+    <Layout>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+        <Route path="/add-restaurant" element={<AddRestaurant />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Layout>
+  );
+}
 
 function App() {
   return (
-    <Router 
+    <Router
       future={{
         v7_startTransition: true,
         v7_relativeSplatPath: true
       }}
     >
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/restaurant/:id" element={<RestaurantDetail />} />
-          <Route path="/add-restaurant" element={<AddRestaurant />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <UserProfile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/reviewer"
-            element={
-              <ProtectedRoute>
-                <ReviewerDashboard />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Layout>
+      <AppContent />
     </Router>
   );
 }

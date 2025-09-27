@@ -141,9 +141,11 @@ export const favoriteRestaurants = {
   toggle(restaurantId) {
     const favorites = this.get();
     if (favorites.includes(restaurantId)) {
-      return this.remove(restaurantId);
+      this.remove(restaurantId);
+      return false; // Now it's not a favorite
     } else {
-      return this.add(restaurantId);
+      this.add(restaurantId);
+      return true; // Now it is a favorite
     }
   },
 

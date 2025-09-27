@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { submitMenuRating, getUserMenuReviews } from '../../services/menuRatingService';
+import { mockBackend } from '../../services/mockBackend';
 import styles from './MenuRating.module.css';
 
 const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
@@ -20,8 +20,10 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
 
   const loadUserReviews = async () => {
     try {
-      const reviews = await getUserMenuReviews(restaurantId, user.email);
-      setUserReviews(reviews);
+      // Get all reviews for this restaurant and filter by current user
+      const allReviews = mockBackend.getMenuReviews(restaurantId);
+      const userReviews = allReviews.filter(review => review.userId === user.email);
+      setUserReviews(userReviews);
     } catch (error) {
       console.error('Error loading user reviews:', error);
     }
@@ -39,16 +41,19 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
 
     setLoading(true);
     try {
-      const result = await submitMenuRating(restaurantId, user.email, rating, comment);
+      // Use the displayName from the user object (generated at signup)
+      const displayName = user.displayName || `User${Math.floor(Math.random() * 10000)}`;
+      
+      const result = mockBackend.addMenuReview(restaurantId, user.email, rating, comment, displayName);
 
-      if (result.success) {
+      if (result) {
         // Reset form
         setRating(0);
         setComment('');
         // Reload user reviews
         await loadUserReviews();
         if (onRatingSubmitted) {
-          onRatingSubmitted(result.newAverageRating);
+          onRatingSubmitted(rating); // Pass the rating that was just submitted
         }
       }
     } catch (error) {

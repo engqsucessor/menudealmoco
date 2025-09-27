@@ -51,10 +51,13 @@
   padding: 1rem;
   margin-bottom: 1rem;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .reviewCard:hover {
   border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
 }
 
 .reviewerButton {
@@ -70,6 +73,70 @@
 }
 
 .reviewerButton:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.favoritesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.favoriteCard {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--secondary-color);
+}
+
+.favoriteHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.favoriteCard h3 {
+  margin: 0;
+  color: var(--primary-color);
+  flex: 1;
+}
+
+.heartButton {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: transform 0.2s ease;
+}
+
+.heartButton:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.favoriteActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.viewButton {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  border: 1px solid var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.viewButton:hover {
   background-color: var(--secondary-color);
   color: var(--primary-color);
 }

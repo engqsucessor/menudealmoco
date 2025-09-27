@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { PRACTICAL_FEATURES, INCLUDED_FEATURES, getPracticalFeatureLabel, getIncludedFeatureLabel } from '../constants/labels';
+import { useAuth } from '../contexts/AuthContext';
+import { mockBackend } from '../services/mockBackend';
 import styles from './AddRestaurant.module.css';
 
-const AddRestaurant = ({ 
-  restaurant = null, 
-  isEditMode = false, 
+const AddRestaurant = ({
+  restaurant = null,
+  isEditMode = false,
   isModal = false,
   onClose = null,
-  onSubmit = null 
+  onSubmit = null
 }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: restaurant?.name || '',
     address: restaurant?.address || `${restaurant?.district || ''}, ${restaurant?.city || ''}`.replace(/^, |, $/, ''),
@@ -37,7 +40,15 @@ const AddRestaurant = ({
     priceRange: restaurant?.priceRange || '',
     distance: restaurant?.distance || '',
     // Edit-specific fields
-    reason: ''
+    reason: '',
+    // Image fields
+    restaurantPhoto: restaurant?.restaurantPhoto || '',
+    menuPhoto: restaurant?.menuPhoto || ''
+  });
+
+  const [imagePreviews, setImagePreviews] = useState({
+    restaurantPhoto: restaurant?.restaurantPhoto || '',
+    menuPhoto: restaurant?.menuPhoto || ''
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -84,25 +95,73 @@ const AddRestaurant = ({
     setFormData(prev => ({ ...prev, dishes: newDishes }));
   };
 
-  const handleSubmit = (e) => {
+  const handleImageUpload = (e, imageType) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Create a preview URL for the image
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageUrl = event.target.result;
+        setImagePreviews(prev => ({ ...prev, [imageType]: imageUrl }));
+        setFormData(prev => ({ ...prev, [imageType]: imageUrl }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    if (!user) {
+      alert('You must be logged in to submit a restaurant');
+      return;
+    }
+
     if (isEditMode) {
       // Handle edit mode
       if (!formData.reason.trim()) {
         alert('Please provide a reason for your edit suggestion');
         return;
       }
-      
+
       // Call the onSubmit callback if provided (for modal mode)
       if (onSubmit) {
         onSubmit(formData);
         return;
       }
     }
-    
-    console.log(`${isEditMode ? 'Edit' : 'Add'} form submitted:`, formData);
-    setSubmitted(true);
+
+    try {
+      // Prepare submission data
+      const submissionData = {
+        name: formData.name,
+        address: formData.address,
+        menuPrice: parseFloat(formData.menuPrice),
+        priceRange: formData.priceRange,
+        foodType: formData.foodType,
+        googleRating: formData.googleRating ? parseFloat(formData.googleRating) : null,
+        googleReviews: formData.googleReviews ? parseInt(formData.googleReviews) : null,
+        description: formData.description,
+        dishes: formData.dishes.filter(dish => dish.trim()),
+        whatsIncluded: Object.keys(formData.included).filter(key => formData.included[key]),
+        practical: formData.practical,
+        restaurantPhoto: formData.restaurantPhoto,
+        menuPhoto: formData.menuPhoto
+      };
+
+      // If called from modal (like reviewer dashboard), use the callback
+      if (onSubmit) {
+        onSubmit(submissionData);
+        return;
+      }
+
+      // Otherwise, submit to backend normally
+      const submission = mockBackend.submitRestaurant(submissionData, user.email);
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting restaurant:', error);
+      alert('Error submitting restaurant. Please try again.');
+    }
   };
 
   if (submitted) {
@@ -240,17 +299,42 @@ const AddRestaurant = ({
           <legend className={styles.legend}>Photos & Submission</legend>
           <div className={styles.formGroup}>
             <label htmlFor="restaurantPhoto">Restaurant Photo (Optional)</label>
-            <input id="restaurantPhoto" type="file" name="restaurantPhoto" className={styles.input} accept="image/*" />
+            <input
+              id="restaurantPhoto"
+              type="file"
+              name="restaurantPhoto"
+              className={styles.input}
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, 'restaurantPhoto')}
+            />
             <small className={styles.helpText}>Upload a photo of the restaurant exterior or interior</small>
+            {imagePreviews.restaurantPhoto && (
+              <div className={styles.imagePreview}>
+                <img src={imagePreviews.restaurantPhoto} alt="Restaurant preview" className={styles.previewImage} />
+              </div>
+            )}
           </div>
           <div className={styles.formGroup}>
             <label htmlFor="menuPhoto">{isEditMode ? 'New Menu de Almoço Photo (Optional)' : 'Photo of Menu (Required)'}</label>
-            <input id="menuPhoto" type="file" name="menuPhoto" className={styles.input} accept="image/*" required={!isEditMode} />
+            <input
+              id="menuPhoto"
+              type="file"
+              name="menuPhoto"
+              className={styles.input}
+              accept="image/*"
+              required={!isEditMode && !imagePreviews.menuPhoto}
+              onChange={(e) => handleImageUpload(e, 'menuPhoto')}
+            />
             <small className={styles.helpText}>
-              {isEditMode 
+              {isEditMode
                 ? 'Upload a new photo of the lunch menu with prices (leave empty to keep current photo)'
                 : 'Upload a clear photo of the lunch menu with prices'}
             </small>
+            {imagePreviews.menuPhoto && (
+              <div className={styles.imagePreview}>
+                <img src={imagePreviews.menuPhoto} alt="Menu preview" className={styles.previewImage} />
+              </div>
+            )}
           </div>
           {isEditMode && (
             <div className={styles.formGroup}>

@@ -1,5 +1,6 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { getUserDisplayName, updateUserDisplayName } from '../services/usernameService';
+import { mockBackend } from '../services/mockBackend';
 
 const AuthContext = createContext();
 
@@ -9,47 +10,58 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Mock login function
-  const login = (email, password) => {
-    // In a real app, you'd validate against a backend
-    if (email === 'john.doe@example.com' && password === 'password') {
-      const displayName = getUserDisplayName(email);
-      const mockUser = {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        displayName: displayName,
-        isReviewer: true, // Make John a reviewer for testing
-        reviews: [
-          { id: 1, restaurant: 'The Great Eatery', review: 'Amazing food and service!', upvotes: 10 },
-          { id: 2, restaurant: 'Burger Palace', review: 'Decent burgers, but slow service.', upvotes: 5 },
-        ],
-      };
-      setUser(mockUser);
-      return mockUser;
+  // Check for existing session on mount
+  useEffect(() => {
+    const savedUser = localStorage.getItem('mmd_current_user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error('Error parsing saved user:', error);
+        localStorage.removeItem('mmd_current_user');
+      }
     }
-    return null;
+    setLoading(false);
+  }, []);
+
+  // Login function
+  const login = async (email, password) => {
+    try {
+      const userData = await mockBackend.login(email, password);
+      if (userData) {
+        setUser(userData);
+        localStorage.setItem('mmd_current_user', JSON.stringify(userData));
+        return userData;
+      }
+      return null;
+    } catch (error) {
+      console.error('Login error:', error);
+      return null;
+    }
   };
 
-  // Mock signup function
-  const signup = (name, email, password) => {
-    // In a real app, you'd send this to a backend
-    const displayName = getUserDisplayName(email);
-    const newUser = {
-      name,
-      email,
-      displayName: displayName,
-      reviews: [],
-    };
-    setUser(newUser);
-    return newUser;
+  // Signup function
+  const signup = async (name, email, password) => {
+    try {
+      const newUser = await mockBackend.signup(name, email, password);
+      setUser(newUser);
+      localStorage.setItem('mmd_current_user', JSON.stringify(newUser));
+      return newUser;
+    } catch (error) {
+      console.error('Signup error:', error);
+      throw error;
+    }
   };
 
   // Update display name function
   const updateDisplayName = (newDisplayName) => {
     if (user && newDisplayName.trim()) {
       updateUserDisplayName(user.email, newDisplayName.trim());
-      setUser({ ...user, displayName: newDisplayName.trim() });
+      const updatedUser = { ...user, displayName: newDisplayName.trim() };
+      setUser(updatedUser);
+      localStorage.setItem('mmd_current_user', JSON.stringify(updatedUser));
       return true;
     }
     return false;
@@ -57,6 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('mmd_current_user');
   };
 
   const value = {
@@ -65,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     logout,
     updateDisplayName,
+    loading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

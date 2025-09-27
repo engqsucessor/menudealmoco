@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { favoriteRestaurants } from '../../services/localStorage';
 import { getPracticalFeatureLabel } from '../../constants/labels';
+import { useAuth } from '../../contexts/AuthContext';
 import styles from './RestaurantCard.module.css';
 
 const RestaurantCard = ({ restaurant, style }) => {
+  const { user } = useAuth();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -29,10 +31,14 @@ const RestaurantCard = ({ restaurant, style }) => {
     description = '',
   } = restaurant;
 
-  // Check if this restaurant is already favorited
+  // Check if this restaurant is already favorited (only if user is logged in)
   useEffect(() => {
-    setIsFavorite(favoriteRestaurants.isFavorite(id));
-  }, [id]);
+    if (user) {
+      setIsFavorite(favoriteRestaurants.isFavorite(id));
+    } else {
+      setIsFavorite(false);
+    }
+  }, [id, user]);
 
   const handleImageLoad = () => {
     setImageLoaded(true);
@@ -47,8 +53,8 @@ const RestaurantCard = ({ restaurant, style }) => {
     e.preventDefault(); // Prevent navigation to restaurant detail
     e.stopPropagation(); // Stop event bubbling
     
-    favoriteRestaurants.toggle(id);
-    setIsFavorite(!isFavorite);
+    const newFavoriteStatus = favoriteRestaurants.toggle(id);
+    setIsFavorite(newFavoriteStatus);
   };
 
   const renderStars = (rating) => {
@@ -108,14 +114,16 @@ const RestaurantCard = ({ restaurant, style }) => {
             </div>
 
             <div className={styles.headerActions}>
-              <button
-                className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
-                onClick={handleFavoriteToggle}
-                aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-                title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-              >
-                {isFavorite ? '❤️' : '🤍'}
-              </button>
+              {user && (
+                <button
+                  className={`${styles.favoriteButton} ${isFavorite ? styles.favorited : ''}`}
+                  onClick={handleFavoriteToggle}
+                  aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                  title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  {isFavorite ? '❤️' : '🤍'}
+                </button>
+              )}
               
               <div className={styles.statusSection}>
                 <span className={`${styles.status} ${isOpenNow ? styles.open : styles.closed}`}>

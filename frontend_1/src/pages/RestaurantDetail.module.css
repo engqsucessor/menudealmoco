@@ -71,25 +71,6 @@
   align-items: center;
 }
 
-.editButton {
-  font-family: 'Space Mono', monospace;
-  background: none;
-  border: 1px solid #f8f8f2;
-  color: #f8f8f2;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  border-radius: 0;
-}
-
-.editButton:hover {
-  background: #f8f8f2;
-  color: #111;
-}
-
 .favoriteButton {
   background: none;
   border: none;
@@ -292,23 +273,6 @@
   border: 2px solid #000;
 }
 
-.netScore {
-  font-size: 10px;
-  font-weight: bold;
-}
-
-.positiveScore {
-  color: #4CAF50;
-}
-
-.negativeScore {
-  color: #f44336;
-}
-
-.neutralScore {
-  color: #666;
-}
-
 /* Mobile responsive styles */
 @media (max-width: 768px) {
   .reviewsHeader {
@@ -335,12 +299,13 @@
   .voteButtons {
     flex-direction: row;
     align-self: flex-start;
-    gap: 8px;
+    gap: 4px;
+    min-width: auto;
   }
   
-  .netScore {
-    display: block;
-    margin-top: 2px;
+  .scoreDisplay {
+    order: 2;
+    margin: 0 4px;
   }
 }
 
@@ -389,10 +354,10 @@
 }
 
 .voteButtons {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: center;
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ gap: 0.25rem;
 }
 
 .voteButton {
@@ -400,27 +365,21 @@
   border: 1px solid #ccc;
   padding: 4px 8px;
   font-family: 'Space Mono', monospace;
-  font-size: 10px;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  min-width: 40px;
-}
-
-.upvoteButton {
   color: #666;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .upvoteButton:hover {
   background: #f0f8f0;
   border-color: #4CAF50;
   color: #4CAF50;
-}
-
-.downvoteButton {
-  color: #666;
 }
 
 .downvoteButton:hover {
@@ -439,6 +398,31 @@
   background: #f44336;
   color: white;
   border-color: #f44336;
+}
+
+.scoreDisplay {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 4px 8px;
+  text-align: center;
+  min-width: 30px;
+  border-radius: 2px;
+}
+
+.positiveScore {
+  color: #4CAF50;
+  background: #f0f8f0;
+}
+
+.negativeScore {
+  color: #f44336;
+  background: #fdf0f0;
+}
+
+.neutralScore {
+  color: #666;
+  background: #f5f5f5;
 }
 
 .reviewDate {
@@ -664,4 +648,200 @@
   padding: 2rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* Reviews Section Styling */
+.noReviewsMessage {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+.addReviewSection {
+  margin-top: 3rem;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.addReviewSection h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.menuRatingStats {
+  margin-bottom: 2rem;
+}
+
+/* Reviews Page Header */
+.reviewsPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.reviewsPageHeader h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.addReviewButton {
+  font-family: 'Space Mono', monospace;
+  background: none;
+  border: 1px solid #f8f8f2;
+  color: #f8f8f2;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  border-radius: 0;
+}
+
+.addReviewButton:hover {
+  background: #f8f8f2;
+  color: #111;
+}
+
+/* Reddit-style Review Items */
+.review {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: white;
+  border-left: 2px solid transparent;
+  transition: border-left-color 0.2s ease;
+}
+
+.review:hover {
+  border-left-color: #ccc;
+}
+
+.reviewMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: #666;
+  font-family: 'Space Mono', monospace;
+}
+
+.username {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: black;
+  font-family: 'Space Mono', monospace;
+}
+
+.rating {
+  color: #666;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewDate {
+  color: #666;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewCommentSection {
+  margin: 0.5rem 0;
+}
+
+.reviewComment {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: black;
+  margin: 0;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.voteButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem; /* Reduced gap */
+}
+
+.voteButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.8rem; /* Made smaller */
+  padding: 0.1rem 0.25rem; /* Reduced padding */
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  transition: all 0.2s ease;
+}
+
+.upvoteButton:hover {
+  color: #ff4500;
+  background: rgba(255, 69, 0, 0.1);
+}
+
+.downvoteButton:hover {
+  color: #7193ff;
+  background: rgba(113, 147, 255, 0.1);
+}
+
+.voteButton.voted.upvoteButton {
+  color: #ff4500;
+}
+
+.voteButton.voted.downvoteButton {
+  color: #7193ff;
+}
+
+.scoreDisplay {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Space Mono', monospace;
+}
+
+.positiveScore {
+  color: #ff4500;
+}
+
+.negativeScore {
+  color: #7193ff;
+}
+
+.neutralScore {
+  color: #666;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.2s ease;
+}
+
+.actionButton:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
