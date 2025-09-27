@@ -36,6 +36,13 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
     }
 
     if (rating === 0) {
+      alert('Please select a rating before submitting.');
+      return;
+    }
+
+    // Check if comment is empty or only whitespace
+    if (comment.trim().length === 0) {
+      alert('Please write a comment before submitting your review.');
       return;
     }
 
@@ -160,7 +167,7 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
 
         <div className={styles.commentSection}>
           <label className={styles.label} htmlFor="comment">
-            Comment (optional):
+            Comment (required):
           </label>
           <textarea
             id="comment"
@@ -174,7 +181,7 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
 
         <button
           type="submit"
-          disabled={loading || rating === 0}
+          disabled={loading || rating === 0 || comment.trim().length === 0}
           className={styles.submitButton}
         >
           {loading ? 'Submitting...' : 'Submit Review'}

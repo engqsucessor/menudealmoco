@@ -10,11 +10,14 @@ const ReviewerDashboard = () => {
   const [activeTab, setActiveTab] = useState('pending');
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [submissionsList, setSubmissionsList] = useState([]);
+  const [reportedReviews, setReportedReviews] = useState([]);
+  const [selectedReport, setSelectedReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     loadSubmissions();
+    loadReportedReviews();
   }, []);
 
   const loadSubmissions = async () => {
@@ -25,6 +28,15 @@ const ReviewerDashboard = () => {
       console.error('Error loading submissions:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadReportedReviews = async () => {
+    try {
+      const reports = mockBackend.getReportedReviews();
+      setReportedReviews(reports);
+    } catch (error) {
+      console.error('Error loading reported reviews:', error);
     }
   };
 
@@ -114,12 +126,29 @@ const ReviewerDashboard = () => {
     }
   };
 
+  const handleResolveReport = async (reportId, action) => {
+    try {
+      const result = mockBackend.resolveReport(reportId, user.email, action);
+      if (result) {
+        await loadReportedReviews(); // Reload reported reviews
+        setSelectedReport(null);
+      }
+    } catch (error) {
+      console.error('Error resolving report:', error);
+    }
+  };
+
   const filteredSubmissions = submissionsList.filter(sub => {
     if (activeTab === 'pending') return sub.status === 'pending';
     if (activeTab === 'approved') return sub.status === 'approved';
     if (activeTab === 'rejected') return sub.status === 'rejected';
     if (activeTab === 'needs_changes') return sub.status === 'needs_changes';
     return true;
+  });
+
+  const filteredReports = reportedReviews.filter(report => {
+    if (activeTab === 'reports') return report.status === 'pending';
+    return false;
   });
 
   const getStatusBadge = (status) => {
@@ -161,59 +190,181 @@ const ReviewerDashboard = () => {
       <p className={styles.subtitle}>Review and approve restaurant submissions</p>
 
       <div className={styles.tabNavigation}>
-        <button 
+        <button
           className={`${styles.tab} ${activeTab === 'pending' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('pending')}
+          onClick={() => {
+            setActiveTab('pending');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+          }}
         >
           Pending ({submissionsList.filter(s => s.status === 'pending').length})
         </button>
-        <button 
+        <button
           className={`${styles.tab} ${activeTab === 'approved' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('approved')}
+          onClick={() => {
+            setActiveTab('approved');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+          }}
         >
           Approved ({submissionsList.filter(s => s.status === 'approved').length})
         </button>
-        <button 
+        <button
           className={`${styles.tab} ${activeTab === 'rejected' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('rejected')}
+          onClick={() => {
+            setActiveTab('rejected');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+          }}
         >
           Rejected ({submissionsList.filter(s => s.status === 'rejected').length})
         </button>
-        <button 
+        <button
           className={`${styles.tab} ${activeTab === 'needs_changes' ? styles.activeTab : ''}`}
-          onClick={() => setActiveTab('needs_changes')}
+          onClick={() => {
+            setActiveTab('needs_changes');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+          }}
         >
           Needs Changes ({submissionsList.filter(s => s.status === 'needs_changes').length})
+        </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'reports' ? styles.activeTab : ''}`}
+          onClick={() => {
+            setActiveTab('reports');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+          }}
+        >
+          Reported Reviews ({reportedReviews.filter(r => r.status === 'pending').length})
         </button>
       </div>
 
       <div className={styles.content}>
         <div className={styles.submissionsList}>
-          {filteredSubmissions.map(submission => (
-            <div
-              key={submission.id}
-              className={`${styles.submissionCard} ${selectedSubmission?.id === submission.id ? styles.selected : ''}`}
-              onClick={() => setSelectedSubmission(submission)}
-            >
-              <div className={styles.submissionHeader}>
-                <h3>{submission.data.name}</h3>
-                {getStatusBadge(submission.status)}
-              </div>
-              <p className={styles.submissionMeta}>
-                Submitted by {submission.submittedBy} • {new Date(submission.submittedAt).toLocaleDateString()}
-              </p>
-              <p className={styles.submissionPreview}>
-                {submission.data?.address || 'No address'} • €{submission.data?.menuPrice || '0.00'}
-              </p>
-            </div>
-          ))}
-          
-          {filteredSubmissions.length === 0 && (
-            <div className={styles.emptyState}>
-              <p>No {activeTab} submissions.</p>
-            </div>
+          {activeTab === 'reports' ? (
+            <>
+              {filteredReports.map(report => (
+                <div
+                  key={report.id}
+                  className={`${styles.submissionCard} ${selectedReport?.id === report.id ? styles.selected : ''}`}
+                  onClick={() => setSelectedReport(report)}
+                >
+                  <div className={styles.submissionHeader}>
+                    <h3>Review Report</h3>
+                    <span className={`${styles.statusBadge} ${styles.statusPending}`}>
+                      PENDING
+                    </span>
+                  </div>
+                  <p className={styles.submissionMeta}>
+                    Reported by {report.reporterId} • {new Date(report.dateReported).toLocaleDateString()}
+                  </p>
+                  <p className={styles.submissionPreview}>
+                    Reason: {report.reason}
+                  </p>
+                </div>
+              ))}
+
+              {filteredReports.length === 0 && (
+                <div className={styles.emptyState}>
+                  <p>No pending reported reviews.</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {filteredSubmissions.map(submission => (
+                <div
+                  key={submission.id}
+                  className={`${styles.submissionCard} ${selectedSubmission?.id === submission.id ? styles.selected : ''}`}
+                  onClick={() => setSelectedSubmission(submission)}
+                >
+                  <div className={styles.submissionHeader}>
+                    <h3>{submission.data.name}</h3>
+                    {getStatusBadge(submission.status)}
+                  </div>
+                  <p className={styles.submissionMeta}>
+                    Submitted by {submission.submittedBy} • {new Date(submission.submittedAt).toLocaleDateString()}
+                  </p>
+                  <p className={styles.submissionPreview}>
+                    {submission.data?.address || 'No address'} • €{submission.data?.menuPrice || '0.00'}
+                  </p>
+                </div>
+              ))}
+
+              {filteredSubmissions.length === 0 && (
+                <div className={styles.emptyState}>
+                  <p>No {activeTab} submissions.</p>
+                </div>
+              )}
+            </>
           )}
         </div>
+
+        {selectedReport && (
+          <div className={styles.reviewPanel}>
+            <div className={styles.reviewHeader}>
+              <h2>Reported Review</h2>
+              <span className={`${styles.statusBadge} ${styles.statusPending}`}>
+                PENDING
+              </span>
+            </div>
+
+            <div className={styles.submissionDetails}>
+              <div className={styles.detailGroup}>
+                <strong>Report Reason:</strong> {selectedReport.reason}
+              </div>
+              <div className={styles.detailGroup}>
+                <strong>Reported By:</strong> {selectedReport.reporterId}
+              </div>
+              <div className={styles.detailGroup}>
+                <strong>Report Date:</strong> {new Date(selectedReport.dateReported).toLocaleString()}
+              </div>
+              <div className={styles.detailGroup}>
+                <strong>Restaurant ID:</strong> {selectedReport.restaurantId}
+              </div>
+            </div>
+
+            <div className={styles.reportedReviewContent}>
+              <h3>Reported Review Content</h3>
+              <div className={styles.reviewContent}>
+                <div className={styles.reviewMeta}>
+                  <strong>Review By:</strong> {selectedReport.reviewContent.displayName}
+                  <span> • {selectedReport.reviewContent.rating}/5 ★</span>
+                  <span> • {new Date(selectedReport.reviewContent.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div className={styles.reviewText}>
+                  <p>{selectedReport.reviewContent.comment}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.reviewActions}>
+              <div className={styles.actionButtons}>
+                <button
+                  className={`${styles.actionButton} ${styles.changesButton}`}
+                  onClick={() => handleResolveReport(selectedReport.id, 'dismissed')}
+                >
+                  Dismiss Report
+                </button>
+                <button
+                  className={`${styles.actionButton} ${styles.rejectButton}`}
+                  onClick={() => handleResolveReport(selectedReport.id, 'review_hidden')}
+                >
+                  Hide Review
+                </button>
+                <button
+                  className={`${styles.actionButton} ${styles.rejectButton}`}
+                  onClick={() => handleResolveReport(selectedReport.id, 'user_warned')}
+                >
+                  Warn User
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {selectedSubmission && (
           <div className={styles.reviewPanel}>

@@ -23,6 +23,10 @@ const RestaurantDetail = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editSuggestions, setEditSuggestions] = useState([]);
   const [showAddReview, setShowAddReview] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportingReviewId, setReportingReviewId] = useState(null);
+  const [reportReason, setReportReason] = useState('');
+  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
   const [expandedReviews, setExpandedReviews] = useState(new Set());
 
   useEffect(() => {
@@ -168,6 +172,55 @@ const RestaurantDetail = () => {
     } catch (error) {
       console.error('Error downvoting review:', error);
     }
+  };
+
+  const showNotification = (message, type = 'success') => {
+    setNotification({ show: true, message, type });
+    setTimeout(() => {
+      setNotification({ show: false, message: '', type: '' });
+    }, 4000);
+  };
+
+  const handleReportReview = async (reviewId) => {
+    if (!user) {
+      showNotification('Please login to report reviews.', 'error');
+      return;
+    }
+
+    setReportingReviewId(reviewId);
+    setShowReportModal(true);
+  };
+
+  const submitReport = async () => {
+    if (!reportReason.trim()) {
+      return;
+    }
+
+    try {
+      const result = mockBackend.reportReview(reportingReviewId, id, user.email, reportReason.trim());
+      if (result) {
+        showNotification('Review reported successfully. Thank you for helping keep our community safe.', 'success');
+        setShowReportModal(false);
+        setReportReason('');
+        setReportingReviewId(null);
+      }
+    } catch (error) {
+      if (error.message === 'You have already reported this review') {
+        showNotification('You have already reported this review.', 'error');
+      } else {
+        console.error('Error reporting review:', error);
+        showNotification('Failed to report review. Please try again.', 'error');
+      }
+      setShowReportModal(false);
+      setReportReason('');
+      setReportingReviewId(null);
+    }
+  };
+
+  const cancelReport = () => {
+    setShowReportModal(false);
+    setReportReason('');
+    setReportingReviewId(null);
   };
 
   const handleVoteOnSuggestion = async (suggestionId, voteType) => {
@@ -509,7 +562,10 @@ const RestaurantDetail = () => {
                               </div>
                             )}
 
-                            <button className={styles.actionButton}>
+                            <button
+                              className={styles.reportButton}
+                              onClick={() => handleReportReview(review.id)}
+                            >
                               Report
                             </button>
 
@@ -549,6 +605,102 @@ const RestaurantDetail = () => {
           onClose={() => setShowEditModal(false)}
           onSubmit={handleEditFormSubmit}
         />
+      )}
+
+      {/* Report Modal */}
+      {showReportModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.reportModal}>
+            <div className={styles.reportModalHeader}>
+              <h3>Report Review</h3>
+              <button 
+                className={styles.closeButton}
+                onClick={cancelReport}
+              >
+                ✕
+              </button>
+            </div>
+            <div className={styles.reportModalBody}>
+              <p>Please provide a reason for reporting this review:</p>
+              <div className={styles.reportReasons}>
+                <label className={styles.reasonOption}>
+                  <input 
+                    type="radio" 
+                    name="reportReason" 
+                    value="spam"
+                    onChange={(e) => setReportReason(e.target.value)}
+                  />
+                  <span>Spam or irrelevant content</span>
+                </label>
+                <label className={styles.reasonOption}>
+                  <input 
+                    type="radio" 
+                    name="reportReason" 
+                    value="inappropriate"
+                    onChange={(e) => setReportReason(e.target.value)}
+                  />
+                  <span>Inappropriate or offensive language</span>
+                </label>
+                <label className={styles.reasonOption}>
+                  <input 
+                    type="radio" 
+                    name="reportReason" 
+                    value="fake"
+                    onChange={(e) => setReportReason(e.target.value)}
+                  />
+                  <span>Fake or misleading review</span>
+                </label>
+                <label className={styles.reasonOption}>
+                  <input 
+                    type="radio" 
+                    name="reportReason" 
+                    value="other"
+                    onChange={(e) => setReportReason(e.target.value)}
+                  />
+                  <span>Other</span>
+                </label>
+              </div>
+              {reportReason === 'other' && (
+                <textarea
+                  className={styles.otherReasonText}
+                  placeholder="Please specify..."
+                  value={reportReason === 'other' ? '' : reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                />
+              )}
+            </div>
+            <div className={styles.reportModalActions}>
+              <button 
+                className={styles.cancelButton}
+                onClick={cancelReport}
+              >
+                Cancel
+              </button>
+              <button 
+                className={styles.submitReportButton}
+                onClick={submitReport}
+                disabled={!reportReason.trim()}
+              >
+                Submit Report
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Notification */}
+      {notification.show && (
+        <div className={`${styles.notification} ${styles[notification.type]}`}>
+          <div className={styles.notificationContent}>
+            <span>{notification.message}</span>
+            <button 
+              className={styles.notificationClose}
+              onClick={() => setNotification({ show: false, message: '', type: '' })}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

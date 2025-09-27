@@ -481,6 +481,75 @@ class MockBackend {
     localStorage.setItem('mmd_menu_reviews', JSON.stringify(menuReviews));
     return review;
   }
+
+  // Report a review
+  reportReview(reviewId, restaurantId, reporterId, reason) {
+    const reports = JSON.parse(localStorage.getItem('mmd_reported_reviews') || '[]');
+
+    // Check if user already reported this review
+    const existingReport = reports.find(
+      report => report.reviewId === reviewId && report.reporterId === reporterId
+    );
+
+    if (existingReport) {
+      throw new Error('You have already reported this review');
+    }
+
+    // Get the review details for context
+    const menuReviews = JSON.parse(localStorage.getItem('mmd_menu_reviews') || '{}');
+    const reviewList = menuReviews[restaurantId] || [];
+    const review = reviewList.find(r => r.id === reviewId);
+
+    if (!review) {
+      throw new Error('Review not found');
+    }
+
+    // Create new report
+    const newReport = {
+      id: `report_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      reviewId,
+      restaurantId,
+      reporterId,
+      reason,
+      dateReported: new Date().toISOString(),
+      status: 'pending', // pending, reviewed, resolved
+      reviewContent: {
+        userId: review.userId,
+        displayName: review.displayName,
+        comment: review.comment,
+        rating: review.rating,
+        createdAt: review.createdAt
+      }
+    };
+
+    reports.push(newReport);
+    localStorage.setItem('mmd_reported_reviews', JSON.stringify(reports));
+
+    return true;
+  }
+
+  // Get reported reviews (for reviewers/admins)
+  getReportedReviews() {
+    return JSON.parse(localStorage.getItem('mmd_reported_reviews') || '[]');
+  }
+
+  // Resolve a report
+  resolveReport(reportId, reviewerId, action) {
+    const reports = JSON.parse(localStorage.getItem('mmd_reported_reviews') || '[]');
+    const reportIndex = reports.findIndex(report => report.id === reportId);
+
+    if (reportIndex === -1) {
+      throw new Error('Report not found');
+    }
+
+    reports[reportIndex].status = 'resolved';
+    reports[reportIndex].resolvedBy = reviewerId;
+    reports[reportIndex].resolvedAt = new Date().toISOString();
+    reports[reportIndex].action = action; // 'dismissed', 'review_hidden', 'user_warned', etc.
+
+    localStorage.setItem('mmd_reported_reviews', JSON.stringify(reports));
+    return true;
+  }
 }
 
 // Export singleton instance
