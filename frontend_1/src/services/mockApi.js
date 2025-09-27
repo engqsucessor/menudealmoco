@@ -34,7 +34,8 @@ export const getRestaurants = (filters = {}) => {
         quickService: true,
         groupFriendly: true
       },
-      isOpenNow: true
+      isOpenNow: true,
+      menuPhoto: "https://images.unsplash.com/photo-1586999482831-8e4c02d1b6a8?w=500&h=400&fit=crop"
     },
     {
       id: "2",
@@ -52,6 +53,7 @@ export const getRestaurants = (filters = {}) => {
       zomatoRating: 4.6,
       zomatoReviews: 78,
       totalReviews: 67,
+      menuPhoto: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=500&h=400&fit=crop",
       practical: {
         cardsAccepted: true,
         parking: false,

@@ -5,7 +5,7 @@ import { getRestaurant } from '../services/mockApi';
 import { favoriteRestaurants } from '../services/localStorage';
 import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
-import EditSuggestionModal from '../components/ui/EditSuggestionModal';
+import AddRestaurant from './AddRestaurant';
 import { getRestaurantMenuReviews, upvoteMenuReview, downvoteMenuReview } from '../services/menuRatingService';
 import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
 
@@ -171,6 +171,70 @@ const RestaurantDetail = () => {
     }
   };
 
+  const handleEditFormSubmit = async (formData) => {
+    try {
+      // Import the service function
+      const { submitEditSuggestion } = await import('../services/editSuggestionsService');
+      
+      // Transform form data into changes object
+      const changes = {};
+      
+      // Check each field for changes
+      if (formData.name !== restaurant.name) changes.name = formData.name;
+      if (parseFloat(formData.menuPrice) !== restaurant.menuPrice) changes.menuPrice = parseFloat(formData.menuPrice);
+      if (formData.foodType !== restaurant.foodType) changes.foodType = formData.foodType;
+      if (formData.googleRating !== restaurant.googleRating) changes.googleRating = formData.googleRating;
+      if (formData.googleReviews !== restaurant.googleReviews) changes.googleReviews = formData.googleReviews;
+      if (formData.description !== restaurant.description) changes.description = formData.description;
+      
+      // Handle address (combine district and city)
+      const currentAddress = `${restaurant.district}, ${restaurant.city}`;
+      if (formData.address !== currentAddress) {
+        const [district, city] = formData.address.split(',').map(s => s.trim());
+        if (district) changes.district = district;
+        if (city) changes.city = city;
+      }
+      
+      // Handle included items
+      const currentIncluded = restaurant.whatsIncluded || [];
+      const newIncluded = Object.entries(formData.included)
+        .filter(([key, value]) => value)
+        .map(([key]) => key);
+      
+      if (JSON.stringify(currentIncluded.sort()) !== JSON.stringify(newIncluded.sort())) {
+        changes.whatsIncluded = newIncluded;
+      }
+      
+      // Handle practical features
+      if (formData.practical.takesCards !== restaurant.practical?.cardsAccepted) {
+        changes.practical = { ...changes.practical, cardsAccepted: formData.practical.takesCards };
+      }
+      if (formData.practical.quickService !== restaurant.practical?.quickService) {
+        changes.practical = { ...changes.practical, quickService: formData.practical.quickService };
+      }
+      if (formData.practical.groupFriendly !== restaurant.practical?.groupFriendly) {
+        changes.practical = { ...changes.practical, groupFriendly: formData.practical.groupFriendly };
+      }
+      if (formData.practical.hasParking !== restaurant.practical?.parking) {
+        changes.practical = { ...changes.practical, parking: formData.practical.hasParking };
+      }
+      
+      const result = await submitEditSuggestion(
+        id, 
+        user.email, 
+        changes, 
+        formData.reason
+      );
+      
+      if (result.success) {
+        setShowEditModal(false);
+        loadEditSuggestions(); // Refresh suggestions
+      }
+    } catch (error) {
+      console.error('Error submitting edit suggestion:', error);
+    }
+  };
+
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -179,7 +243,7 @@ const RestaurantDetail = () => {
     return <div>Restaurant not found</div>;
   }
 
-  const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, zomatoRating, zomatoReviews, menuReviews } = restaurant;
+  const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, zomatoRating, zomatoReviews, menuReviews, menuPhoto } = restaurant;
 
   const location = `${district}, ${city}`;
 
@@ -237,6 +301,12 @@ const RestaurantDetail = () => {
           Overview
         </button>
         <button 
+          className={`${styles.tabButton} ${activeTab === 'photos' ? styles.active : ''}`}
+          onClick={() => setActiveTab('photos')}
+        >
+          Photos
+        </button>
+        <button 
           className={`${styles.tabButton} ${activeTab === 'reviews' ? styles.active : ''}`}
           onClick={() => setActiveTab('reviews')}
         >
@@ -249,6 +319,49 @@ const RestaurantDetail = () => {
           <div>
             <h2>About {name}</h2>
             <p>More details about the restaurant would go here, such as a description, opening hours, and contact information.</p>
+          </div>
+        )}
+
+        {activeTab === 'photos' && (
+          <div>
+            <h2>Photos</h2>
+            
+            {/* Restaurant Photo */}
+            {photo && (
+              <div className={styles.photoSection}>
+                <h3 className={styles.photoSectionTitle}>Restaurant</h3>
+                <div className={styles.photoContainer}>
+                  <img 
+                    src={photo} 
+                    alt={`${name} - Restaurant`} 
+                    className={styles.restaurantPhoto}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Menu de Almoço Photo */}
+            <div className={styles.photoSection}>
+              <h3 className={styles.photoSectionTitle}>Menu de Almoço</h3>
+              <div className={styles.photoContainer}>
+                {menuPhoto ? (
+                  <>
+                    <img 
+                      src={menuPhoto} 
+                      alt={`${name} - Menu de Almoço`} 
+                      className={styles.menuPhoto}
+                    />
+                    <p className={styles.menuPhotoCaption}>
+                      Current lunch menu with prices - €{menuPrice.toFixed(2)}
+                    </p>
+                  </>
+                ) : (
+                  <div className={styles.placeholderImage}>
+                    <span>No menu photo available</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -394,12 +507,15 @@ const RestaurantDetail = () => {
       </div>
 
       {/* Edit Suggestion Modal */}
-      <EditSuggestionModal
-        restaurant={restaurant}
-        isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        onSubmitted={handleEditSuggestionSubmitted}
-      />
+      {showEditModal && (
+        <AddRestaurant
+          restaurant={restaurant}
+          isEditMode={true}
+          isModal={true}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleEditFormSubmit}
+        />
+      )}
     </div>
   );
 };

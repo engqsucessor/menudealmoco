@@ -2,34 +2,42 @@ import React, { useState } from 'react';
 import { PRACTICAL_FEATURES, INCLUDED_FEATURES, getPracticalFeatureLabel, getIncludedFeatureLabel } from '../constants/labels';
 import styles from './AddRestaurant.module.css';
 
-const AddRestaurant = () => {
+const AddRestaurant = ({ 
+  restaurant = null, 
+  isEditMode = false, 
+  isModal = false,
+  onClose = null,
+  onSubmit = null 
+}) => {
   const [formData, setFormData] = useState({
-    name: '',
-    address: '',
-    menuPrice: '',
-    foodType: '',
-    googleRating: '',
-    googleReviews: '',
-    description: '',
-    numberOfDishes: '',
-    dishes: [],
+    name: restaurant?.name || '',
+    address: restaurant?.address || `${restaurant?.district || ''}, ${restaurant?.city || ''}`.replace(/^, |, $/, ''),
+    menuPrice: restaurant?.menuPrice || '',
+    foodType: restaurant?.foodType || '',
+    googleRating: restaurant?.googleRating || '',
+    googleReviews: restaurant?.googleReviews || '',
+    description: restaurant?.description || '',
+    numberOfDishes: restaurant?.dishes?.length || '',
+    dishes: restaurant?.dishes || [],
     included: {
-      soup: false,
-      main: true,
-      drink: false,
-      coffee: false,
-      dessert: false,
-      wine: false,
-      bread: false,
+      soup: restaurant?.whatsIncluded?.includes('soup') || false,
+      main: restaurant?.whatsIncluded?.includes('main') || true,
+      drink: restaurant?.whatsIncluded?.includes('drink') || false,
+      coffee: restaurant?.whatsIncluded?.includes('coffee') || false,
+      dessert: restaurant?.whatsIncluded?.includes('dessert') || false,
+      wine: restaurant?.whatsIncluded?.includes('wine') || false,
+      bread: restaurant?.whatsIncluded?.includes('bread') || false,
     },
     practical: {
-      takesCards: false,
-      quickService: false,
-      groupFriendly: false,
-      hasParking: false,
+      takesCards: restaurant?.practical?.cardsAccepted || false,
+      quickService: restaurant?.practical?.quickService || false,
+      groupFriendly: restaurant?.practical?.groupFriendly || false,
+      hasParking: restaurant?.practical?.parking || false,
     },
-    priceRange: '',
-    distance: '',
+    priceRange: restaurant?.priceRange || '',
+    distance: restaurant?.distance || '',
+    // Edit-specific fields
+    reason: ''
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -78,7 +86,22 @@ const AddRestaurant = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    
+    if (isEditMode) {
+      // Handle edit mode
+      if (!formData.reason.trim()) {
+        alert('Please provide a reason for your edit suggestion');
+        return;
+      }
+      
+      // Call the onSubmit callback if provided (for modal mode)
+      if (onSubmit) {
+        onSubmit(formData);
+        return;
+      }
+    }
+    
+    console.log(`${isEditMode ? 'Edit' : 'Add'} form submitted:`, formData);
     setSubmitted(true);
   };
 
@@ -86,15 +109,26 @@ const AddRestaurant = () => {
     return (
       <div className={styles.submittedMessage}>
         <h2>Thank you!</h2>
-        <p>Your submission has been received and will be reviewed by our team.</p>
+        <p>Your {isEditMode ? 'edit suggestion' : 'submission'} has been received and will be reviewed by our team.</p>
+        {isModal && (
+          <button onClick={onClose} className={styles.closeButton}>Close</button>
+        )}
       </div>
     );
   }
 
-  return (
-    <div className={styles.addRestaurantPage}>
-      <h1 className={styles.title}>Add a Restaurant</h1>
-      <p className={styles.subtitle}>Help the community find new lunch deals.</p>
+  const content = (
+    <>
+      {!isModal && (
+        <>
+          <h1 className={styles.title}>{isEditMode ? 'Suggest Restaurant Edit' : 'Add a Restaurant'}</h1>
+          <p className={styles.subtitle}>
+            {isEditMode 
+              ? 'Suggest improvements to help keep restaurant information accurate.' 
+              : 'Help the community find new lunch deals.'}
+          </p>
+        </>
+      )}
 
       <form onSubmit={handleSubmit} className={styles.form}>
         {/* Section 1: Basic Info & Location */}
@@ -210,13 +244,63 @@ const AddRestaurant = () => {
             <small className={styles.helpText}>Upload a photo of the restaurant exterior or interior</small>
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="menuPhoto">Photo of Menu (Required)</label>
-            <input id="menuPhoto" type="file" name="menuPhoto" className={styles.input} accept="image/*" required />
-            <small className={styles.helpText}>Upload a clear photo of the lunch menu with prices</small>
+            <label htmlFor="menuPhoto">{isEditMode ? 'New Menu de Almoço Photo (Optional)' : 'Photo of Menu (Required)'}</label>
+            <input id="menuPhoto" type="file" name="menuPhoto" className={styles.input} accept="image/*" required={!isEditMode} />
+            <small className={styles.helpText}>
+              {isEditMode 
+                ? 'Upload a new photo of the lunch menu with prices (leave empty to keep current photo)'
+                : 'Upload a clear photo of the lunch menu with prices'}
+            </small>
           </div>
-          <button type="submit" className={styles.submitButton}>Submit Restaurant</button>
+          {isEditMode && (
+            <div className={styles.formGroup}>
+              <label htmlFor="reason">Reason for Edit (Required) *</label>
+              <textarea 
+                id="reason" 
+                name="reason" 
+                className={styles.textarea} 
+                value={formData.reason} 
+                onChange={handleInputChange}
+                placeholder="Please explain why you're suggesting these changes..."
+                rows={3}
+                required
+              />
+            </div>
+          )}
+          <div className={styles.buttonGroup}>
+            {isModal && (
+              <button type="button" onClick={onClose} className={styles.cancelButton}>
+                Cancel
+              </button>
+            )}
+            <button type="submit" className={styles.submitButton}>
+              {isEditMode ? 'Submit Edit Suggestion' : 'Submit Restaurant'}
+            </button>
+          </div>
         </fieldset>
       </form>
+    </>
+  );
+
+  if (isModal) {
+    return (
+      <div className={styles.modalOverlay} onClick={onClose}>
+        <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalHeader}>
+            <h2 className={styles.title}>
+              {isEditMode ? 'Suggest Restaurant Edit' : 'Add Restaurant'}
+            </h2>
+            <button onClick={onClose} className={styles.closeButton}>×</button>
+          </div>
+          {content}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.addRestaurantPage}>
+      {content}
     </div>
   );
 };
