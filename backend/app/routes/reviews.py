@@ -3,14 +3,14 @@ from sqlalchemy.orm import Session
 from typing import List
 import json
 from app.database.database import get_db
-from app.database.models import MenuReview, User, Restaurant
+from app.database.models import MenuReview, User, Restaurant, ReviewVote
 from app.models.restaurant import MenuReviewCreate, MenuReviewResponse
 from datetime import datetime
 
 router = APIRouter()
 
 @router.get("/restaurants/{restaurant_id}/reviews")
-async def get_menu_reviews(restaurant_id: str, db: Session = Depends(get_db)):
+async def get_menu_reviews(restaurant_id: str, db: Session = Depends(get_db), user_email: str = Header(alias="X-User-Email", default=None)):
     """Get all reviews for a restaurant in the format frontend expects"""
     try:
         restaurant_id_int = int(restaurant_id)
@@ -22,9 +22,25 @@ async def get_menu_reviews(restaurant_id: str, db: Session = Depends(get_db)):
         MenuReview.is_hidden == False
     ).all()
 
+    # Get current user for vote tracking
+    current_user = None
+    if user_email:
+        current_user = db.query(User).filter(User.email == user_email).first()
+
     result = []
     for review in reviews:
         user = db.query(User).filter(User.id == review.user_id).first()
+
+        # Get user's vote on this review if user is logged in
+        user_vote = None
+        if current_user:
+            vote = db.query(ReviewVote).filter(
+                ReviewVote.user_id == current_user.id,
+                ReviewVote.review_id == review.id
+            ).first()
+            if vote:
+                user_vote = vote.vote_type
+
         result.append({
             "id": str(review.id),
             "userId": user.email if user else "unknown",
@@ -35,7 +51,7 @@ async def get_menu_reviews(restaurant_id: str, db: Session = Depends(get_db)):
             "upvotes": review.upvotes,
             "downvotes": review.downvotes,
             "createdAt": review.created_at.isoformat(),
-            "userVotes": {}  # TODO: Implement user votes tracking
+            "userVotes": {"currentUserVote": user_vote} if current_user else {}
         })
 
     return result
@@ -115,7 +131,7 @@ async def vote_on_review(
     db: Session = Depends(get_db),
     user_email: str = Header(alias="X-User-Email")
 ):
-    """Simple voting endpoint - just increment upvotes or downvotes"""
+    """Handle voting on reviews with proper vote tracking to prevent multiple votes"""
     try:
         review_id_int = int(review_id)
     except ValueError:
@@ -143,11 +159,49 @@ async def vote_on_review(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Simple voting - just increment the count
-    if vote_type == 'up':
-        review.upvotes += 1
-    elif vote_type == 'down':
-        review.downvotes += 1
+    # Check if user has already voted on this review
+    existing_vote = db.query(ReviewVote).filter(
+        ReviewVote.user_id == user.id,
+        ReviewVote.review_id == review_id_int
+    ).first()
+
+    # Handle the vote
+    if existing_vote:
+        if existing_vote.vote_type == vote_type:
+            # User is trying to vote the same way again - remove their vote
+            if vote_type == 'up':
+                review.upvotes = max(0, review.upvotes - 1)
+            else:
+                review.downvotes = max(0, review.downvotes - 1)
+
+            db.delete(existing_vote)
+            new_vote_type = None
+        else:
+            # User is changing their vote (up -> down or down -> up)
+            if existing_vote.vote_type == 'up':
+                review.upvotes = max(0, review.upvotes - 1)
+                review.downvotes += 1
+            else:
+                review.downvotes = max(0, review.downvotes - 1)
+                review.upvotes += 1
+
+            existing_vote.vote_type = vote_type
+            new_vote_type = vote_type
+    else:
+        # New vote
+        if vote_type == 'up':
+            review.upvotes += 1
+        else:
+            review.downvotes += 1
+
+        # Create new vote record
+        new_vote = ReviewVote(
+            user_id=user.id,
+            review_id=review_id_int,
+            vote_type=vote_type
+        )
+        db.add(new_vote)
+        new_vote_type = vote_type
 
     db.commit()
     db.refresh(review)
@@ -165,5 +219,5 @@ async def vote_on_review(
         "upvotes": review.upvotes,
         "downvotes": review.downvotes,
         "createdAt": review.created_at.isoformat(),
-        "userVotes": {}
+        "userVotes": {"currentUserVote": new_vote_type}
     }

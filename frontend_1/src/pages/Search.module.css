@@ -126,6 +126,43 @@
   text-transform: uppercase;
 }
 
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pageButton {
+  background: white;
+  border: 2px solid #333;
+  color: #333;
+  padding: 0.5rem 0.75rem;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  min-width: 40px;
+  transition: all 0.2s ease;
+}
+
+.pageButton:hover {
+  background: #333;
+  color: white;
+}
+
+.pageButton.activePage {
+  background: #333;
+  color: white;
+}
+
+.ellipsis {
+  color: #666;
+  font-weight: bold;
+  padding: 0 0.25rem;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .restaurantGrid {

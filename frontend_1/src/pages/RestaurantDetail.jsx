@@ -30,6 +30,7 @@ const RestaurantDetail = () => {
   const [voteTimeouts, setVoteTimeouts] = useState(new Map()); // Track debounce timeouts
   const [localVotes, setLocalVotes] = useState(new Map()); // Track votes locally for offline experience
   const [userVoteHistory, setUserVoteHistory] = useState(new Map()); // Track user's voting history
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     getRestaurant(id).then(data => {
@@ -93,8 +94,8 @@ const RestaurantDetail = () => {
 
   const loadMenuReviews = async () => {
     try {
-      // Use apiService to get menu reviews
-      const reviews = await apiService.getMenuReviews(id);
+      // Use apiService to get menu reviews, passing user email for vote tracking
+      const reviews = await apiService.getMenuReviews(id, user?.email);
       setMenuReviewsData(reviews);
     } catch (error) {
       console.error('Error loading menu reviews:', error);
@@ -171,7 +172,7 @@ const RestaurantDetail = () => {
 
   const loadEditSuggestions = async () => {
     try {
-      const suggestions = getEditSuggestions(id, 'pending');
+      const suggestions = await getEditSuggestions(id, 'pending', user?.email);
       setEditSuggestions(suggestions);
     } catch (error) {
       console.error('Error loading edit suggestions:', error);
@@ -281,10 +282,14 @@ const RestaurantDetail = () => {
             review.id === reviewId ? {
               ...review,
               upvotes: result.upvotes || 0,
-              downvotes: result.downvotes || 0
+              downvotes: result.downvotes || 0,
+              userVotes: result.userVotes || {}
             } : review
           )
         );
+
+        // Update local vote history for offline fallback
+        saveUserVoteHistory(reviewId, result.userVotes?.currentUserVote);
       }
     } catch (error) {
       console.error('Error voting:', error);
@@ -346,10 +351,10 @@ const RestaurantDetail = () => {
 
   const handleVoteOnSuggestion = async (suggestionId, voteType) => {
     if (!user) return;
-    
+
     try {
-      const result = await voteOnEditSuggestion(suggestionId, user.displayName || user.email, voteType);
-      
+      const result = await voteOnEditSuggestion(suggestionId, user.email, voteType);
+
       if (result.success) {
         loadEditSuggestions(); // Refresh suggestions to show updated votes
       }
@@ -362,60 +367,139 @@ const RestaurantDetail = () => {
     try {
       // Import the service function
       const { submitEditSuggestion } = await import('../services/editSuggestionsService');
-      
-      // Transform form data into changes object
+
+      // CLEAR AND SIMPLE CHANGE DETECTION
       const changes = {};
-      
-      // Check each field for changes
-      if (formData.name !== restaurant.name) changes.name = formData.name;
-      if (parseFloat(formData.menuPrice) !== restaurant.menuPrice) changes.menuPrice = parseFloat(formData.menuPrice);
-      if (formData.foodType !== restaurant.foodType) changes.foodType = formData.foodType;
-      if (formData.googleRating !== restaurant.googleRating) changes.googleRating = formData.googleRating;
-      if (formData.googleReviews !== restaurant.googleReviews) changes.googleReviews = formData.googleReviews;
-      if (formData.description !== restaurant.description) changes.description = formData.description;
-      
-      // Handle address (combine district and city)
-      const currentAddress = `${restaurant.district}, ${restaurant.city}`;
-      if (formData.address !== currentAddress) {
-        const [district, city] = formData.address.split(',').map(s => s.trim());
-        if (district) changes.district = district;
-        if (city) changes.city = city;
+
+      // Add a change with before/after values
+      const addChange = (field, oldValue, newValue) => {
+        changes[field] = { from: oldValue, to: newValue };
+      };
+
+      // Get current restaurant values (what's in database)
+      const current = {
+        name: restaurant.name,
+        address: restaurant.address,
+        district: restaurant.district,
+        city: restaurant.city,
+        menuPrice: restaurant.menuPrice,
+        priceRange: restaurant.priceRange,
+        foodType: restaurant.foodType,
+        googleRating: restaurant.googleRating,
+        googleReviews: restaurant.googleReviews,
+        description: restaurant.description,
+        numberOfDishes: restaurant.dishes?.length || 0,
+        dishes: restaurant.dishes || [],
+        whatsIncluded: restaurant.whatsIncluded || [],
+        cardsAccepted: restaurant.practical?.cardsAccepted || false,
+        quickService: restaurant.practical?.quickService || false,
+        groupFriendly: restaurant.practical?.groupFriendly || false,
+        parking: restaurant.practical?.parking || false
+      };
+
+      // Get form values (what user submitted)
+      const form = {
+        name: formData.name,
+        address: formData.address,
+        district: formData.district,
+        city: formData.city,
+        menuPrice: parseFloat(formData.menuPrice),
+        priceRange: formData.priceRange,
+        foodType: formData.foodType,
+        googleRating: formData.googleRating ? parseFloat(formData.googleRating) : null,
+        googleReviews: formData.googleReviews ? parseInt(formData.googleReviews) : null,
+        description: formData.description,
+        numberOfDishes: parseInt(formData.numberOfDishes) || 0,
+        dishes: formData.dishes?.filter(dish => dish.trim()) || [],
+        whatsIncluded: Object.keys(formData.included || {}).filter(key => formData.included[key]).sort(),
+        cardsAccepted: formData.practical?.takesCards || false,
+        quickService: formData.practical?.quickService || false,
+        groupFriendly: formData.practical?.groupFriendly || false,
+        parking: formData.practical?.hasParking || false
+      };
+
+      // Compare every field and log what we're comparing
+      console.log('=== CHANGE DETECTION DEBUG ===');
+      console.log('Current restaurant data:', current);
+      console.log('Form data:', form);
+
+      // Add ALL missing fields to form values
+      form.priceRange = formData.priceRange;
+      form.distance = formData.distance;
+      form.restaurantPhoto = formData.restaurantPhoto;
+      form.menuPhoto = formData.menuPhoto;
+
+      // Add ALL missing fields to current values
+      current.priceRange = restaurant.priceRange || '';
+      current.distance = restaurant.distance || '';
+      current.restaurantPhoto = restaurant.restaurantPhoto || '';
+      current.menuPhoto = restaurant.menuPhoto || '';
+
+      // Check ALL fields that exist in the form
+      const fieldsToCheck = [
+        'name', 'address', 'district', 'city', 'menuPrice', 'priceRange', 'distance',
+        'foodType', 'googleRating', 'googleReviews', 'description', 'numberOfDishes',
+        'cardsAccepted', 'quickService', 'groupFriendly', 'parking',
+        'restaurantPhoto', 'menuPhoto'
+      ];
+
+      fieldsToCheck.forEach(field => {
+        if (current[field] !== form[field]) {
+          console.log(`CHANGE DETECTED in ${field}: ${current[field]} → ${form[field]}`);
+          addChange(field, current[field], form[field]);
+        }
+      });
+
+      // Check arrays separately
+      const currentIncluded = current.whatsIncluded.slice().sort();
+      const formIncluded = form.whatsIncluded.slice().sort();
+
+      if (JSON.stringify(currentIncluded) !== JSON.stringify(formIncluded)) {
+        console.log(`CHANGE DETECTED in whatsIncluded: ${currentIncluded} → ${formIncluded}`);
+        addChange('whatsIncluded', currentIncluded, formIncluded);
       }
-      
-      // Handle included items
-      const currentIncluded = restaurant.whatsIncluded || [];
-      const newIncluded = Object.entries(formData.included)
-        .filter(([key, value]) => value)
-        .map(([key]) => key);
-      
-      if (JSON.stringify(currentIncluded.sort()) !== JSON.stringify(newIncluded.sort())) {
-        changes.whatsIncluded = newIncluded;
+
+      const currentDishes = current.dishes.slice().sort();
+      const formDishes = form.dishes.slice().sort();
+
+      if (JSON.stringify(currentDishes) !== JSON.stringify(formDishes)) {
+        console.log(`CHANGE DETECTED in dishes: ${currentDishes} → ${formDishes}`);
+        addChange('dishes', currentDishes, formDishes);
       }
-      
-      // Handle practical features
-      if (formData.practical.takesCards !== restaurant.practical?.cardsAccepted) {
-        changes.practical = { ...changes.practical, cardsAccepted: formData.practical.takesCards };
+
+      // Check if there are actually any changes
+      if (Object.keys(changes).length === 0) {
+        // Show notification that no changes were detected
+        setNotification({
+          show: true,
+          message: 'No changes detected - suggestion not submitted',
+          type: 'info'
+        });
+        setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
+        setShowEditModal(false);
+        return;
       }
-      if (formData.practical.quickService !== restaurant.practical?.quickService) {
-        changes.practical = { ...changes.practical, quickService: formData.practical.quickService };
-      }
-      if (formData.practical.groupFriendly !== restaurant.practical?.groupFriendly) {
-        changes.practical = { ...changes.practical, groupFriendly: formData.practical.groupFriendly };
-      }
-      if (formData.practical.hasParking !== restaurant.practical?.parking) {
-        changes.practical = { ...changes.practical, parking: formData.practical.hasParking };
-      }
-      
+
+      console.log('Final changes detected:', changes);
+
       const result = await submitEditSuggestion(
-        id, 
-        user.email, 
-        changes, 
+        id,
+        user.email,
+        changes,
         formData.reason
       );
       
       if (result.success) {
         setShowEditModal(false);
         loadEditSuggestions(); // Refresh suggestions
+
+        // Show success notification
+        setNotification({
+          show: true,
+          message: 'Edit suggestion submitted successfully! 🎉',
+          type: 'success'
+        });
+        setTimeout(() => setNotification({ show: false, message: '', type: '' }), 4000);
       }
     } catch (error) {
       console.error('Error submitting edit suggestion:', error);
@@ -430,6 +514,33 @@ const RestaurantDetail = () => {
       newExpanded.add(reviewId);
     }
     setExpandedReviews(newExpanded);
+  };
+
+  const handleDeleteRestaurant = async () => {
+    if (!user || !user.isReviewer) {
+      showNotification('Only reviewers can delete restaurants.', 'error');
+      return;
+    }
+
+    try {
+      const result = await apiService.deleteRestaurant(id, user.email);
+      if (result) {
+        showNotification('Restaurant deleted successfully.', 'success');
+        setShowDeleteModal(false);
+        // Redirect to home page after deletion
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error deleting restaurant:', error);
+      showNotification('Failed to delete restaurant. Please try again.', 'error');
+      setShowDeleteModal(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
   };
 
   if (loading) {
@@ -474,6 +585,15 @@ const RestaurantDetail = () => {
                   {isFavorite ? '❤️' : '🤍'}
                 </button>
               )}
+              {user && user.isReviewer && (
+                <button
+                  className={styles.deleteButton}
+                  onClick={() => setShowDeleteModal(true)}
+                  title="Delete restaurant (Admin only)"
+                >
+                  🗑️
+                </button>
+              )}
             </div>
           </div>
           <p>{location}</p>
@@ -486,6 +606,38 @@ const RestaurantDetail = () => {
             {googleRating && <div className={styles.externalReview}><strong>Google:</strong> {googleRating}/5 ({googleReviews} reviews)</div>}
             {zomatoRating && <div className={styles.externalReview}><strong>Zomato:</strong> {zomatoRating}/5 ({zomatoReviews} reviews)</div>}
           </div>
+
+          {/* Practical Information Section */}
+          {restaurant.practical && (
+            <div className={styles.practicalInfo}>
+              <div className={styles.practicalItems}>
+                {restaurant.practical.cardsAccepted && (
+                  <span className={styles.practicalItem}>💳 Cards Accepted</span>
+                )}
+                {restaurant.practical.quickService && (
+                  <span className={styles.practicalItem}>⚡ Quick Service</span>
+                )}
+                {restaurant.practical.groupFriendly && (
+                  <span className={styles.practicalItem}>👥 Group Friendly</span>
+                )}
+                {restaurant.practical.parking && (
+                  <span className={styles.practicalItem}>🅿️ Parking Available</span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Daily Dishes Section */}
+          {restaurant.dishes && restaurant.dishes.length > 0 && (
+            <div className={styles.dishes}>
+              <strong>Daily Dishes ({restaurant.dishes.length} available):</strong>
+              <ul className={styles.dishesList}>
+                {restaurant.dishes.map((dish, index) => (
+                  <li key={index} className={styles.dishItem}>{dish}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </header>
 
@@ -636,7 +788,8 @@ const RestaurantDetail = () => {
                       const displayDownvotes = (review.downvotes || 0) + localVote.downvotes;
                       const netScore = displayUpvotes - displayDownvotes;
                       const totalVotes = displayUpvotes + displayDownvotes;
-                      const userVote = userVoteHistory.get(review.id);
+                      // Use server-provided vote status if available, fallback to local storage
+                      const userVote = review.userVotes?.currentUserVote || userVoteHistory.get(review.id);
                       const isPending = pendingVotes.has(review.id);
                       
                       // Use the displayName stored in the review (set at review creation time)
@@ -751,6 +904,49 @@ const RestaurantDetail = () => {
           onClose={() => setShowEditModal(false)}
           onSubmit={handleEditFormSubmit}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.deleteModal}>
+            <div className={styles.deleteModalHeader}>
+              <h3>Delete Restaurant</h3>
+              <button
+                className={styles.closeButton}
+                onClick={cancelDelete}
+              >
+                ✕
+              </button>
+            </div>
+            <div className={styles.deleteModalBody}>
+              <p><strong>Are you sure you want to delete "{name}"?</strong></p>
+              <p>This action will permanently delete:</p>
+              <ul>
+                <li>The restaurant and all its information</li>
+                <li>All reviews and ratings for this restaurant</li>
+                <li>All user votes on reviews</li>
+                <li>All reports related to reviews</li>
+                <li>All user favorites for this restaurant</li>
+              </ul>
+              <p><strong>This action cannot be undone!</strong></p>
+            </div>
+            <div className={styles.deleteModalActions}>
+              <button
+                className={styles.cancelButton}
+                onClick={cancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                className={styles.confirmDeleteButton}
+                onClick={handleDeleteRestaurant}
+              >
+                Delete Restaurant
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Report Modal */}

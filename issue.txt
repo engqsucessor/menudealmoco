@@ -1,36 +1,72 @@
-ISSUE LOG – CORS & FRONTEND/BACKEND INTEGRATION
-================================================
+Suggest Restaurant Edit
+×
+Basic Information
+Restaurant Name *
+Palácio Chiado
+Address *
+Rua do Alecrim, 70, Lisboa
+Deal Details
+Menu Price (€) *
+25
+Price Range *
 
-Symptoms:
-- Browser console: CORS error "No 'Access-Control-Allow-Origin' header" when calling http://localhost:8000/api/restaurants from frontend on http://localhost:3001 / 3003.
-- Requests fail with TypeError: Failed to fetch.
+€15+ (High-end)
+What's Included? *
+🍲 Soup
+🍽️ Main Course
+🥤 Drink
+☕ Coffee
+🍰 Dessert
+🍷 Wine
+🥖 Bread
+Cuisine & Ratings
+Food Type *
 
-Root Cause:
-1. We changed CORS to allow_origins=["*"] while keep allow_credentials=True.
-   Starlette/FastAPI intentionally does NOT send Access-Control-Allow-Origin when credentials are allowed and the origin list is ["*"]. So the browser still blocks.
-2. Frontend expects API at VITE_API_URL or default 'http://localhost:8000/api'. That is correct.
-3. Backend was starting/stopping because we manually re-invoked uv run; but the main functional blocker was the improper CORS configuration.
+Modern/Contemporary
+Google Rating (0-5)
+4.5
+Number of Google Reviews
+280
+Practical Features
+💳 Takes Cards
+⚡ Quick Service
+👥 Group Friendly
+🚗 Has Parking
+Description
+General Notes
+Elegant restaurant by chef Manuel Boia featuring renewed classics with international influences, changing menu every two weeks.
+Daily Dishes
+How many daily dishes are usually available?
+4
+Daily dishes change each day, so we only need to know the typical number available.
+Photos & Submission
+Restaurant Photo (Optional)
+No file chosen
+Upload a photo of the restaurant exterior or interior
+New Menu de Almoço Photo (Optional)
+No file chosen
+Upload a new photo of the lunch menu with prices (leave empty to keep current photo)
+Reason for Edit (Required) *
+test
+Cancel
+Submit Edit Suggestion
 
-Fix Applied:
-- Replaced wildcard CORS with an explicit generated list of localhost ports 3000-3009 (both localhost and 127.0.0.1) plus docker hostnames. See backend/app/main.py.
-- This satisfies the credential rule and sends the proper Access-Control-Allow-Origin header.
+i just added test didnt change anything
 
-Verification Steps:
-1. Restart backend:
-   uv run python run.py
-2. From another terminal (PowerShell) test preflight & GET:
-   curl -H "Origin: http://localhost:3003" -H "Access-Control-Request-Method: GET" -X OPTIONS http://localhost:8000/api/restaurants
-   curl -H "Origin: http://localhost:3003" http://localhost:8000/health
-3. You should see Access-Control-Allow-Origin: http://localhost:3003 in responses.
-4. Reload frontend (npm run dev in frontend_1) and re-run search.
 
-If Still Failing:
-- Make sure only one backend instance is running (no stale container overriding code).
-- Confirm VITE_API_URL not set incorrectly: echo %VITE_API_URL% (Windows) or check .env files.
-- Clear browser cache/hard refresh (Ctrl+Shift+R).
-
-Future Improvement:
-- For production replace dynamic list with explicit allowed domain(s).
-
-Status: CORS configuration corrected. Proceed with verification.
-
+and then it detects this changes? Edit Suggestion for Palácio Chiado
+PENDING
+Suggested by: RestaurantCritic (reviewer@example.com)
+Date: 9/28/2025, 5:42:07 PM
+Reason: ttt
+Votes: ↑0 ↓0
+Suggested Changes
+district:
+Rua do Alecrim
+city:
+70
+Rejection reason (required for rejection):
+Add reason for rejection...
+Approve
+Reject
+can we in the change detector, just have the previous what we had, and what is new, and then be like git a comaprison so its easier instead of whatveer this detector is

@@ -137,3 +137,42 @@ class ReviewReport(Base):
     review = relationship("MenuReview", back_populates="reports")
     reporter = relationship("User", foreign_keys=[reporter_id], back_populates="reports_made")
     resolver = relationship("User", foreign_keys=[resolved_by_id], back_populates="reports_resolved")
+
+class EditSuggestion(Base):
+    __tablename__ = "edit_suggestions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    restaurant_id = Column(Integer, ForeignKey("restaurants.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    suggested_changes = Column(Text, nullable=False)  # JSON string with proposed changes
+    reason = Column(Text, nullable=True)  # Reason for the suggestion
+    status = Column(String, default="pending")  # pending, approved, rejected
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Voting
+    upvotes = Column(Integer, default=0)
+    downvotes = Column(Integer, default=0)
+
+    # Resolution
+    reviewed_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    rejection_reason = Column(Text, nullable=True)
+
+    # Relationships
+    restaurant = relationship("Restaurant")
+    user = relationship("User", foreign_keys=[user_id])
+    reviewer = relationship("User", foreign_keys=[reviewed_by_id])
+    votes = relationship("EditSuggestionVote", back_populates="suggestion")
+
+class EditSuggestionVote(Base):
+    __tablename__ = "edit_suggestion_votes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    suggestion_id = Column(Integer, ForeignKey("edit_suggestions.id"), nullable=False)
+    vote_type = Column(String, nullable=False)  # 'up', 'down'
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    user = relationship("User")
+    suggestion = relationship("EditSuggestion", back_populates="votes")

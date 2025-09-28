@@ -38,6 +38,8 @@ class ApiService {
     if (filters.maxPrice !== undefined) params.append('maxPrice', filters.maxPrice);
     if (filters.sortBy) params.append('sortBy', filters.sortBy);
     if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
+    if (filters.page) params.append('page', filters.page);
+    if (filters.limit) params.append('limit', filters.limit);
 
     const queryString = params.toString();
     const endpoint = queryString ? `/restaurants?${queryString}` : '/restaurants';
@@ -47,6 +49,15 @@ class ApiService {
 
   async getRestaurant(id) {
     return await this.request(`/restaurants/${id}`);
+  }
+
+  async deleteRestaurant(id, userEmail) {
+    return await this.request(`/restaurants/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'X-User-Email': userEmail
+      }
+    });
   }
 
   // ===== AUTHENTICATION =====
@@ -75,8 +86,9 @@ class ApiService {
   }
 
   // ===== REVIEWS =====
-  async getMenuReviews(restaurantId) {
-    return await this.request(`/restaurants/${restaurantId}/reviews`);
+  async getMenuReviews(restaurantId, userEmail = null) {
+    const headers = userEmail ? { 'X-User-Email': userEmail } : {};
+    return await this.request(`/restaurants/${restaurantId}/reviews`, { headers });
   }
 
   async addMenuReview(restaurantId, userId, rating, comment, displayName) {

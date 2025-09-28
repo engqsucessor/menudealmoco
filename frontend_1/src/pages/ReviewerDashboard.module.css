@@ -337,3 +337,101 @@
   align-items: center;
   gap: 1rem;
 }
+
+/* Edit Suggestions Styles */
+.suggestedChanges {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.suggestedChanges h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.changesContent {
+  background-color: var(--light-gray);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.changeItem {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.changeItem:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.changeItem strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+  font-family: 'Space Mono', monospace;
+}
+
+.changeItem pre {
+  background-color: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+}
+
+/* Git-style diff view */
+.fieldName {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+  font-family: 'Space Mono', monospace;
+}
+
+.diffView {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.diffLine {
+  padding: 0.25rem 0.75rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.diffRemoved {
+  background-color: #ffeef0;
+  color: #d1242f;
+  display: block;
+  border-left: 3px solid #d1242f;
+  padding-left: 0.5rem;
+}
+
+.diffAdded {
+  background-color: #e6ffed;
+  color: #28a745;
+  display: block;
+  border-left: 3px solid #28a745;
+  padding-left: 0.5rem;
+}
+
+.fallbackValue {
+  background-color: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}

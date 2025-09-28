@@ -1,23 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
+import { getEditSuggestions, approveEditSuggestion, rejectEditSuggestion } from '../services/editSuggestionsService';
 import AddRestaurant from './AddRestaurant';
 import EditButton from '../components/ui/EditButton';
 import styles from './ReviewerDashboard.module.css';
 
 const ReviewerDashboard = () => {
   const { user } = useAuth();
+
+  // Helper function to format values for display
+  const formatValue = (value) => {
+    if (value === null || value === undefined) return 'null';
+    if (Array.isArray(value)) return value.join(', ') || '(empty)';
+    if (typeof value === 'object') return JSON.stringify(value, null, 2);
+    if (typeof value === 'boolean') return value ? 'true' : 'false';
+    return String(value);
+  };
   const [activeTab, setActiveTab] = useState('pending');
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [submissionsList, setSubmissionsList] = useState([]);
   const [reportedReviews, setReportedReviews] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
+  const [editSuggestions, setEditSuggestions] = useState([]);
+  const [selectedEditSuggestion, setSelectedEditSuggestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     loadSubmissions();
     loadReportedReviews();
+    loadEditSuggestions();
   }, []);
 
   const loadSubmissions = async () => {
@@ -37,6 +50,19 @@ const ReviewerDashboard = () => {
       setReportedReviews(reports);
     } catch (error) {
       console.error('Error loading reported reviews:', error);
+    }
+  };
+
+  const loadEditSuggestions = async () => {
+    try {
+      // Get all edit suggestions across all restaurants
+      const suggestions = await apiService.request('/edit-suggestions/all', {
+        headers: { 'X-User-Email': user?.email }
+      });
+      setEditSuggestions(suggestions);
+    } catch (error) {
+      console.error('Error loading edit suggestions:', error);
+      setEditSuggestions([]);
     }
   };
 
@@ -138,6 +164,31 @@ const ReviewerDashboard = () => {
     }
   };
 
+  const handleApproveEditSuggestion = async (suggestionId) => {
+    try {
+      const result = await approveEditSuggestion(suggestionId, user.email);
+      if (result.success) {
+        await loadEditSuggestions(); // Reload edit suggestions
+        setSelectedEditSuggestion(null);
+      }
+    } catch (error) {
+      console.error('Error approving edit suggestion:', error);
+    }
+  };
+
+  const handleRejectEditSuggestion = async (suggestionId, reason) => {
+    try {
+      const result = await rejectEditSuggestion(suggestionId, user.email, reason);
+      if (result.success) {
+        await loadEditSuggestions(); // Reload edit suggestions
+        setSelectedEditSuggestion(null);
+        setReviewComment('');
+      }
+    } catch (error) {
+      console.error('Error rejecting edit suggestion:', error);
+    }
+  };
+
   const filteredSubmissions = submissionsList.filter(sub => {
     if (activeTab === 'pending') return sub.status === 'pending';
     if (activeTab === 'approved') return sub.status === 'approved';
@@ -148,6 +199,13 @@ const ReviewerDashboard = () => {
 
   const filteredReports = reportedReviews.filter(report => {
     if (activeTab === 'reports') return report.status === 'pending';
+    return false;
+  });
+
+  const filteredEditSuggestions = editSuggestions.filter(suggestion => {
+    if (activeTab === 'edit-suggestions-pending') return suggestion.status === 'pending';
+    if (activeTab === 'edit-suggestions-approved') return suggestion.status === 'approved';
+    if (activeTab === 'edit-suggestions-rejected') return suggestion.status === 'rejected';
     return false;
   });
 
@@ -196,6 +254,7 @@ const ReviewerDashboard = () => {
             setActiveTab('pending');
             setSelectedSubmission(null);
             setSelectedReport(null);
+            setSelectedEditSuggestion(null);
           }}
         >
           Pending ({submissionsList.filter(s => s.status === 'pending').length})
@@ -206,6 +265,7 @@ const ReviewerDashboard = () => {
             setActiveTab('approved');
             setSelectedSubmission(null);
             setSelectedReport(null);
+            setSelectedEditSuggestion(null);
           }}
         >
           Approved ({submissionsList.filter(s => s.status === 'approved').length})
@@ -216,6 +276,7 @@ const ReviewerDashboard = () => {
             setActiveTab('rejected');
             setSelectedSubmission(null);
             setSelectedReport(null);
+            setSelectedEditSuggestion(null);
           }}
         >
           Rejected ({submissionsList.filter(s => s.status === 'rejected').length})
@@ -226,6 +287,7 @@ const ReviewerDashboard = () => {
             setActiveTab('needs_changes');
             setSelectedSubmission(null);
             setSelectedReport(null);
+            setSelectedEditSuggestion(null);
           }}
         >
           Needs Changes ({submissionsList.filter(s => s.status === 'needs_changes').length})
@@ -236,9 +298,21 @@ const ReviewerDashboard = () => {
             setActiveTab('reports');
             setSelectedSubmission(null);
             setSelectedReport(null);
+            setSelectedEditSuggestion(null);
           }}
         >
           Reported Reviews ({reportedReviews.filter(r => r.status === 'pending').length})
+        </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'edit-suggestions-pending' ? styles.activeTab : ''}`}
+          onClick={() => {
+            setActiveTab('edit-suggestions-pending');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+            setSelectedEditSuggestion(null);
+          }}
+        >
+          Edit Suggestions ({editSuggestions.filter(s => s.status === 'pending').length})
         </button>
       </div>
 
@@ -273,6 +347,33 @@ const ReviewerDashboard = () => {
                 </div>
               )}
             </>
+          ) : activeTab.startsWith('edit-suggestions') ? (
+            <>
+              {filteredEditSuggestions.map(suggestion => (
+                <div
+                  key={suggestion.id}
+                  className={`${styles.submissionCard} ${selectedEditSuggestion?.id === suggestion.id ? styles.selected : ''}`}
+                  onClick={() => setSelectedEditSuggestion(suggestion)}
+                >
+                  <div className={styles.submissionHeader}>
+                    <h3>{suggestion.restaurant_name}</h3>
+                    {getStatusBadge(suggestion.status)}
+                  </div>
+                  <p className={styles.submissionMeta}>
+                    Suggested by {suggestion.display_name} • {new Date(suggestion.created_at).toLocaleDateString()}
+                  </p>
+                  <p className={styles.submissionPreview}>
+                    {suggestion.reason || 'No reason provided'} • ↑{suggestion.upvotes} ↓{suggestion.downvotes}
+                  </p>
+                </div>
+              ))}
+
+              {filteredEditSuggestions.length === 0 && (
+                <div className={styles.emptyState}>
+                  <p>No {activeTab.replace('edit-suggestions-', '')} edit suggestions.</p>
+                </div>
+              )}
+            </>
           ) : (
             <>
               {filteredSubmissions.map(submission => (
@@ -302,6 +403,86 @@ const ReviewerDashboard = () => {
             </>
           )}
         </div>
+
+        {selectedEditSuggestion && (
+          <div className={styles.reviewPanel}>
+            <div className={styles.reviewHeader}>
+              <h2>Edit Suggestion for {selectedEditSuggestion.restaurant_name}</h2>
+              {getStatusBadge(selectedEditSuggestion.status)}
+            </div>
+
+            <div className={styles.submissionDetails}>
+              <div className={styles.detailGroup}>
+                <strong>Suggested by:</strong> {selectedEditSuggestion.display_name} ({selectedEditSuggestion.user_email})
+              </div>
+              <div className={styles.detailGroup}>
+                <strong>Date:</strong> {new Date(selectedEditSuggestion.created_at).toLocaleString()}
+              </div>
+              <div className={styles.detailGroup}>
+                <strong>Reason:</strong> {selectedEditSuggestion.reason || 'No reason provided'}
+              </div>
+              <div className={styles.detailGroup}>
+                <strong>Votes:</strong> ↑{selectedEditSuggestion.upvotes} ↓{selectedEditSuggestion.downvotes}
+              </div>
+            </div>
+
+            <div className={styles.suggestedChanges}>
+              <h3>Suggested Changes</h3>
+              <div className={styles.changesContent}>
+                {Object.entries(selectedEditSuggestion.suggested_changes).map(([field, value]) => (
+                  <div key={field} className={styles.changeItem}>
+                    <strong className={styles.fieldName}>{field}:</strong>
+                    {value && typeof value === 'object' && value.from !== undefined && value.to !== undefined ? (
+                      <div className={styles.diffView}>
+                        <div className={styles.diffLine}>
+                          <span className={styles.diffRemoved}>- {formatValue(value.from)}</span>
+                        </div>
+                        <div className={styles.diffLine}>
+                          <span className={styles.diffAdded}>+ {formatValue(value.to)}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className={styles.fallbackValue}>
+                        {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {selectedEditSuggestion.status === 'pending' && (
+              <div className={styles.reviewActions}>
+                <div className={styles.commentSection}>
+                  <label htmlFor="rejectionReason">Rejection reason (required for rejection):</label>
+                  <textarea
+                    id="rejectionReason"
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    placeholder="Add reason for rejection..."
+                    className={styles.commentTextarea}
+                  />
+                </div>
+
+                <div className={styles.actionButtons}>
+                  <button
+                    className={`${styles.actionButton} ${styles.approveButton}`}
+                    onClick={() => handleApproveEditSuggestion(selectedEditSuggestion.id)}
+                  >
+                    Approve
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.rejectButton}`}
+                    onClick={() => handleRejectEditSuggestion(selectedEditSuggestion.id, reviewComment)}
+                    disabled={!reviewComment.trim()}
+                  >
+                    Reject
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {selectedReport && (
           <div className={styles.reviewPanel}>

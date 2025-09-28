@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Header, Request
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
+from datetime import datetime
 from app.models.restaurant import RestaurantResponse
 from app.database.database import get_db
-from app.database.models import Restaurant as DBRestaurant
+from app.database.models import Restaurant as DBRestaurant, User, MenuReview, ReviewVote, ReviewReport, RestaurantSubmission
 
 router = APIRouter()
 
@@ -47,7 +48,9 @@ async def get_restaurants(
     minPrice: Optional[float] = Query(None),
     maxPrice: Optional[float] = Query(None),
     sortBy: Optional[str] = Query("rating"),
-    sortOrder: Optional[str] = Query("desc")
+    sortOrder: Optional[str] = Query("desc"),
+    page: Optional[int] = Query(1),
+    limit: Optional[int] = Query(10)
 ):
     """Get restaurants with filtering and sorting - matches mock backend behavior"""
 
@@ -96,7 +99,170 @@ async def get_restaurants(
     elif sortBy == "name":
         restaurants.sort(key=lambda x: x["name"], reverse=reverse)
 
-    return restaurants
+    # Apply pagination
+    total_count = len(restaurants)
+    start_index = (page - 1) * limit
+    end_index = start_index + limit
+    paginated_restaurants = restaurants[start_index:end_index]
+
+    return {
+        "restaurants": paginated_restaurants,
+        "total": total_count,
+        "page": page,
+        "limit": limit,
+        "totalPages": (total_count + limit - 1) // limit
+    }
+
+@router.post("/restaurants/submit")
+async def submit_restaurant(
+    request: Request,
+    db: Session = Depends(get_db),
+    user_email: str = Header(alias="X-User-Email")
+):
+    """Submit a new restaurant for review"""
+
+    # Find user
+    user = db.query(User).filter(User.email == user_email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Get the request body
+    try:
+        body = await request.body()
+        body_str = body.decode('utf-8')
+        restaurant_data = json.loads(body_str)
+    except:
+        raise HTTPException(status_code=422, detail="Invalid request body")
+
+    # Create submission
+    submission = RestaurantSubmission(
+        restaurant_name=restaurant_data.get('name', 'Unknown'),
+        submitted_by_id=user.id,
+        data=body_str
+    )
+
+    db.add(submission)
+
+    try:
+        db.commit()
+        db.refresh(submission)
+        return {
+            "id": str(submission.id),
+            "restaurant_name": submission.restaurant_name,
+            "status": submission.status,
+            "submitted_at": submission.submitted_at.isoformat()
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error submitting restaurant: {str(e)}")
+
+@router.get("/restaurants/submissions")
+async def get_submissions(
+    status: str = Query("all"),
+    db: Session = Depends(get_db)
+):
+    """Get restaurant submissions - optionally filter by status"""
+
+    # Build query
+    query = db.query(RestaurantSubmission)
+
+    if status != "all":
+        query = query.filter(RestaurantSubmission.status == status)
+
+    submissions = query.all()
+
+    result = []
+    for submission in submissions:
+        # Get submitter info
+        submitter = db.query(User).filter(User.id == submission.submitted_by_id).first()
+
+        # Get approver info if approved
+        approver = None
+        if submission.approved_by_id:
+            approver = db.query(User).filter(User.id == submission.approved_by_id).first()
+
+        # Parse the restaurant data
+        try:
+            restaurant_data = json.loads(submission.data)
+        except:
+            restaurant_data = {}
+
+        result.append({
+            "id": str(submission.id),
+            "restaurant_name": submission.restaurant_name,
+            "status": submission.status,
+            "submitted_at": submission.submitted_at.isoformat(),
+            "reviewed_at": submission.reviewed_at.isoformat() if submission.reviewed_at else None,
+            "submitter": {
+                "email": submitter.email if submitter else "unknown",
+                "displayName": submitter.display_name if submitter else f"User{submission.submitted_by_id}"
+            },
+            "approver": {
+                "email": approver.email if approver else None,
+                "displayName": approver.display_name if approver else None
+            } if approver else None,
+            "data": restaurant_data,
+            "reviewer_comments": json.loads(submission.reviewer_comments) if submission.reviewer_comments else None
+        })
+
+    return result
+
+@router.post("/restaurants/submissions/{submission_id}/review")
+async def review_submission(
+    submission_id: str,
+    request: Request,
+    db: Session = Depends(get_db),
+    reviewer_email: str = Header(alias="X-User-Email")
+):
+    """Review a restaurant submission - only reviewers can do this"""
+    try:
+        submission_id_int = int(submission_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid submission ID")
+
+    # Get the request body
+    try:
+        body = await request.body()
+        body_str = body.decode('utf-8')
+        review_data = json.loads(body_str)
+        action = review_data.get('action')  # 'approved', 'rejected', 'needs_changes'
+        comment = review_data.get('comment', '')
+    except:
+        raise HTTPException(status_code=422, detail="Invalid request body")
+
+    if not action or action not in ['approved', 'rejected', 'needs_changes']:
+        raise HTTPException(status_code=400, detail="Invalid action")
+
+    # Find reviewer and check permissions
+    reviewer = db.query(User).filter(User.email == reviewer_email).first()
+    if not reviewer:
+        raise HTTPException(status_code=404, detail="Reviewer not found")
+
+    if not reviewer.is_reviewer:
+        raise HTTPException(status_code=403, detail="Only reviewers can review submissions")
+
+    # Find the submission
+    submission = db.query(RestaurantSubmission).filter(RestaurantSubmission.id == submission_id_int).first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    # Update submission
+    submission.status = action
+    submission.approved_by_id = reviewer.id
+    submission.reviewed_at = datetime.now()
+    submission.reviewer_comments = json.dumps({"comment": comment})
+
+    try:
+        db.commit()
+        return {
+            "id": str(submission.id),
+            "status": submission.status,
+            "action": action,
+            "message": f"Submission {action} successfully"
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error reviewing submission: {str(e)}")
 
 @router.get("/restaurants/{restaurant_id}")
 async def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
@@ -111,3 +277,62 @@ async def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Restaurant not found")
 
     return convert_db_to_response(db_restaurant)
+
+@router.delete("/restaurants/{restaurant_id}")
+async def delete_restaurant(
+    restaurant_id: str,
+    db: Session = Depends(get_db),
+    user_email: str = Header(alias="X-User-Email")
+):
+    """Delete a restaurant - only reviewers/admins can do this"""
+    try:
+        restaurant_id_int = int(restaurant_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid restaurant ID")
+
+    # Find user and check if they are a reviewer
+    user = db.query(User).filter(User.email == user_email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not user.is_reviewer:
+        raise HTTPException(status_code=403, detail="Only reviewers/admins can delete restaurants")
+
+    # Find the restaurant
+    restaurant = db.query(DBRestaurant).filter(DBRestaurant.id == restaurant_id_int).first()
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    # Delete related data in correct order to avoid foreign key constraints
+
+    # 1. Delete review reports first (they reference reviews)
+    review_reports = db.query(ReviewReport).join(MenuReview).filter(
+        MenuReview.restaurant_id == restaurant_id_int
+    ).all()
+    for report in review_reports:
+        db.delete(report)
+
+    # 2. Delete review votes (they reference reviews)
+    review_votes = db.query(ReviewVote).join(MenuReview).filter(
+        MenuReview.restaurant_id == restaurant_id_int
+    ).all()
+    for vote in review_votes:
+        db.delete(vote)
+
+    # 3. Delete reviews
+    reviews = db.query(MenuReview).filter(MenuReview.restaurant_id == restaurant_id_int).all()
+    for review in reviews:
+        db.delete(review)
+
+    # 4. Clear favorite relationships (many-to-many table)
+    restaurant.favorited_by.clear()
+
+    # 5. Finally delete the restaurant
+    db.delete(restaurant)
+
+    try:
+        db.commit()
+        return {"message": f"Restaurant '{restaurant.name}' and all related data deleted successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deleting restaurant: {str(e)}")

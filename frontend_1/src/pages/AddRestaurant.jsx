@@ -14,7 +14,9 @@ const AddRestaurant = ({
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     name: restaurant?.name || '',
-    address: restaurant?.address || `${restaurant?.district || ''}, ${restaurant?.city || ''}`.replace(/^, |, $/, ''),
+    address: restaurant?.address || '',
+    district: restaurant?.district || '',
+    city: restaurant?.city || '',
     menuPrice: restaurant?.menuPrice || '',
     foodType: restaurant?.foodType || '',
     googleRating: restaurant?.googleRating || '',
@@ -90,10 +92,22 @@ const AddRestaurant = ({
   
   const handleNumberOfDishesChange = (e) => {
     const count = Math.max(0, parseInt(e.target.value, 10) || 0);
+    const currentDishes = formData.dishes || [];
+
+    // Preserve existing dishes, only add/remove as needed
+    let newDishes;
+    if (count > currentDishes.length) {
+      // Adding dishes - keep existing and add empty ones
+      newDishes = [...currentDishes, ...Array(count - currentDishes.length).fill('')];
+    } else {
+      // Reducing dishes - keep only the first 'count' dishes
+      newDishes = currentDishes.slice(0, count);
+    }
+
     setFormData(prev => ({
       ...prev,
       numberOfDishes: count,
-      dishes: Array(count).fill(''),
+      dishes: newDishes,
     }));
   };
 
@@ -144,17 +158,21 @@ const AddRestaurant = ({
       const submissionData = {
         name: formData.name,
         address: formData.address,
+        district: formData.district,
+        city: formData.city,
         menuPrice: parseFloat(formData.menuPrice),
         priceRange: formData.priceRange,
         foodType: formData.foodType,
         googleRating: formData.googleRating ? parseFloat(formData.googleRating) : null,
         googleReviews: formData.googleReviews ? parseInt(formData.googleReviews) : null,
         description: formData.description,
+        numberOfDishes: parseInt(formData.numberOfDishes) || 0,
         dishes: formData.dishes.filter(dish => dish.trim()),
         whatsIncluded: Object.keys(formData.included).filter(key => formData.included[key]),
         practical: formData.practical,
         restaurantPhoto: formData.restaurantPhoto,
-        menuPhoto: formData.menuPhoto
+        menuPhoto: formData.menuPhoto,
+        reason: formData.reason
       };
 
       // If called from modal (like reviewer dashboard), use the callback
@@ -207,8 +225,16 @@ const AddRestaurant = ({
             <input id="name" type="text" name="name" className={styles.input} value={formData.name} onChange={handleInputChange} placeholder="e.g., Tasca do Zé" required />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="address">Address *</label>
-            <input id="address" type="text" name="address" className={styles.input} value={formData.address} onChange={handleInputChange} placeholder="e.g., Rua da Alegria, 123, Porto" required />
+            <label htmlFor="address">Street Address</label>
+            <input id="address" type="text" name="address" className={styles.input} value={formData.address} onChange={handleInputChange} placeholder="e.g., Rua da Alegria, 123" />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="district">District *</label>
+            <input id="district" type="text" name="district" className={styles.input} value={formData.district} onChange={handleInputChange} placeholder="e.g., Chiado, Bairro Alto" required />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="city">City *</label>
+            <input id="city" type="text" name="city" className={styles.input} value={formData.city} onChange={handleInputChange} placeholder="e.g., Lisboa, Porto" required />
           </div>
         </fieldset>
 
@@ -308,6 +334,27 @@ const AddRestaurant = ({
               Daily dishes change each day, so we only need to know the typical number available.
             </small>
           </div>
+
+          {/* Dynamic dish name inputs */}
+          {formData.numberOfDishes > 0 && (
+            <div className={styles.formGroup}>
+              <label>Dish Names (Optional Examples)</label>
+              <small className={styles.helpText}>
+                You can provide example dish names to help people understand what type of food is available.
+              </small>
+              {Array.from({ length: formData.numberOfDishes }, (_, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  className={styles.input}
+                  value={formData.dishes[index] || ''}
+                  onChange={(e) => handleDishNameChange(index, e.target.value)}
+                  placeholder={`Example dish ${index + 1} (e.g., Grilled Salmon, Chicken Curry)`}
+                  style={{ marginBottom: '0.5rem' }}
+                />
+              ))}
+            </div>
+          )}
         </fieldset>
 
         {/* Section 6: Submission */}

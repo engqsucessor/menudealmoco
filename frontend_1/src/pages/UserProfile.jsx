@@ -26,7 +26,9 @@ const UserProfile = () => {
     try {
       // Load favorites from localStorage using the favoriteRestaurants service
       const favoriteIds = favoriteRestaurants.get();
-      const restaurants = await apiService.getRestaurants();
+      const response = await apiService.getRestaurants();
+      // Handle both old format (array) and new format (object with restaurants array)
+      const restaurants = Array.isArray(response) ? response : (response.restaurants || []);
       const favoriteRestaurantsList = restaurants.filter(restaurant =>
         favoriteIds.includes(restaurant.id)
       );

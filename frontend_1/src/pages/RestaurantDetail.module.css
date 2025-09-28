@@ -1173,3 +1173,175 @@
     opacity: 1;
   }
 }
+
+/* Delete Button Styles */
+.deleteButton {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+  background-color: rgba(255, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+/* Delete Modal Styles */
+.deleteModal {
+  background: white;
+  border: 2px solid black;
+  max-width: 600px;
+  width: 90%;
+  font-family: 'Space Mono', monospace;
+}
+
+.deleteModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid black;
+  background: #d32f2f;
+  color: white;
+}
+
+.deleteModalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.deleteModalBody {
+  padding: 20px;
+}
+
+.deleteModalBody p {
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deleteModalBody ul {
+  margin: 15px 0;
+  padding-left: 20px;
+}
+
+.deleteModalBody li {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #333;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.deleteModalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 2px solid black;
+  background: #f5f5f5;
+}
+
+.confirmDeleteButton {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border: 2px solid black;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.confirmDeleteButton:hover {
+  background: #b71c1c;
+}
+
+/* Practical Information Section Styles */
+.practicalInfo {
+  margin-top: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+}
+
+.practicalItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.practicalItem {
+  background-color: var(--light-gray);
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.practicalItem:hover {
+  border-color: var(--primary-color);
+  background-color: #f8f9fa;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dishes Section Styles */
+.dishes {
+  margin-top: 1rem;
+  padding: 1rem 0;
+  border-top: 1px solid #eee;
+}
+
+.dishes strong {
+  color: var(--primary-color);
+  font-family: 'Space Mono', monospace;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dishesList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.dishItem {
+  background-color: #f8f9fa;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  border-left: 3px solid var(--primary-color);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  transition: background-color 0.2s ease;
+}
+
+.dishItem:hover {
+  background-color: #e9ecef;
+}

@@ -41,7 +41,7 @@ const SearchPage = () => {
     sortBy: 'rating',
     sortOrder: 'desc',
     page: 1,
-    limit: 20,
+    limit: 10,
     minGoogleRating: 0,
     minZomatoRating: 0,
     overallRating: 0,
@@ -54,9 +54,17 @@ const SearchPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const restaurants = await getRestaurants(filters);
-      setRestaurants(restaurants);
-      setTotalResults(restaurants.length);
+      const response = await getRestaurants(filters);
+      // Handle both old format (array) and new format (object with restaurants array)
+      if (Array.isArray(response)) {
+        // Old format - no pagination
+        setRestaurants(response);
+        setTotalResults(response.length);
+      } else {
+        // New format - with pagination
+        setRestaurants(response.restaurants || []);
+        setTotalResults(response.total || 0);
+      }
     } catch (err) {
       setError('Failed to fetch restaurants. Please try again.');
       console.error(err);
@@ -141,7 +149,7 @@ const SearchPage = () => {
       sortBy: 'rating',
       sortOrder: 'desc',
       page: 1,
-      limit: 20,
+      limit: 10,
       minGoogleRating: 0,
       minZomatoRating: 0,
       overallRating: 0,
@@ -237,9 +245,71 @@ const SearchPage = () => {
               <Button onClick={() => handlePageChange(filters.page - 1)} disabled={filters.page <= 1}>
                 Previous
               </Button>
-              <span className={styles.pageInfo}>
-                Page {filters.page} of {totalPages}
-              </span>
+
+              {/* Page Numbers */}
+              <div className={styles.pageNumbers}>
+                {(() => {
+                  const currentPage = filters.page;
+                  const maxVisiblePages = 5;
+                  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+                  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+                  // Adjust start page if we're near the end
+                  if (endPage - startPage + 1 < maxVisiblePages) {
+                    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                  }
+
+                  const pages = [];
+
+                  // Add first page if not in range
+                  if (startPage > 1) {
+                    pages.push(
+                      <button
+                        key={1}
+                        className={`${styles.pageButton} ${1 === currentPage ? styles.activePage : ''}`}
+                        onClick={() => handlePageChange(1)}
+                      >
+                        1
+                      </button>
+                    );
+                    if (startPage > 2) {
+                      pages.push(<span key="start-ellipsis" className={styles.ellipsis}>...</span>);
+                    }
+                  }
+
+                  // Add visible page range
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <button
+                        key={i}
+                        className={`${styles.pageButton} ${i === currentPage ? styles.activePage : ''}`}
+                        onClick={() => handlePageChange(i)}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+
+                  // Add last page if not in range
+                  if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                      pages.push(<span key="end-ellipsis" className={styles.ellipsis}>...</span>);
+                    }
+                    pages.push(
+                      <button
+                        key={totalPages}
+                        className={`${styles.pageButton} ${totalPages === currentPage ? styles.activePage : ''}`}
+                        onClick={() => handlePageChange(totalPages)}
+                      >
+                        {totalPages}
+                      </button>
+                    );
+                  }
+
+                  return pages;
+                })()}
+              </div>
+
               <Button onClick={() => handlePageChange(filters.page + 1)} disabled={filters.page >= totalPages}>
                 Next
               </Button>

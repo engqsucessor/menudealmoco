@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import restaurants, auth, reviews
+from app.routes import restaurants, auth, reviews, reports, edit_suggestions
 from app.database.database import init_db
 
 app = FastAPI(title="Menu de Almoço API", version="1.0.0")
@@ -37,6 +37,8 @@ init_db()
 app.include_router(restaurants.router, prefix="/api", tags=["restaurants"])
 app.include_router(auth.router, prefix="/api", tags=["auth"])
 app.include_router(reviews.router, prefix="/api", tags=["reviews"])
+app.include_router(reports.router, prefix="/api", tags=["reports"])
+app.include_router(edit_suggestions.router, prefix="/api", tags=["edit-suggestions"])
 
 @app.get("/")
 async def root():
