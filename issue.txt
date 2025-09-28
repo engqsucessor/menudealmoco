@@ -1,72 +1,45 @@
-Suggest Restaurant Edit
-×
-Basic Information
-Restaurant Name *
-Palácio Chiado
-Address *
-Rua do Alecrim, 70, Lisboa
-Deal Details
-Menu Price (€) *
-25
-Price Range *
+MENU
+DEAL MOÇO
+FIND DEALS
+ADD RESTAURANT
+ABOUT
+PROFILE
 
-€15+ (High-end)
-What's Included? *
-🍲 Soup
-🍽️ Main Course
-🥤 Drink
-☕ Coffee
-🍰 Dessert
-🍷 Wine
-🥖 Bread
-Cuisine & Ratings
-Food Type *
+LOGOUT
+No image available
+Indomável Restaurante & Bar
+✏️ Edit
+🤍
+🗑️
+Lisboa, Lisboa
 
-Modern/Contemporary
-Google Rating (0-5)
-4.5
-Number of Google Reviews
-280
-Practical Features
-💳 Takes Cards
+€12.00
+
+Included: soup + main + drink + coffee
+Cuisine: Traditional Portuguese
+
+Menu de Almoço: 5/5 (1 review)
+Google: 4.2/5 (5 reviews)
+💳 Cards Accepted
 ⚡ Quick Service
 👥 Group Friendly
-🚗 Has Parking
-Description
-General Notes
-Elegant restaurant by chef Manuel Boia featuring renewed classics with international influences, changing menu every two weeks.
-Daily Dishes
-How many daily dishes are usually available?
-4
-Daily dishes change each day, so we only need to know the typical number available.
-Photos & Submission
-Restaurant Photo (Optional)
-No file chosen
-Upload a photo of the restaurant exterior or interior
-New Menu de Almoço Photo (Optional)
-No file chosen
-Upload a new photo of the lunch menu with prices (leave empty to keep current photo)
-Reason for Edit (Required) *
-test
-Cancel
-Submit Edit Suggestion
+Daily Dishes (5 available):
+Camarão & Bisque (shrimp in bisque sauce):contentReference[oaicite:2]{index=2}
+Pica-Pau (sautéed beef tenderloin with mustard and pickles):contentReference[oaicite:3]{index=3}
+Choco Frito (fried cuttlefish strips with mayonnaise and fries):contentReference[oaicite:4]{index=4}
+Pica-Pau de Atum (tuna pieces with butter, mustard and coriander):contentReference[oaicite:5]{index=5}
+Tábua de Enchidos e Queijos (charcuterie and cheese board):contentReference[oaicite:6]{index=6}
+OverviewPhotosReviews
+About Indomável Restaurante & Bar
+More details about the restaurant would go here, such as a description, opening hours, and contact information.
 
-i just added test didnt change anything
+MENU DEAL MOÇO
+Find the best lunch deals in Portugal, ranked by real people.
 
+QUICK LINKS
+Find Deals
+Add Restaurant
+About
+© 2024 MENU DEAL MOÇO — ALL RIGHTS RESERVED
 
-and then it detects this changes? Edit Suggestion for Palácio Chiado
-PENDING
-Suggested by: RestaurantCritic (reviewer@example.com)
-Date: 9/28/2025, 5:42:07 PM
-Reason: ttt
-Votes: ↑0 ↓0
-Suggested Changes
-district:
-Rua do Alecrim
-city:
-70
-Rejection reason (required for rejection):
-Add reason for rejection...
-Approve
-Reject
-can we in the change detector, just have the previous what we had, and what is new, and then be like git a comaprison so its easier instead of whatveer this detector is
+why is tuna piences and so on appearing and this index wtf

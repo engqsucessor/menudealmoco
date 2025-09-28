@@ -553,6 +553,22 @@ const RestaurantDetail = () => {
 
   const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, zomatoRating, zomatoReviews, menuReviews, menuPhoto } = restaurant;
 
+  // Calculate Menu de Almoço average rating
+  const calculateMenuRating = () => {
+    if (!menuReviewsData || menuReviewsData.length === 0) {
+      return { average: null, count: 0 };
+    }
+
+    const totalRating = menuReviewsData.reduce((sum, review) => sum + review.rating, 0);
+    const average = totalRating / menuReviewsData.length;
+
+    return {
+      average: Math.round(average * 10) / 10, // Round to 1 decimal place
+      count: menuReviewsData.length
+    };
+  };
+
+  const menuRating = calculateMenuRating();
   const location = `${district}, ${city}`;
 
   return (
@@ -603,8 +619,12 @@ const RestaurantDetail = () => {
           </div>
           <p><strong>Cuisine:</strong> {foodType}</p>
           <div className={styles.externalReviews}>
+            {menuRating.average && (
+              <div className={styles.externalReview}>
+                <strong>Menu de Almoço:</strong> {menuRating.average}/5 ({menuRating.count} review{menuRating.count !== 1 ? 's' : ''})
+              </div>
+            )}
             {googleRating && <div className={styles.externalReview}><strong>Google:</strong> {googleRating}/5 ({googleReviews} reviews)</div>}
-            {zomatoRating && <div className={styles.externalReview}><strong>Zomato:</strong> {zomatoRating}/5 ({zomatoReviews} reviews)</div>}
           </div>
 
           {/* Practical Information Section */}
@@ -632,9 +652,16 @@ const RestaurantDetail = () => {
             <div className={styles.dishes}>
               <strong>Daily Dishes ({restaurant.dishes.length} available):</strong>
               <ul className={styles.dishesList}>
-                {restaurant.dishes.map((dish, index) => (
-                  <li key={index} className={styles.dishItem}>{dish}</li>
-                ))}
+                {restaurant.dishes.map((dish, index) => {
+                  // Clean up dish name by removing the specific contentReference markup
+                  let cleanDish = dish;
+                  if (dish.includes(':contentReference[oaicite:')) {
+                    cleanDish = dish.split(':contentReference[oaicite:')[0].trim();
+                  }
+                  return (
+                    <li key={index} className={styles.dishItem}>{cleanDish}</li>
+                  );
+                })}
               </ul>
             </div>
           )}

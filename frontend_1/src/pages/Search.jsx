@@ -50,6 +50,8 @@ const SearchPage = () => {
     showOnlyFavorites: false
   });
 
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
   const fetchRestaurants = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -81,6 +83,20 @@ const SearchPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [initialQuery, initialLocation]);
+
+  // Handle scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleSearch = (searchQuery, searchLocation) => {
     setFilters(prev => ({ ...prev, query: searchQuery, location: searchLocation, page: 1 }));
@@ -132,6 +148,7 @@ const SearchPage = () => {
 
   const handlePageChange = (newPage) => {
     setFilters(prev => ({ ...prev, page: newPage }));
+    window.scrollTo(0, 0);
   };
 
   const clearAllFilters = () => {
@@ -323,6 +340,17 @@ const SearchPage = () => {
         filters={filters}
         onFiltersChange={handleFilterChange}
       />
+
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          className={styles.scrollTopButton}
+          onClick={scrollToTop}
+          title="Scroll to top"
+        >
+          ↑
+        </button>
+      )}
     </div>
   );
 };

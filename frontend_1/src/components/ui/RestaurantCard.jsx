@@ -139,9 +139,13 @@ const RestaurantCard = ({ restaurant, style }) => {
             <div className={styles.infoBox}>
               <h4 className={styles.boxTitle}>MENU DE ALMOÇO RATING</h4>
               <div className={styles.boxContent}>
-                {renderStars(restaurant.menuRating || overallRating)}
-                <span className={styles.ratingValue}>{(restaurant.menuRating || overallRating)}/5</span>
-                <span className={styles.reviewCount}>({restaurant.menuReviews || totalReviews} reviews)</span>
+                {renderStars(restaurant.menuRating || overallRating || 0)}
+                <span className={styles.ratingValue}>
+                  {restaurant.menuRating || overallRating || 0}/5
+                </span>
+                <span className={styles.reviewCount}>
+                  ({restaurant.menuReviews || totalReviews || 0} reviews)
+                </span>
               </div>
             </div>
 
@@ -152,7 +156,7 @@ const RestaurantCard = ({ restaurant, style }) => {
                 <div className={styles.boxContent}>
                   <div className={styles.ratingRow}>
                     {renderStars(googleRating)}
-                    <span className={styles.ratingValue}>{googleRating}/5</span>
+                    <span className={styles.ratingValue}>{googleRating}</span>
                   </div>
                   {restaurant.googleReviews && (
                     <span className={styles.reviewCount}>({restaurant.googleReviews} reviews)</span>
@@ -161,21 +165,6 @@ const RestaurantCard = ({ restaurant, style }) => {
               </div>
             )}
 
-            {/* Zomato Rating Box */}
-            {zomatoRating && (
-              <div className={styles.infoBox}>
-                <h4 className={styles.boxTitle}>ZOMATO</h4>
-                <div className={styles.boxContent}>
-                  <div className={styles.ratingRow}>
-                    {renderStars(zomatoRating)}
-                    <span className={styles.ratingValue}>{zomatoRating}/5</span>
-                  </div>
-                  {restaurant.zomatoReviews && (
-                    <span className={styles.reviewCount}>({restaurant.zomatoReviews} reviews)</span>
-                  )}
-                </div>
-              </div>
-            )}
 
             {/* Menu & Includes Box */}
             <div className={styles.infoBox}>

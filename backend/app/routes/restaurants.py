@@ -9,8 +9,22 @@ from app.database.models import Restaurant as DBRestaurant, User, MenuReview, Re
 
 router = APIRouter()
 
-def convert_db_to_response(db_restaurant: DBRestaurant) -> dict:
+def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> dict:
     """Convert database restaurant to API response format matching mock backend"""
+
+    # Calculate menu rating and review count if db session is provided
+    menu_rating = 0.0
+    menu_reviews_count = 0
+
+    if db:
+        # Get all menu reviews for this restaurant
+        menu_reviews = db.query(MenuReview).filter(MenuReview.restaurant_id == db_restaurant.id).all()
+
+        if menu_reviews:
+            total_rating = sum(review.rating for review in menu_reviews)
+            menu_rating = round(total_rating / len(menu_reviews), 1)
+            menu_reviews_count = len(menu_reviews)
+
     return {
         "id": str(db_restaurant.id),
         "name": db_restaurant.name,
@@ -36,7 +50,10 @@ def convert_db_to_response(db_restaurant: DBRestaurant) -> dict:
         "submittedBy": db_restaurant.submitter.email if db_restaurant.submitter else None,
         "submittedAt": db_restaurant.submitted_at.isoformat() if db_restaurant.submitted_at else None,
         "approvedBy": db_restaurant.approver.email if db_restaurant.approver else None,
-        "approvedAt": db_restaurant.approved_at.isoformat() if db_restaurant.approved_at else None
+        "approvedAt": db_restaurant.approved_at.isoformat() if db_restaurant.approved_at else None,
+        # Add menu rating fields
+        "menuRating": menu_rating,
+        "menuReviews": menu_reviews_count
     }
 
 @router.get("/restaurants")
@@ -58,8 +75,8 @@ async def get_restaurants(
     restaurants_query = db.query(DBRestaurant).filter(DBRestaurant.status == "approved")
     db_restaurants = restaurants_query.all()
 
-    # Convert to response format
-    restaurants = [convert_db_to_response(r) for r in db_restaurants]
+    # Convert to response format with menu rating calculation
+    restaurants = [convert_db_to_response(r, db) for r in db_restaurants]
 
     # Apply text search filter
     if query:
@@ -95,6 +112,11 @@ async def get_restaurants(
     if sortBy == "price":
         restaurants.sort(key=lambda x: x["menuPrice"], reverse=reverse)
     elif sortBy == "rating":
+        # Sort by menu rating first, fallback to Google rating if no menu reviews
+        restaurants.sort(key=lambda x: x["menuRating"] if x["menuRating"] > 0 else (x["googleRating"] or 0), reverse=reverse)
+    elif sortBy == "menuRating":
+        restaurants.sort(key=lambda x: x["menuRating"], reverse=reverse)
+    elif sortBy == "googleRating":
         restaurants.sort(key=lambda x: x["googleRating"] or 0, reverse=reverse)
     elif sortBy == "name":
         restaurants.sort(key=lambda x: x["name"], reverse=reverse)
@@ -276,7 +298,7 @@ async def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
     if not db_restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
 
-    return convert_db_to_response(db_restaurant)
+    return convert_db_to_response(db_restaurant, db)
 
 @router.delete("/restaurants/{restaurant_id}")
 async def delete_restaurant(
