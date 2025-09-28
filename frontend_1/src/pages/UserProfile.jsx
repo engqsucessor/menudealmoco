@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { mockBackend } from '../services/mockBackend';
+import { apiService } from '../services/api';
 import { favoriteRestaurants } from '../services/localStorage';
 import styles from './UserProfile.module.css';
 import ReviewerDashboard from './ReviewerDashboard';
 
 const UserProfile = () => {
-  const { user } = useAuth();
+  const { user, updateDisplayName } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('reviews');
   const [userFavorites, setUserFavorites] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
+  const [isEditingDisplayName, setIsEditingDisplayName] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState('');
+  const [displayNameError, setDisplayNameError] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -19,30 +22,38 @@ const UserProfile = () => {
     }
   }, [user]);
 
-  const loadUserData = () => {
-    // Load favorites from localStorage using the favoriteRestaurants service
-    const favoriteIds = favoriteRestaurants.get();
-    const restaurants = mockBackend.getRestaurants();
-    const favoriteRestaurantsList = restaurants.filter(restaurant => 
-      favoriteIds.includes(restaurant.id)
-    );
-    setUserFavorites(favoriteRestaurantsList);
+  const loadUserData = async () => {
+    try {
+      // Load favorites from localStorage using the favoriteRestaurants service
+      const favoriteIds = favoriteRestaurants.get();
+      const restaurants = await apiService.getRestaurants();
+      const favoriteRestaurantsList = restaurants.filter(restaurant =>
+        favoriteIds.includes(restaurant.id)
+      );
+      setUserFavorites(favoriteRestaurantsList);
 
-    // Load reviews
-    const allReviews = {};
-    restaurants.forEach(restaurant => {
-      const reviews = mockBackend.getMenuReviews(restaurant.id);
-      reviews.forEach(review => {
-        if (review.userId === user.email) {
-          allReviews[review.id] = {
-            ...review,
-            restaurantName: restaurant.name,
-            restaurantId: restaurant.id
-          };
+      // Load reviews
+      const allReviews = {};
+      for (const restaurant of restaurants) {
+        try {
+          const reviews = await apiService.getMenuReviews(restaurant.id);
+          reviews.forEach(review => {
+            if (review.userId === user.email) {
+              allReviews[review.id] = {
+                ...review,
+                restaurantName: restaurant.name,
+                restaurantId: restaurant.id
+              };
+            }
+          });
+        } catch (error) {
+          console.warn(`Failed to load reviews for restaurant ${restaurant.id}:`, error);
         }
-      });
-    });
-    setUserReviews(Object.values(allReviews));
+      }
+      setUserReviews(Object.values(allReviews));
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
   };
 
   const handleRemoveFromFavorites = (restaurantId) => {
@@ -53,6 +64,34 @@ const UserProfile = () => {
 
   const handleViewRestaurant = (restaurantId) => {
     navigate(`/restaurant/${restaurantId}`);
+  };
+
+  const startEditingDisplayName = () => {
+    setNewDisplayName(user.displayName || '');
+    setIsEditingDisplayName(true);
+    setDisplayNameError('');
+  };
+
+  const cancelEditingDisplayName = () => {
+    setIsEditingDisplayName(false);
+    setNewDisplayName('');
+    setDisplayNameError('');
+  };
+
+  const handleUpdateDisplayName = async (e) => {
+    e.preventDefault();
+    if (!newDisplayName.trim()) {
+      setDisplayNameError('Display name cannot be empty');
+      return;
+    }
+
+    const success = await updateDisplayName(newDisplayName.trim());
+    if (success) {
+      setIsEditingDisplayName(false);
+      setDisplayNameError('');
+    } else {
+      setDisplayNameError('Failed to update display name. Please try again.');
+    }
   };
 
   if (!user) {
@@ -143,6 +182,47 @@ const UserProfile = () => {
             <div className={styles.profileInfo}>
               <p><strong>Name:</strong> {user.name}</p>
               <p><strong>Email:</strong> {user.email}</p>
+
+              <div className={styles.displayNameSection}>
+                <p><strong>Display Name:</strong></p>
+                {!isEditingDisplayName ? (
+                  <div className={styles.displayNameView}>
+                    <span className={styles.displayNameValue}>{user.displayName}</span>
+                    <button
+                      className={styles.editButton}
+                      onClick={startEditingDisplayName}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleUpdateDisplayName} className={styles.displayNameForm}>
+                    <input
+                      type="text"
+                      value={newDisplayName}
+                      onChange={(e) => setNewDisplayName(e.target.value)}
+                      placeholder="Enter new display name"
+                      className={styles.displayNameInput}
+                      autoFocus
+                    />
+                    <div className={styles.displayNameButtons}>
+                      <button type="submit" className={styles.saveButton}>
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEditingDisplayName}
+                        className={styles.cancelButton}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    {displayNameError && (
+                      <p className={styles.errorMessage}>{displayNameError}</p>
+                    )}
+                  </form>
+                )}
+              </div>
             </div>
             <button className={styles.reviewerButton}>Become a Reviewer</button>
           </div>

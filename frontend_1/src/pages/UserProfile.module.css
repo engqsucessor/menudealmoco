@@ -140,4 +140,101 @@
   background-color: var(--secondary-color);
   color: var(--primary-color);
 }
+
+/* Display Name Editing Styles */
+.displayNameSection {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.displayNameView {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.displayNameValue {
+  font-weight: 500;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.editButton {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.editButton:hover {
+  background-color: var(--secondary-color);
+}
+
+.displayNameForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.displayNameInput {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.displayNameInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.displayNameButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.saveButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.saveButton:hover {
+  background-color: #218838;
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.cancelButton:hover {
+  background-color: #5a6268;
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin: 0;
+}
   

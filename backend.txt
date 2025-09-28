@@ -1,0 +1,5 @@
+Backend uses python 3.10
+uses UV for package management
+uses fastapi ( creates diretory per route)
+a sqlite database
+Make a docker compose capable of connecting fronte_d1 and backend

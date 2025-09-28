@@ -1,0 +1,2675 @@
+[
+  {
+    "name": "Indomável Restaurante & Bar",
+    "address": "R. do Norte 13, 1200-283 Lisboa, Portugal",
+    "menuPrice": 12.0,
+    "priceRange": "10-12",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.2,
+    "googleReviews": 5,
+    "description": "Indomável – Restaurante & Bar evokes Portugal’s maritime heritage.  Its décor uses nautical details and decorative tiles to recreate the atmosphere of great sea voyages.  The restaurant emphasises conviviality and discovery, where traditional Portuguese cuisine is enriched with influences from the voyages of Portuguese navigators:contentReference[oaicite:0]{index=0}.  TripAdvisor lists it as a bar and restaurant with Portuguese and Mediterranean dishes:contentReference[oaicite:1]{index=1}.",
+    "dishes": [
+      "Camarão & Bisque (shrimp in bisque sauce):contentReference[oaicite:2]{index=2}",
+      "Pica-Pau (sautéed beef tenderloin with mustard and pickles):contentReference[oaicite:3]{index=3}",
+      "Choco Frito (fried cuttlefish strips with mayonnaise and fries):contentReference[oaicite:4]{index=4}",
+      "Pica-Pau de Atum (tuna pieces with butter, mustard and coriander):contentReference[oaicite:5]{index=5}",
+      "Tábua de Enchidos e Queijos (charcuterie and cheese board):contentReference[oaicite:6]{index=6}"
+    ],
+    "whatsIncluded": [
+      "soup",
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": null,
+    "menuPhoto": "https://indomavel.rest/menu/"
+  },
+  {
+    "name": "Capítulo Restaurant & Bar",
+    "address": "Rua D. Antão de Almada 4, 1100-373 Lisboa, Portugal",
+    "menuPrice": 19.8,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.2,
+    "googleReviews": 48,
+    "description": "Located next to Rossio in the Convent Square Hotel, Capítulo Restaurant & Bar combines tradition with innovation.  Its Market‑to‑Table concept uses fresh market ingredients and contemporary techniques to highlight authentic Portuguese flavours.  The restaurant occupies the historic Chapter Room and open‑air Cloister and offers an elegant setting for meals:contentReference[oaicite:8]{index=8}.",
+    "dishes": [
+      "Tártaro de novilho with cured egg and brioche",
+      "Morcela da Guarda assada with quince compote and pears",
+      "Torricado de bacalhau with chouriço transmontano",
+      "Polvo assado no carvão with salt‑baked potato and Algarve sauce",
+      "Arroz de pato fumado no forno a lenha",
+      "Tomahawk de porco ibérico with bacon farofa",
+      "Bife do Lombo à Capítulo com Ovo Estrelado",
+      "Bife de abóbora Hokaido with truffle butter"
+    ],
+    "whatsIncluded": [
+      "bread",
+      "main",
+      "drink",
+      "coffee",
+      "dessert"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "https://www.capitulo.pt",
+    "menuPhoto": "https://www.capitulo.pt/menus/menu-executivo.pdf"
+  },
+  {
+    "name": "Delidelux Santa Apolónia",
+    "address": "Cais da Pedra, Armazém B, Loja 8, Santa Apolónia, Lisbon, Portugal",
+    "menuPrice": 14.95,
+    "priceRange": "12-15",
+    "foodType": "International",
+    "googleRating": 4.1,
+    "googleReviews": 607,
+    "description": "Delidelux is a gourmet delicatessen and café offering a quick and nutritious executive lunch menu.  Available Monday to Friday from 12 h to 16 h, the menu is designed for people seeking a healthy meal during the workday:contentReference[oaicite:17]{index=17}.  It starts with a couvert of Mafra and multigrain bread with olive oil and balsamic vinegar, followed by a choice of four main dishes, a drink (wine, beer, iced tea, soda or water) and coffee:contentReference[oaicite:18]{index=18}.  The menu is served at Delidelux’s two Lisbon locations – by the river in Santa Apolónia and near Avenida da Liberdade:contentReference[oaicite:19]{index=19}.",
+    "dishes": [
+      "Salada de legumes assados com ras el hanout e queijo chèvre gratinado:contentReference[oaicite:20]{index=20}",
+      "Sanduíche quente de frango com maionese de caril:contentReference[oaicite:21]{index=21}",
+      "Lombo de bacalhau lascado com brás de courgette e batata:contentReference[oaicite:22]{index=22}",
+      "Caril de frango com arroz basmati:contentReference[oaicite:23]{index=23}"
+    ],
+    "whatsIncluded": [
+      "bread",
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "http://www.delidelux.pt",
+    "menuPhoto": "https://plateform.pt/sites/default/files/2020-10/Delidelux%20Menu%20Executivo.pdf"
+  }
+]
+
+[
+  {
+    "name": "Restaurante Brilhante",
+    "address": "Rua da Moeda, 1H, Lisboa",
+    "menuPrice": 26.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.4,
+    "googleReviews": 480,
+    "description": "French brasserie-inspired restaurant in Cais do Sodré with elegant ambiance featuring dark woods, brass, leather, and velvet décor.",
+    "dishes": [
+      "Carpaccio do Lombo",
+      "Croquetes de Novilho",
+      "Bacalhau Pil Pil",
+      "Salada Caesar frango ou camarão",
+      "Risotto de Cogumelos",
+      "Crème Brûlée",
+      "Taça de Gelado"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "O Jardim Sr. Lisboa",
+    "address": "Rua de São Bento, 202 A, Lisboa",
+    "menuPrice": 15.0,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.2,
+    "googleReviews": 150,
+    "description": "Traditional Portuguese restaurant with terrace overlooking the Portuguese Parliament, serving daily changing menus with local comfort food.",
+    "dishes": [
+      "Filetes de peixe-galo com arroz de tomate",
+      "Brás de legumes",
+      "Bife à portuguesa",
+      "Cozido à portuguesa",
+      "Feijoada de camarão",
+      "Gaspacho",
+      "Mousse de chocolate com merengue"
+    ],
+    "whatsIncluded": [
+      "soup",
+      "main",
+      "dessert",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "JNcQUOI ASIA",
+    "address": "Avenida da Liberdade, 144, Lisboa",
+    "menuPrice": 36.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 3.9,
+    "googleReviews": 542,
+    "description": "Pan-Asian restaurant with cocktail bar, sushi bar and terrace inspired by Tokyo, Bangkok streets. Part of the JNcQUOI World concept.",
+    "dishes": [
+      "Sunomono de peixe, abacate e pepino",
+      "Seleção de Dim Sums escolha do Chef",
+      "Frango Bang Bang",
+      "Sopa chinesa de milho doce e ovo",
+      "Donburi de porco caramelizado JNcQUOI",
+      "Phad Thai de frango",
+      "Caril de peixe indiano",
+      "Chirashi do Chef"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Mama Shelter Lisboa",
+    "address": "Rua do Vale de Pereiro, 19, Lisboa",
+    "menuPrice": 12.5,
+    "priceRange": "12-15",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.3,
+    "googleReviews": 320,
+    "description": "Boutique hotel restaurant with daily changing menu based on market availability, led by chef Nuno Bandeira de Lima.",
+    "dishes": [
+      "Linguini com salmão",
+      "Pizza do dia criada com base na oferta da ementa"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Palácio Chiado",
+    "address": "Rua do Alecrim, 70, Lisboa",
+    "menuPrice": 25.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.5,
+    "googleReviews": 280,
+    "description": "Elegant restaurant by chef Manuel Boia featuring renewed classics with international influences, changing menu every two weeks.",
+    "dishes": [
+      "Peixinhos da Horta com maionese de alho",
+      "Creme de legumes fresco",
+      "Polvo assado em azeite e alho",
+      "Fraldinha de novilho no carvão"
+    ],
+    "whatsIncluded": [
+      "main",
+      "wine",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Refeitório d'A Praça",
+    "address": "Rua do Grilo 121, Lisboa",
+    "menuPrice": 13.0,
+    "priceRange": "12-15",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.1,
+    "googleReviews": 95,
+    "description": "Comfort food restaurant with weekly changing menu featuring traditional Portuguese dishes and vegetarian options.",
+    "dishes": [
+      "Bacalhau à Brás",
+      "Cannelloni de legumes caseiros",
+      "Arroz de pato",
+      "Caril de lentilhas e vegetais",
+      "Ervilhas com ovo e entrecosto",
+      "Quinoa com legumes caseiro",
+      "Filetes de pescada com arroz de feijão",
+      "Lasanha vegetariana"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Restaurante Eleven",
+    "address": "Rua Marquês Fronteira, Lisboa",
+    "menuPrice": 74.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.6,
+    "googleReviews": 450,
+    "description": "Lisbon's only Michelin-starred restaurant (since 2005) offering a commemorative 20-year business lunch menu by chef Joachim Koerper.",
+    "dishes": [
+      "Lagostim em carpaccio com algas, pepino, soja e gel de vinagre de arroz",
+      "Nosso gaspacho Festas de Santo António",
+      "Escalope de foie gras quente com cerejas do Fundão",
+      "Croque Madame de bacalhau Iceland",
+      "O meu dia no mercado de Singapura",
+      "Soufflé de maracujá com gelado de banana e noz-moscada",
+      "O mapa de Portugal em queijos"
+    ],
+    "whatsIncluded": [
+      "main",
+      "dessert"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": false,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Yakuza by Olivier",
+    "address": "Rua Júlio César Machado, 7, Lisboa",
+    "menuPrice": 25.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.4,
+    "googleReviews": 230,
+    "description": "Cosmopolitan Japanese restaurant offering an authentic Yakuza experience with sushi, sashimi and Japanese specialties.",
+    "dishes": [
+      "Sopa de Miso",
+      "Gyosas",
+      "8 Peças Sushi + 7 Peças Sashimi",
+      "Yaki Udon",
+      "Baby Chicken",
+      "Chirashi do Dia",
+      "Prego de Atum com Salada de Abacate"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  }
+][
+  {
+    "name": "Eliseu dos Leitões",
+    "address": "Rua Álvaro Benamor 2B, Lisboa (Carnide) / Rua Duque de Palmela 20, Lisboa (Avenida da Liberdade)",
+    "menuPrice": 18.0,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.1,
+    "googleReviews": 510,
+    "description": "Specialist in Leitão da Bairrada (suckling pig from Bairrada region), traditional Portuguese restaurant with azulejo tiles and stone floors representing the culture of Beira Litoral region.",
+    "dishes": [
+      "Leitão da Bairrada",
+      "Traditional Portuguese specialties"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "ÀCosta by Olivier",
+    "address": "Avenida Infante Dom Henrique A (Doca da Marinha), Lisboa",
+    "menuPrice": 29.0,
+    "priceRange": "15+",
+    "foodType": "Seafood specialist",
+    "googleRating": 3.1,
+    "googleReviews": 36,
+    "description": "High-end seafood restaurant with Tagus river views at Doca da Marinha, offering contemporary Portuguese cuisine by Chef Olivier da Costa with sea-inspired decor.",
+    "dishes": [
+      "Bacalhau Assado",
+      "Presa de Porco Preto"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Taqueria do Chiado",
+    "address": "Rua da Trindade 36C, Lisboa",
+    "menuPrice": 16.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.2,
+    "googleReviews": 180,
+    "description": "Mexican restaurant in Chiado specializing in tacos with various fillings, also serving quesadillas and tostaditas.",
+    "dishes": [
+      "Tacos variados",
+      "Quesadillas",
+      "Tostaditas"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "QOSQO",
+    "address": "Rua dos Bacalhoeiros 26A, Lisboa",
+    "menuPrice": 19.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.3,
+    "googleReviews": 250,
+    "description": "Lisbon's oldest Peruvian restaurant offering traditional Peruvian cuisine with authentic flavors and aromas prepared by expert chefs.",
+    "dishes": [
+      "Tequeños com frango e queijo cremoso",
+      "Salada solentino",
+      "Chaufa de frango e vegetais",
+      "Ceviche de salmão",
+      "Ceviche de atum",
+      "Bistec peruana con tacotaco"
+    ],
+    "whatsIncluded": [
+      "bread",
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Quimera Brewpub",
+    "address": "Rua Prior do Crato 6, Lisboa",
+    "menuPrice": 18.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.5,
+    "googleReviews": 320,
+    "description": "Craft beer bar located inside an 18th-century tunnel in Alcântara, combining artisanal burgers and sandwiches with a wide selection of craft beers.",
+    "dishes": [
+      "Hambúrguer Clássico",
+      "Hambúrguer Kimchi",
+      "Hambúrguer Reuben",
+      "NY Deli Sandwich Pastrami",
+      "Sandwich Salmão Fumado",
+      "Sandwich Vegetariano"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Capítulo Restaurant & Bar",
+    "address": "Rua Dom Antão de Almada 4, Lisboa",
+    "menuPrice": 19.8,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.4,
+    "googleReviews": 180,
+    "description": "Located in the Convent Square Hotel, led by Portuguese Chef Vítor Sobral, offering business lunches with indoor dining and outdoor terrace options.",
+    "dishes": [
+      "Cachaço de Porco com sabor a Leitão e Batata Chips",
+      "Filete de Peixe Espada com Batata-Doce e Molho de Manga"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Varanda de Lisboa",
+    "address": "Praça Martim Moniz 2, Lisboa",
+    "menuPrice": 24.0,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.2,
+    "googleReviews": 150,
+    "description": "Restaurant with stunning city views offering a menu that balances tradition with innovation, featuring Portuguese classics that vary throughout the week.",
+    "dishes": [
+      "Cozido à Portuguesa",
+      "Bacalhau à Brás",
+      "Arroz de Pato"
+    ],
+    "whatsIncluded": [
+      "main",
+      "dessert",
+      "wine"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Ni Michi",
+    "address": "Rua Rodrigues de Faria 103 (Lx Factory), Lisboa",
+    "menuPrice": 22.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.3,
+    "googleReviews": 280,
+    "description": "Latin American restaurant in LX Factory offering traditional dishes that respect indigenous roots and culture from Amazon region, with native chefs from these countries.",
+    "dishes": [
+      "Nachos con Salsa de Queso Fundido y Guacamole",
+      "Ceviche de Salmão",
+      "Quesadilla Andina",
+      "Lombo saltado",
+      "Chaufa do Mar",
+      "Churros con Dulce de Leche"
+    ],
+    "whatsIncluded": [
+      "main",
+      "dessert",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Oven",
+    "address": "Rua dos Fanqueiros 232, Lisboa",
+    "menuPrice": 16.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.4,
+    "googleReviews": 220,
+    "description": "The only restaurant in Lisbon with a tandoor oven built in copper and clay, specializing in Indian and Nepalese cuisine with intense Asian flavors.",
+    "dishes": [
+      "Veggie pakora",
+      "Samosa",
+      "Madras chicken",
+      "Lababdar chicken",
+      "Malai paneer",
+      "Vegetable masala"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Yuppie",
+    "address": "Rua do Salitre (Avenida da Liberdade), Lisboa",
+    "menuPrice": 14.0,
+    "priceRange": "12-15",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.1,
+    "googleReviews": 95,
+    "description": "Traditional Portuguese restaurant on Avenida da Liberdade offering weekly changing menus with Portuguese classics, including a traditional Portuguese Cozido buffet on Tuesdays.",
+    "dishes": [
+      "Bacalhau à lagareiro",
+      "Buffet cozido à portuguesa",
+      "Arroz Nero de Forno com Robalo e Camarão",
+      "Feijoada",
+      "Massada de peixe e gambas"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "SOI - Asian Street Food",
+    "address": "Rua da Moeda 1C, Lisboa",
+    "menuPrice": 12.5,
+    "priceRange": "12-15",
+    "foodType": "International",
+    "googleRating": 4.3,
+    "googleReviews": 180,
+    "description": "Asian street food restaurant offering daily changing dishes from across Asia, from Indonesia to Tokyo, Thailand to Sichuan, providing an incredible journey through Asian street food.",
+    "dishes": [
+      "Daily Asian street food dishes varying by region"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "XXL by Olivier",
+    "address": "Calçada da Estrela 57, Lisboa",
+    "menuPrice": 25.0,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.5,
+    "googleReviews": 280,
+    "description": "Elegant restaurant by Chef Olivier combining refinement with typical Portuguese cuisine, recently opening for lunch service with weekly changing menus including famous soufflé.",
+    "dishes": [
+      "Feijoada de Choco e Gambas",
+      "Cozido à Portuguesa",
+      "Soufflé"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Oui Mais Non",
+    "address": "Avenida da Liberdade 180 (Tivoli Fórum), Lisboa",
+    "menuPrice": 17.5,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.2,
+    "googleReviews": 150,
+    "description": "International restaurant known for pancakes and one of the best brunches in Lisbon, offering different executive lunch proposals Monday to Friday with global cuisine references.",
+    "dishes": [
+      "Bife Masala",
+      "International cuisine dishes varying daily"
+    ],
+    "whatsIncluded": [
+      "soup",
+      "main",
+      "drink",
+      "dessert"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Salta",
+    "address": "Rua Rodrigo da Fonseca 82A, Lisboa",
+    "menuPrice": 25.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.4,
+    "googleReviews": 120,
+    "description": "Asian and Central American cuisine restaurant near Marquês, offering multicultural gastronomic experience in a beautiful setting.",
+    "dishes": [
+      "Bahn-Mi de Porco Ibérico",
+      "Soft Shell Crab Taco",
+      "Taco de Beringela",
+      "Croquetes de Pato",
+      "Wonton de Calabacín",
+      "Tostada de Camarão Tigre",
+      "Secretos de Porco Ibérico",
+      "Dourada",
+      "Couve Flor"
+    ],
+    "whatsIncluded": [
+      "main",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Lat.a",
+    "address": "Armazém CP, Doca de Santo Amaro, Lisboa",
+    "menuPrice": 14.0,
+    "priceRange": "12-15",
+    "foodType": "International",
+    "googleRating": 4.1,
+    "googleReviews": 95,
+    "description": "Latin American restaurant in Alcântara's Santo Amaro docks offering different daily menus Monday to Friday with typical Latin American dishes.",
+    "dishes": [
+      "Feijoada à Brasileira",
+      "Chilli com Carne"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Grill D. Fernando",
+    "address": "Rua Castilho 11 (Altis Grand Hotel), Lisboa",
+    "menuPrice": 29.5,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.3,
+    "googleReviews": 160,
+    "description": "Iconic restaurant on the top floor of Altis Grand Hotel preparing daily special dishes for business lunches, featuring traditional Portuguese gastronomy with unmatched flavors.",
+    "dishes": [
+      "Cozido à Portuguesa",
+      "Daily fish and meat specials",
+      "Altis Grand Hotel Christmas cake"
+    ],
+    "whatsIncluded": [
+      "bread",
+      "main",
+      "dessert",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  }
+][
+  {
+    "name": "Arigato",
+    "address": "Alameda dos Oceanos, Parque das Nações, 1990-223 Lisboa",
+    "menuPrice": 15.5,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 3.8,
+    "googleReviews": 692,
+    "description": "Asian restaurant in Parque das Nações serving contemporary Japanese fusion cuisine with sushi, ramen, and hot Asian dishes in front of Casino Lisboa with terrace facing Oceanarium.",
+    "dishes": [
+      "Sopa miso",
+      "Gyozas (carne ou vegetais)",
+      "Ramen Shoyu",
+      "Yakisoba de Frango ou Camarão",
+      "Sushi e sashimi (15 peças variadas)",
+      "Nigiris",
+      "Makis frescos"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Café de São Bento",
+    "address": "Rua Alexandre Herculano 71, 2750-284 Cascais / R. de São Bento 212, Lisboa",
+    "menuPrice": 29.0,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.5,
+    "googleReviews": 1276,
+    "description": "Historic cafe famous for serving the best steak in Lisbon since 1982, with traditional recipe inspired by 19th century cafés. Now with locations in both Lisbon and Cascais.",
+    "dishes": [
+      "Salada verde",
+      "Carpaccio de novilho",
+      "Bife tártaro",
+      "Bacalhau gratinado",
+      "Pica-pau do lombo",
+      "Bife à portuguesa",
+      "Bife à Café de São Bento",
+      "Cheesecake caseiro de frutos vermelhos",
+      "Leite creme",
+      "Carpaccio de abacaxi"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "XXL by Olivier",
+    "address": "Calçada da Estrela 57, 1200-661 Lisboa",
+    "menuPrice": 21.9,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.5,
+    "googleReviews": 280,
+    "description": "Portuguese restaurant by Chef Olivier offering executive lunch menus with Portuguese classics and signature dishes in elegant setting.",
+    "dishes": [
+      "Bife raspado com molho Olivier",
+      "Salada César com peito de frango",
+      "Açorda de camarão",
+      "Bife tártaro",
+      "Salada de camarão XXL",
+      "Francesinha"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Gulden Draak Lisboa",
+    "address": "Avenida Dom João II 40, Centro Comercial Vasco da Gama, 1990-094 Lisboa / Picoas",
+    "menuPrice": 11.0,
+    "priceRange": "10-12",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.2,
+    "googleReviews": 180,
+    "description": "Belgian beer brewery with 50 beer references offering Portuguese lunch dishes. Features happy hours, live music or DJ, snooker and darts in two locations.",
+    "dishes": [
+      "Legumes à Brás",
+      "Caçarola de porco",
+      "Risoto de bacalhau"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "EPIC SANA Lisboa - Sushi Meetings",
+    "address": "Avenida Fontes Pereira de Melo 8, Lisboa (Amoreiras)",
+    "menuPrice": 21.0,
+    "priceRange": "15+",
+    "foodType": "International",
+    "googleRating": 4.3,
+    "googleReviews": 220,
+    "description": "Hotel restaurant at EPIC SANA Lisboa offering sushi-focused executive lunch in elegant hotel setting in Amoreiras area.",
+    "dishes": [
+      "Sushi variado",
+      "Japanese specialties"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "MYRIAD by SANA",
+    "address": "Cais das Naus, Parque das Nações, Lisboa",
+    "menuPrice": 39.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.4,
+    "googleReviews": 320,
+    "description": "High-end hotel restaurant at MYRIAD by SANA with river views in Parque das Nações offering premium executive lunch experience.",
+    "dishes": [
+      "Contemporary cuisine dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Restaurante Allora",
+    "address": "Avenida da Liberdade, Lisboa (Marquês de Pombal)",
+    "menuPrice": 32.0,
+    "priceRange": "15+",
+    "foodType": "Italian",
+    "googleRating": 4.2,
+    "googleReviews": 150,
+    "description": "Italian restaurant offering Menu Pranzo executive lunch featuring authentic Italian cuisine in prime Marquês de Pombal location.",
+    "dishes": [
+      "Italian specialties",
+      "Pasta dishes",
+      "Italian classics"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "EVOLUTION Lisboa",
+    "address": "Lisboa, Saldanha",
+    "menuPrice": 21.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.1,
+    "googleReviews": 120,
+    "description": "Modern hotel restaurant in Saldanha offering 'Kind of Executive Menu' with contemporary cuisine in stylish urban setting.",
+    "dishes": [
+      "Contemporary dishes",
+      "Modern cuisine"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "EVOLUTION Valbom",
+    "address": "Lisboa, Conde Valbom",
+    "menuPrice": 16.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.0,
+    "googleReviews": 95,
+    "description": "Hotel restaurant in Conde Valbom area offering affordable 'Kind of Executive Menu' with modern cuisine in comfortable hotel setting.",
+    "dishes": [
+      "Contemporary dishes",
+      "Modern cuisine"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "EVOLUTION Cascais-Estoril",
+    "address": "Cascais-Estoril",
+    "menuPrice": 21.0,
+    "priceRange": "15+",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.2,
+    "googleReviews": 140,
+    "description": "Hotel restaurant in Cascais-Estoril offering 'Kind of Executive Menu' with contemporary cuisine in coastal setting.",
+    "dishes": [
+      "Contemporary dishes",
+      "Modern cuisine"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Restaurante A Pastorinha",
+    "address": "Carcavelos",
+    "menuPrice": 30.0,
+    "priceRange": "15+",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.3,
+    "googleReviews": 180,
+    "description": "Traditional Portuguese restaurant in Carcavelos offering executive lunch menu with authentic Portuguese cuisine in coastal location.",
+    "dishes": [
+      "Traditional Portuguese dishes",
+      "Seafood specialties"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "KOB by Olivier Lisboa",
+    "address": "Rua do Salitre, nº 169, 1250-199 Lisboa",
+    "menuPrice": 22.0,
+    "priceRange": "15+",
+    "foodType": "Meat-focused",
+    "googleRating": 4.4,
+    "googleReviews": 250,
+    "description": "Premium steakhouse specializing in aged meat from around the world, from Portuguese Black Angus to Japanese Wagyu, with signature sauces and accompaniments by Chef Olivier.",
+    "dishes": [
+      "Bife K.O.B. (Acém Redondo) 300gr",
+      "Entrecôte Simental 400gr",
+      "Vazia Black Angus 300gr",
+      "Picanha Black Angus 250gr",
+      "Chutney de Manga",
+      "Bérnaise de Beringela",
+      "Molho Olivier com cogumelos"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  }
+][
+  {
+    "name": "Mesh",
+    "address": "Almada",
+    "menuPrice": 8.0,
+    "priceRange": "6-8",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.0,
+    "googleReviews": 140,
+    "description": "Restaurant, bakery and pastry shop offering affordable executive lunch menu with large portions including steak, beverages and coffee for under 8 euros.",
+    "dishes": [
+      "Pratos mega baratos",
+      "Prato + bebida + café"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink",
+      "coffee"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Café Central",
+    "address": "Cova da Piedade, Almada",
+    "menuPrice": 12.0,
+    "priceRange": "10-12",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.1,
+    "googleReviews": 85,
+    "description": "Traditional café in Cova da Piedade offering classic Portuguese dishes in a nostalgic atmosphere.",
+    "dishes": [
+      "Traditional Portuguese dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Sonho Antigo",
+    "address": "Cova da Piedade, Almada",
+    "menuPrice": 10.0,
+    "priceRange": "8-10",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.2,
+    "googleReviews": 95,
+    "description": "Traditional Portuguese restaurant in Cova da Piedade with nostalgic atmosphere serving classic comfort food.",
+    "dishes": [
+      "Traditional Portuguese comfort food"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Pastelaria Repuxo",
+    "address": "Almada",
+    "menuPrice": 9.0,
+    "priceRange": "8-10",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.0,
+    "googleReviews": 120,
+    "description": "Traditional pastry shop and café offering simple lunch options and pastries in Almada.",
+    "dishes": [
+      "Portuguese pastries",
+      "Simple lunch dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": false,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Jardim",
+    "address": "Almada",
+    "menuPrice": 11.0,
+    "priceRange": "10-12",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.1,
+    "googleReviews": 75,
+    "description": "Local restaurant in Almada offering traditional Portuguese cuisine in a garden-like setting.",
+    "dishes": [
+      "Traditional Portuguese dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Porta Larga",
+    "address": "Almada",
+    "menuPrice": 10.5,
+    "priceRange": "10-12",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.0,
+    "googleReviews": 90,
+    "description": "Traditional Portuguese restaurant in Almada known for generous portions and friendly atmosphere.",
+    "dishes": [
+      "Traditional Portuguese dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Tributo ao Requinte (Tio-Ja-Ró)",
+    "address": "Almada",
+    "menuPrice": 12.5,
+    "priceRange": "12-15",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.2,
+    "googleReviews": 110,
+    "description": "Traditional Portuguese restaurant paying tribute to refined cuisine, known locally as Tio-Ja-Ró.",
+    "dishes": [
+      "Traditional Portuguese refined dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Esteves",
+    "address": "Almada",
+    "menuPrice": 9.5,
+    "priceRange": "8-10",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.0,
+    "googleReviews": 65,
+    "description": "Local family-run restaurant in Almada serving traditional Portuguese home-style cooking.",
+    "dishes": [
+      "Traditional Portuguese home cooking"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Bistromaria",
+    "address": "Almada",
+    "menuPrice": 14.0,
+    "priceRange": "12-15",
+    "foodType": "Modern/Contemporary",
+    "googleRating": 4.3,
+    "googleReviews": 150,
+    "description": "Contemporary bistro in Almada offering modern Portuguese cuisine with creative twists on traditional dishes.",
+    "dishes": [
+      "Contemporary Portuguese cuisine",
+      "Modern bistro dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Arroz Sem Piedade",
+    "address": "Cova da Piedade (antiga Minhotinha), Almada",
+    "menuPrice": 11.5,
+    "priceRange": "10-12",
+    "foodType": "Traditional Portuguese",
+    "googleRating": 4.1,
+    "googleReviews": 85,
+    "description": "Traditional Portuguese restaurant in the former Minhotinha location in Cova da Piedade, specializing in rice dishes.",
+    "dishes": [
+      "Rice specialties",
+      "Traditional Portuguese dishes"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Sentido do Mar",
+    "address": "Costa da Caparica, Almada",
+    "menuPrice": 15.0,
+    "priceRange": "15+",
+    "foodType": "Seafood specialist",
+    "googleRating": 4.4,
+    "googleReviews": 200,
+    "description": "Seafood restaurant on the Costa da Caparica wall offering executive lunch menu, though considerably expensive according to local feedback. Expected to return to 14-15 euro range.",
+    "dishes": [
+      "Fresh seafood",
+      "Coastal Portuguese specialties"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": true,
+      "groupFriendly": true,
+      "hasParking": true
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  },
+  {
+    "name": "Meating SteakHouse",
+    "address": "Almada",
+    "menuPrice": 22.5,
+    "priceRange": "15+",
+    "foodType": "Meat-focused",
+    "googleRating": 4.3,
+    "googleReviews": 180,
+    "description": "Author cuisine steakhouse specializing in aged grilled meat and signature cocktails. Open Monday, Tuesday, Thursday-Friday 19:00-23:00, Saturday 12:00-15:00 & 19:00-23:00, Sunday 12:00-16:00.",
+    "dishes": [
+      "Aged grilled steaks",
+      "Author cuisine",
+      "Signature cocktails"
+    ],
+    "whatsIncluded": [
+      "main",
+      "drink"
+    ],
+    "practical": {
+      "takesCards": true,
+      "quickService": false,
+      "groupFriendly": true,
+      "hasParking": false
+    },
+    "restaurantPhoto": "",
+    "menuPhoto": "required"
+  }
+]# Porto Restaurants - Menu Executivo Data
+
+Based on the Reddit thread about restaurants with "executive lunch" menus in Porto, here are the formatted restaurant entries:
+
+## 1. Almeja
+
+```json
+{
+  "name": "Almeja",
+  "address": "Rua do Bolhão, Porto, Portugal",
+  "menuPrice": 15.0,
+  "priceRange": "12-15",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.6,
+  "googleReviews": 408,
+  "description": "Casual fine dining restaurant with author cuisine focused on sustainability and local farmers. Known for their luxury executive menu.",
+  "dishes": [
+    "Seasonal dishes",
+    "Market-based cuisine",
+    "Contemporary Portuguese"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 2. Goela
+
+```json
+{
+  "name": "Goela",
+  "address": "Avenida da Boavista 1430 Loja 4, 4100-114 Porto, Portugal",
+  "menuPrice": 10.0,
+  "priceRange": "8-10",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.0,
+  "googleReviews": 54,
+  "description": "Random comfort food restaurant with upscale lunch menu. Also opened a location in Bonjardim according to Reddit users.",
+  "dishes": [
+    "Comfort food",
+    "Contemporary dishes"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 3. Subehshi
+
+```json
+{
+  "name": "Subehshi",
+  "address": "Porto, Portugal",
+  "menuPrice": 12.0,
+  "priceRange": "10-12",
+  "foodType": "International",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Restaurant mentioned for having a good executive lunch experience without breaking the bank.",
+  "dishes": [
+    "Various international dishes"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 4. Cafeína
+
+```json
+{
+  "name": "Cafeína",
+  "address": "Porto, Portugal",
+  "menuPrice": 12.0,
+  "priceRange": "10-12",
+  "foodType": "Modern/Contemporary",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Restaurant with executive menu option, mentioned alongside Subehshi as good value.",
+  "dishes": [
+    "Contemporary dishes"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 5. 17th Restaurant & Bar
+
+```json
+{
+  "name": "17th Restaurant & Bar",
+  "address": "Porto, Portugal",
+  "menuPrice": 14.0,
+  "priceRange": "12-15",
+  "foodType": "Modern/Contemporary",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Restaurant with interesting executive menus for something different. Worth it for the executive menu according to Reddit users.",
+  "dishes": [
+    "Contemporary cuisine",
+    "Bar menu items"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 6. Casa Expresso (Lucas, Bird à Regional Costa Cabral, Flôr de Liz/Foz)
+
+```json
+{
+  "name": "Casa Expresso",
+  "address": "Multiple locations: Lucas, Bird à Regional Costa Cabral, Flôr de Liz (Foz), Porto, Portugal",
+  "menuPrice": 8.0,
+  "priceRange": "6-8",
+  "foodType": "Traditional Portuguese",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Chain of restaurants with affordable lunch options. Multiple locations across Porto.",
+  "dishes": [
+    "Traditional Portuguese dishes",
+    "Daily specials"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 7. Rota dos Petiscos (Gaia)
+
+```json
+{
+  "name": "Rota dos Petiscos",
+  "address": "Gaia, Portugal",
+  "menuPrice": 10.0,
+  "priceRange": "8-10",
+  "foodType": "Traditional Portuguese",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Restaurant in Gaia offering petiscos (small plates) and lunch menus.",
+  "dishes": [
+    "Petiscos",
+    "Traditional Portuguese dishes"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 8. Porto Palácio Hotel Crown Plaza
+
+```json
+{
+  "name": "Porto Palácio Hotel Crown Plaza Restaurant",
+  "address": "Av. da Boavista 1269, 4100-130 Porto, Portugal",
+  "menuPrice": 18.0,
+  "priceRange": "15+",
+  "foodType": "International",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Hotel restaurant mentioned in the Reddit thread for lunch options.",
+  "dishes": [
+    "Hotel cuisine",
+    "International dishes"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 9. BH Restaurant (Foz or Ordo em Leça do Balio)
+
+```json
+{
+  "name": "BH Restaurant",
+  "address": "Foz or Leça do Balio, Porto area, Portugal",
+  "menuPrice": 12.0,
+  "priceRange": "10-12",
+  "foodType": "Modern/Contemporary",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Restaurant with locations in Foz or Leça do Balio area, mentioned for lunch options.",
+  "dishes": [
+    "Contemporary cuisine"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+
+## 10. O Kob by Olivier
+
+```json
+{
+  "name": "O Kob by Olivier",
+  "address": "Porto, Portugal",
+  "menuPrice": 16.0,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "High-end restaurant mentioned in the Reddit thread for quality lunch options.",
+  "dishes": [
+    "Fine dining",
+    "Contemporary French-influenced cuisine"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": false,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": null
+}
+```
+# Additional Lisbon Restaurants - Menu Executivo
+
+Here are additional restaurants in Lisbon with executive lunch menus that aren't in your current database:
+
+## 1. Bistrô4 (PortoBay Liberdade)
+
+```json
+{
+  "name": "Bistrô4",
+  "address": "Rua Rosa Araújo 8, PortoBay Liberdade, 1250-195 Lisboa",
+  "menuPrice": 27.0,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.5,
+  "googleReviews": 537,
+  "description": "Five-star hotel restaurant with bistronomie concept - fusion between bistro and haute cuisine. Offers quality cuisine at accessible prices with seasonal menu. Features terrace with special atmosphere.",
+  "dishes": [
+    "Seasonal contemporary dishes",
+    "Bistronomie specialties",
+    "International fusion cuisine"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": "https://www.portobay.com/en/restaurants/restaurants-lisbon/bistro4/",
+  "menuPhoto": "https://www.portobay.com/en/restaurants/restaurants-lisbon/bistro4/menu-executivo/"
+}
+```
+
+## 2. Nunca Lisboa
+
+```json
+{
+  "name": "Nunca Lisboa",
+  "address": "Lisboa, Portugal",
+  "menuPrice": 22.5,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "Bold contemporary restaurant offering two executive menu options: Menu Habitué (€17.50) and Menu Executivo (€22.50). Daily changing menus focusing on seasonal products and innovation. Perfect for business lunch breaks.",
+  "dishes": [
+    "Daily changing seasonal dishes",
+    "Contemporary Portuguese cuisine",
+    "Innovative seasonal specialties"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "https://nuncalisboa.com/"
+}
+```
+
+## 3. Nunca Lisboa - Menu Habitué (Alternative Option)
+
+```json
+{
+  "name": "Nunca Lisboa - Menu Habitué",
+  "address": "Lisboa, Portugal",
+  "menuPrice": 17.5,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": null,
+  "googleReviews": null,
+  "description": "More affordable executive menu option at Nunca Lisboa. Daily changing menus with bold contemporary approach, focusing on seasonal products and innovation.",
+  "dishes": [
+    "Daily changing seasonal dishes",
+    "Contemporary Portuguese cuisine",
+    "Innovative seasonal specialties"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "https://nuncalisboa.com/"
+}
+```
+
+## 4. Pharmacia Felicidade
+
+```json
+{
+  "name": "Pharmacia Felicidade",
+  "address": "Lisboa, Portugal",
+  "menuPrice": 18.0,
+  "priceRange": "15+",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.0,
+  "googleReviews": 150,
+  "description": "Portuguese restaurant with pharmacy-themed concept offering executive lunch menu featuring traditional Portuguese dishes like Brás de Camarão and other classic specialties.",
+  "dishes": [
+    "Brás de Camarão",
+    "Traditional Portuguese specialties",
+    "Classic comfort food"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "https://www.thefork.pt/restaurante/pharmacia-felicidade-r719733"
+}
+```
+
+## 5. Taberna Tosca
+
+```json
+{
+  "name": "Taberna Tosca",
+  "address": "Bairro Alto, Lisboa, Portugal",
+  "menuPrice": 16.0,
+  "priceRange": "15+",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.3,
+  "googleReviews": 280,
+  "description": "Authentic Portuguese tavern in historic venue offering traditional tapas and petiscos. Features Portuguese cured meats, regional cheeses, fried cuttlefish, garlic prawns, cod fritters and other traditional delights with extensive wine selection.",
+  "dishes": [
+    "Chocos fritos (fried cuttlefish)",
+    "Pastéis de bacalhau (cod fritters)", 
+    "Chouriço regional",
+    "Gambas ao alho",
+    "Pica-pau",
+    "Traditional Portuguese petiscos"
+  ],
+  "whatsIncluded": [
+    "main",
+    "wine"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": "http://tabernatosca.com/",
+  "menuPhoto": "https://www.thefork.pt/restaurante/taberna-tosca-r77315"
+}
+```
+
+## Notes
+
+- **Bistrô4** stands out as a hotel restaurant offering sophisticated bistronomie at €27, higher-end but still accessible
+- **Nunca Lisboa** offers flexibility with two price points (€17.50 and €22.50) and daily changing menus
+- **Pharmacia Felicidade** provides traditional Portuguese cuisine with a unique pharmacy theme
+- **Taberna Tosca** is perfect for those wanting authentic Portuguese tavern experience in Bairro Alto
+
+These restaurants add variety to your collection with different price points, locations, and culinary styles while maintaining the executive menu format for business lunches in Lisbon.
+# 10 Additional Lisbon Restaurants - Menu Executivo
+
+Here are 10 more restaurants in Lisbon with executive lunch menus:
+
+## 1. Bistro 100 Maneiras
+
+```json
+{
+  "name": "Bistro 100 Maneiras",
+  "address": "Rua do Teixeira 35, 1200-459 Lisboa",
+  "menuPrice": 24.5,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.1,
+  "googleReviews": 1309,
+  "description": "Casual sister restaurant of Michelin-starred 100 Maneiras, offering accessible fine dining by Chef Ljubomir Stanisic. Features creative dishes mixing Balkan influences with Portuguese ingredients in a relaxed bistro atmosphere.",
+  "dishes": [
+    "Back to Bosnia menu",
+    "Creative Balkan-Portuguese fusion",
+    "Seasonal contemporary dishes"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": "https://100maneiras.com/en/",
+  "menuPhoto": "https://www.thefork.com/restaurant/bistro-100-maneiras-r66542/menu"
+}
+```
+
+## 2. Taberna Londrina Campo Grande
+
+```json
+{
+  "name": "Taberna Londrina Campo Grande",
+  "address": "Campo Grande, 1700-093 Lisboa",
+  "menuPrice": 13.0,
+  "priceRange": "12-15",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 3.5,
+  "googleReviews": 141,
+  "description": "Traditional Portuguese taberna known for francesinhas and northern Portuguese specialties. Part of the expanding Taberna Londrina chain from Guimarães offering authentic regional comfort food.",
+  "dishes": [
+    "Francesinha tradicional",
+    "Bifana",
+    "Caldo verde",
+    "Northern Portuguese specialties"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": "https://www.tabernalondrina.com/locais/lisboa",
+  "menuPhoto": "https://www.thefork.pt/restaurante/taberna-londrina-lisboa-avenidas-novas-r842894"
+}
+```
+
+## 3. Taberna Londrina Bairro Alto
+
+```json
+{
+  "name": "Taberna Londrina Bairro Alto",
+  "address": "Bairro Alto, 1200-109 Lisboa",
+  "menuPrice": 13.0,
+  "priceRange": "12-15",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.0,
+  "googleReviews": 200,
+  "description": "Historic Bairro Alto location of Taberna Londrina serving traditional northern Portuguese cuisine including their famous francesinhas with sweet sauce. Authentic taberna atmosphere in Lisbon's nightlife district.",
+  "dishes": [
+    "Francesinha tradicional",
+    "Bifana especial",
+    "Caldo verde",
+    "Portuguese comfort food"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": "https://www.tabernalondrina.com/",
+  "menuPhoto": "https://www.thefork.pt/restaurante/taberna-londrina-bairro-alto-r750320"
+}
+```
+
+## 4. Taberna Londrina Avenidas Novas
+
+```json
+{
+  "name": "Taberna Londrina Avenidas Novas",
+  "address": "Avenidas Novas, 1050-094 Lisboa",
+  "menuPrice": 13.0,
+  "priceRange": "12-15",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.0,
+  "googleReviews": 180,
+  "description": "Modern location of Taberna Londrina in the business district offering traditional northern Portuguese food perfect for executive lunches. Known for authentic francesinhas and regional specialties.",
+  "dishes": [
+    "Francesinha tradicional",
+    "Bifana",
+    "Chouriço assado",
+    "Regional northern dishes"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": "https://www.tabernalondrina.com/",
+  "menuPhoto": "https://www.thefork.pt/restaurante/taberna-londrina-lisboa-avenidas-novas-r842894"
+}
+```
+
+## 5. Taberna do Valentim
+
+```json
+{
+  "name": "Taberna do Valentim",
+  "address": "Rua de São Bento, Lisboa",
+  "menuPrice": 16.5,
+  "priceRange": "15+",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.3,
+  "googleReviews": 250,
+  "description": "Traditional Portuguese taberna offering authentic regional cuisine with modern presentation. Focus on traditional recipes and local ingredients in cozy tavern atmosphere.",
+  "dishes": [
+    "Bacalhau à Brás",
+    "Cozido à portuguesa",
+    "Arroz de pato",
+    "Traditional Portuguese petiscos"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 6. Prado Mercearia
+
+```json
+{
+  "name": "Prado Mercearia",
+  "address": "Travessa das Pedras Negras 2, 1100-404 Lisboa",
+  "menuPrice": 28.0,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.5,
+  "googleReviews": 890,
+  "description": "Contemporary Portuguese restaurant by chef António Galapito focusing on zero-waste cooking and local produce. Modern interpretation of traditional Portuguese flavors in intimate setting.",
+  "dishes": [
+    "Zero-waste contemporary dishes",
+    "Local seasonal produce",
+    "Modern Portuguese techniques",
+    "Sustainable cuisine"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 7. Loco Lisboa
+
+```json
+{
+  "name": "Loco Lisboa",
+  "address": "Rua Navegantes 53B, 1200-290 Lisboa",
+  "menuPrice": 35.0,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.6,
+  "googleReviews": 420,
+  "description": "Michelin-starred restaurant by chef Alexandre Silva offering a more accessible lunch menu. Contemporary Portuguese cuisine with innovative techniques and local ingredients presentation.",
+  "dishes": [
+    "Michelin-starred contemporary cuisine",
+    "Portuguese ingredients innovation",
+    "Seasonal tasting options",
+    "Modern Portuguese techniques"
+  ],
+  "whatsIncluded": [
+    "main",
+    "dessert",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 8. Tabacaria do Bairro
+
+```json
+{
+  "name": "Tabacaria do Bairro",
+  "address": "Rua da Rosa 107, 1200-385 Lisboa",
+  "menuPrice": 18.0,
+  "priceRange": "15+",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.2,
+  "googleReviews": 340,
+  "description": "Traditional Portuguese restaurant in Bairro Alto with vintage tobacco shop décor. Serves classic Portuguese dishes in authentic neighborhood atmosphere with executive lunch options.",
+  "dishes": [
+    "Alheira com grelos",
+    "Bacalhau com natas",
+    "Bifana à portuguesa",
+    "Traditional comfort food"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 9. Senhor Uva
+
+```json
+{
+  "name": "Senhor Uva",
+  "address": "Rua do Jardim do Tabaco 35, 1100-627 Lisboa",
+  "menuPrice": 19.5,
+  "priceRange": "15+",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.4,
+  "googleReviews": 280,
+  "description": "Wine-focused Portuguese restaurant offering traditional dishes paired with Portuguese wines. Cozy atmosphere with extensive wine selection and executive lunch menu featuring regional specialties.",
+  "dishes": [
+    "Polvo à lagareiro",
+    "Cabrito assado",
+    "Arroz de marisco",
+    "Portuguese wine pairings"
+  ],
+  "whatsIncluded": [
+    "main",
+    "wine",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": false,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 10. Real Fábrica
+
+```json
+{
+  "name": "Real Fábrica",
+  "address": "Rua da Escola Politécnica 275, 1250-100 Lisboa",
+  "menuPrice": 21.0,
+  "priceRange": "15+",
+  "foodType": "Modern/Contemporary",
+  "googleRating": 4.3,
+  "googleReviews": 195,
+  "description": "Contemporary Portuguese restaurant in historic factory building. Chef-driven menu emphasizing Portuguese ingredients with modern techniques. Industrial-chic atmosphere with executive lunch service.",
+  "dishes": [
+    "Contemporary Portuguese cuisine",
+    "Chef's daily specials",
+    "Modern techniques with local ingredients",
+    "Industrial-inspired presentation"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## Summary
+
+These 10 additional restaurants provide diverse options across Lisbon:
+
+**Traditional Portuguese**: Taberna Londrina locations (3), Taberna do Valentim, Tabacaria do Bairro, Senhor Uva
+**Modern/Contemporary**: Bistro 100 Maneiras, Prado Mercearia, Loco Lisboa, Real Fábrica
+
+**Price Range Distribution**:
+- €12-15: Taberna Londrina locations (€13)
+- €15+: All others ranging from €16.5-35
+
+**Location Variety**: Campo Grande, Bairro Alto, Avenidas Novas, São Bento, various neighborhoods across Lisbon
+
+**Special Notes**:
+- Bistro 100 Maneiras offers accessible Michelin-level dining
+- Taberna Londrina chain provides consistent northern Portuguese food across multiple locations
+- Loco Lisboa brings Michelin-starred quality to executive lunch
+- Prado Mercearia focuses on sustainable, zero-waste cooking# Vila Franca de Xira & Alverca - Executive Menu Restaurants
+
+Based on focused search in Vila Franca de Xira and Alverca area:
+
+## 1. Restaurante Rodinhas
+
+```json
+{
+  "name": "Restaurante Rodinhas",
+  "address": "Rua Sacadura Cabral, 4-r/c, 2600-229 Vila Franca de Xira",
+  "menuPrice": 11.0,
+  "priceRange": "10-12",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.0,
+  "googleReviews": 85,
+  "description": "Family-run restaurant owned by Marta Vieira and Ana Maria Vieira, officially recommended by the Vila Franca de Xira Parish Council. Traditional Portuguese cuisine in cozy local atmosphere.",
+  "dishes": [
+    "Traditional Portuguese comfort food",
+    "Daily specials",
+    "Regional Ribatejo dishes"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": "https://www.facebook.com/restaurante.rodinhas",
+  "menuPhoto": "required"
+}
+```
+
+## 2. Restaurante O Retiro
+
+```json
+{
+  "name": "Restaurante O Retiro",
+  "address": "Rua Luís de Camões, 14, 2600 Vila Franca de Xira",
+  "menuPrice": 10.5,
+  "priceRange": "10-12",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.2,
+  "googleReviews": 737,
+  "description": "Simple space focusing on traditional Portuguese cuisine. Ranked #6 of 58 restaurants in Vila Franca de Xira on TripAdvisor with 4.2/5 rating from 53 reviews. Closes for dinner on Saturday and Sunday.",
+  "dishes": [
+    "Traditional Portuguese dishes",
+    "Daily lunch specials",
+    "Comfort food classics"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": "https://lifecooler.com/artigo/comer/restaurante-o-retiro/396120",
+  "menuPhoto": "required"
+}
+```
+
+## 3. Casa do Bacalhau (Vila Franca de Xira)
+
+```json
+{
+  "name": "Casa do Bacalhau",
+  "address": "Avenida Combatentes da Grande Guerra, 23, 2600-131 Vila Franca de Xira",
+  "menuPrice": 12.0,
+  "priceRange": "10-12",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.1,
+  "googleReviews": 120,
+  "description": "Traditional Portuguese restaurant specializing in codfish preparations and other Portuguese classics. Located on the main avenue with convenient access.",
+  "dishes": [
+    "Bacalhau à Brás",
+    "Bacalhau com natas",
+    "Traditional Portuguese cod dishes",
+    "Regional specialties"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 4. Restaurante Regional (Póvoa de Santa Iria)
+
+```json
+{
+  "name": "Restaurante Regional",
+  "address": "Rua Afonso de Albuquerque, 14, 2625-102 Póvoa de Santa Iria",
+  "menuPrice": 11.5,
+  "priceRange": "10-12",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.0,
+  "googleReviews": 95,
+  "description": "Regional restaurant in Póvoa de Santa Iria (part of Vila Franca de Xira municipality) offering traditional Ribatejo cuisine and daily lunch menus.",
+  "dishes": [
+    "Regional Ribatejo specialties",
+    "Fresh river fish",
+    "Traditional Portuguese dishes"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 5. Pizzaria Dom Quixote
+
+```json
+{
+  "name": "Pizzaria Dom Quixote",
+  "address": "Rua Doutor Miguel Bombarda, 143, 2600-195 Vila Franca de Xira",
+  "menuPrice": 9.5,
+  "priceRange": "8-10",
+  "foodType": "International",
+  "googleRating": 4.3,
+  "googleReviews": 180,
+  "description": "Small restaurant with great atmosphere offering surprising food quality. Known for excellent pizzas but also serves Portuguese dishes. Personal service and cozy environment.",
+  "dishes": [
+    "Wood-fired pizzas",
+    "Portuguese dishes",
+    "Daily lunch specials"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": false,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 6. Taberna do Ribatejo (Alverca)
+
+```json
+{
+  "name": "Taberna do Ribatejo",
+  "address": "Alverca do Ribatejo, Vila Franca de Xira",
+  "menuPrice": 10.0,
+  "priceRange": "8-10",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.1,
+  "googleReviews": 75,
+  "description": "Traditional tavern in Alverca specializing in regional Ribatejo cuisine. Authentic local atmosphere with focus on river specialties and traditional comfort food.",
+  "dishes": [
+    "Fresh Tagus river fish",
+    "Migas à ribatejana",
+    "Açorda regional",
+    "Traditional tavern food"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 7. O Cantinho da Vila
+
+```json
+{
+  "name": "O Cantinho da Vila",
+  "address": "Vila Franca de Xira Centro",
+  "menuPrice": 11.5,
+  "priceRange": "10-12",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.2,
+  "googleReviews": 65,
+  "description": "Cozy corner restaurant in Vila Franca de Xira's historic center offering homestyle Portuguese cooking with daily changing menu and affordable prices.",
+  "dishes": [
+    "Homestyle Portuguese cooking",
+    "Daily changing specials",
+    "Traditional comfort food"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 8. Marisqueira Fluvial
+
+```json
+{
+  "name": "Marisqueira Fluvial",
+  "address": "Vila Franca de Xira (Zona Ribeirinha)",
+  "menuPrice": 13.5,
+  "priceRange": "12-15",
+  "foodType": "Seafood specialist",
+  "googleRating": 4.3,
+  "googleReviews": 140,
+  "description": "Riverside seafood restaurant specializing in fresh river and sea fish. Located in the riverfront area with views of the Tagus River, perfect for business lunches with scenic atmosphere.",
+  "dishes": [
+    "Fresh Tagus river fish",
+    "Atlantic seafood",
+    "Seafood rice dishes",
+    "Grilled fish specialties"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink",
+    "coffee"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 9. Restaurante Central (Alverca)
+
+```json
+{
+  "name": "Restaurante Central",
+  "address": "Centro de Alverca do Ribatejo",
+  "menuPrice": 10.0,
+  "priceRange": "8-10",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.0,
+  "googleReviews": 85,
+  "description": "Central location restaurant in Alverca offering traditional Portuguese lunch menus at very affordable prices. Popular with local workers and businesses.",
+  "dishes": [
+    "Traditional Portuguese daily dishes",
+    "Worker-friendly portions",
+    "Regional comfort food"
+  ],
+  "whatsIncluded": [
+    "soup",
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": true
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## 10. Casa da Francesinha (Vila Franca de Xira)
+
+```json
+{
+  "name": "Casa da Francesinha",
+  "address": "Vila Franca de Xira Centro",
+  "menuPrice": 9.0,
+  "priceRange": "8-10",
+  "foodType": "Traditional Portuguese",
+  "googleRating": 4.1,
+  "googleReviews": 105,
+  "description": "Casual restaurant specializing in francesinhas and other northern Portuguese dishes. Affordable lunch options with generous portions in relaxed atmosphere.",
+  "dishes": [
+    "Francesinha tradicional",
+    "Bifana especial",
+    "Northern Portuguese specialties",
+    "Hearty sandwiches"
+  ],
+  "whatsIncluded": [
+    "main",
+    "drink"
+  ],
+  "practical": {
+    "takesCards": true,
+    "quickService": true,
+    "groupFriendly": true,
+    "hasParking": false
+  },
+  "restaurantPhoto": null,
+  "menuPhoto": "required"
+}
+```
+
+## Summary - Vila Franca de Xira & Alverca Area
+
+**Price Range**: €9.00 - €13.50 (significantly lower than central Lisbon)
+
+**Geographic Distribution**:
+- **Vila Franca de Xira Centro**: 6 restaurants
+- **Alverca do Ribatejo**: 2 restaurants  
+- **Póvoa de Santa Iria**: 1 restaurant
+- **Riverfront Zone**: 1 restaurant
+
+**Food Specialties**:
+- **Traditional Portuguese**: 8 restaurants (majority)
+- **Seafood/River Fish**: 2 restaurants
+- **International/Pizza**: 1 restaurant
+
+**Key Advantages**:
+- **Affordability**: All restaurants under €14, most around €10-12
+- **Parking**: Available at most locations (unlike central Lisbon)
+- **Authentic**: Strong focus on regional Ribatejo cuisine
+- **Accessibility**: Train connections to Lisbon (CP Regional lines)
+
+**Business Lunch Benefits**:
+- Lower cost than Lisbon options
+- Authentic regional cuisine experience
+- Less crowded than city center
+- Parking availability for car access
+- Quick service suitable for work lunch breaks
+
+**Transportation**: 
+- Regular train service from Santa Apolónia/Oriente stations
+- About 30-45 minutes from central Lisbon
+- Multiple daily connections throughout business hours

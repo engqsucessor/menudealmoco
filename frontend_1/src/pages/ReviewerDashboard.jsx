@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { mockBackend } from '../services/mockBackend';
+import { apiService } from '../services/api';
 import AddRestaurant from './AddRestaurant';
 import EditButton from '../components/ui/EditButton';
 import styles from './ReviewerDashboard.module.css';
@@ -22,7 +22,7 @@ const ReviewerDashboard = () => {
 
   const loadSubmissions = async () => {
     try {
-      const submissions = mockBackend.getSubmissions();
+      const submissions = await apiService.getSubmissions();
       setSubmissionsList(submissions);
     } catch (error) {
       console.error('Error loading submissions:', error);
@@ -33,7 +33,7 @@ const ReviewerDashboard = () => {
 
   const loadReportedReviews = async () => {
     try {
-      const reports = mockBackend.getReportedReviews();
+      const reports = await apiService.getReportedReviews();
       setReportedReviews(reports);
     } catch (error) {
       console.error('Error loading reported reviews:', error);
@@ -90,7 +90,7 @@ const ReviewerDashboard = () => {
 
   const handleApprove = async (submissionId) => {
     try {
-      const updatedSubmission = mockBackend.reviewSubmission(submissionId, 'approve', '', user.email);
+      const updatedSubmission = await apiService.reviewSubmission(submissionId, 'approve', '', user.email);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -102,7 +102,7 @@ const ReviewerDashboard = () => {
 
   const handleReject = async (submissionId, comment) => {
     try {
-      const updatedSubmission = mockBackend.reviewSubmission(submissionId, 'reject', comment, user.email);
+      const updatedSubmission = await apiService.reviewSubmission(submissionId, 'reject', comment, user.email);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -115,7 +115,7 @@ const ReviewerDashboard = () => {
 
   const handleRequestChanges = async (submissionId, comment) => {
     try {
-      const updatedSubmission = mockBackend.reviewSubmission(submissionId, 'request_changes', comment, user.email);
+      const updatedSubmission = await apiService.reviewSubmission(submissionId, 'request_changes', comment, user.email);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -128,7 +128,7 @@ const ReviewerDashboard = () => {
 
   const handleResolveReport = async (reportId, action) => {
     try {
-      const result = mockBackend.resolveReport(reportId, user.email, action);
+      const result = await apiService.resolveReport(reportId, user.email, action);
       if (result) {
         await loadReportedReviews(); // Reload reported reviews
         setSelectedReport(null);

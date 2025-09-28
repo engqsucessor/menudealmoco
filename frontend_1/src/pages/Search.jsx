@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Search.module.css';
-import { getRestaurants } from '../services/mockApi';
+import { getRestaurants } from '../services/api';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import FilterModal from '../components/ui/FilterModal';

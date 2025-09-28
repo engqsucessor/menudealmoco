@@ -400,6 +400,24 @@
   border-color: #f44336;
 }
 
+.voteButton.pending {
+  opacity: 0.6;
+  cursor: not-allowed;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
 .scoreDisplay {
   font-family: 'Space Mono', monospace;
   font-size: 14px;
@@ -1064,6 +1082,43 @@
 .notification.error {
   background: black;
   color: white;
+}
+
+.notification.warning {
+  background: #ffeaa7;
+  border: 2px solid #fdcb6e;
+  color: #2d3436;
+}
+
+.notification.persistentNotification {
+  position: relative;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  animation: none;
+  top: auto;
+  right: auto;
+  max-width: none;
+}
+
+.syncButton {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.5rem;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.syncButton:hover {
+  transform: rotate(180deg);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .notificationContent {

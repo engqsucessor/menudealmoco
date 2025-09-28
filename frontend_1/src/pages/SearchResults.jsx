@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { mockApi, filterOptions } from '../services/mockApi';
+import { getRestaurants } from '../services/api';
 import { recentSearches } from '../services/localStorage';
 
 const SearchResults = () => {
@@ -46,8 +46,8 @@ const SearchResults = () => {
         recentSearches.add(filters.location.trim());
       }
 
-      const results = await mockApi.searchRestaurants(filters);
-      setRestaurants(results.restaurants);
+      const restaurants = await getRestaurants(filters);
+      setRestaurants(restaurants);
     } catch (err) {
       setError('Erro ao procurar restaurantes. Tente novamente.');
       console.error('Search error:', err);

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { getUserDisplayName, updateUserDisplayName } from '../services/usernameService';
-import { mockBackend } from '../services/mockBackend';
+import { apiService } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = async (email, password) => {
     try {
-      const userData = await mockBackend.login(email, password);
+      const userData = await apiService.login(email, password);
       if (userData) {
         setUser(userData);
         localStorage.setItem('mmd_current_user', JSON.stringify(userData));
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   // Signup function
   const signup = async (name, email, password) => {
     try {
-      const newUser = await mockBackend.signup(name, email, password);
+      const newUser = await apiService.signup(name, email, password);
       setUser(newUser);
       localStorage.setItem('mmd_current_user', JSON.stringify(newUser));
       return newUser;
@@ -56,13 +56,20 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Update display name function
-  const updateDisplayName = (newDisplayName) => {
+  const updateDisplayName = async (newDisplayName) => {
     if (user && newDisplayName.trim()) {
-      updateUserDisplayName(user.email, newDisplayName.trim());
-      const updatedUser = { ...user, displayName: newDisplayName.trim() };
-      setUser(updatedUser);
-      localStorage.setItem('mmd_current_user', JSON.stringify(updatedUser));
-      return true;
+      try {
+        const updatedUser = await apiService.updateDisplayName(user.email, newDisplayName.trim());
+        setUser(updatedUser);
+        localStorage.setItem('mmd_current_user', JSON.stringify(updatedUser));
+
+        // Also update the local username service for backward compatibility
+        updateUserDisplayName(user.email, newDisplayName.trim());
+        return true;
+      } catch (error) {
+        console.error('Error updating display name:', error);
+        return false;
+      }
     }
     return false;
   };

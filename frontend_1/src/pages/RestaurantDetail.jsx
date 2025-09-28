@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
-import { getRestaurant } from '../services/mockApi';
-import { mockBackend } from '../services/mockBackend';
+import { getRestaurant, apiService } from '../services/api';
 import { favoriteRestaurants } from '../services/localStorage';
 import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
 import EditButton from '../components/ui/EditButton';
 import AddRestaurant from './AddRestaurant';
-import { getRestaurantMenuReviews, upvoteMenuReview, downvoteMenuReview } from '../services/menuRatingService';
 import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
 
 const RestaurantDetail = () => {
@@ -28,6 +26,10 @@ const RestaurantDetail = () => {
   const [reportReason, setReportReason] = useState('');
   const [notification, setNotification] = useState({ show: false, message: '', type: '' });
   const [expandedReviews, setExpandedReviews] = useState(new Set());
+  const [pendingVotes, setPendingVotes] = useState(new Map()); // Track pending vote operations
+  const [voteTimeouts, setVoteTimeouts] = useState(new Map()); // Track debounce timeouts
+  const [localVotes, setLocalVotes] = useState(new Map()); // Track votes locally for offline experience
+  const [userVoteHistory, setUserVoteHistory] = useState(new Map()); // Track user's voting history
 
   useEffect(() => {
     getRestaurant(id).then(data => {
@@ -45,18 +47,125 @@ const RestaurantDetail = () => {
     if (user) {
       const favoriteIds = favoriteRestaurants.get();
       setIsFavorite(favoriteIds.includes(id));
+      
+      // Load user's vote history for this restaurant
+      loadUserVoteHistory();
     } else {
       setIsFavorite(false);
     }
+
+    // Load any pending local votes
+    loadLocalVotes();
   }, [id, user]);
+
+  // Cleanup timeouts on unmount and add visibility change handler
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user) {
+        // When tab becomes visible again, sync any pending votes
+        syncPendingVotes();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      voteTimeouts.forEach(timeout => clearTimeout(timeout));
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [user]);
+
+  const syncPendingVotes = async () => {
+    const localVotesStorage = JSON.parse(localStorage.getItem(`mmd_local_votes_${id}`) || '{}');
+    
+    // If there are local votes to sync, refresh the reviews
+    if (Object.keys(localVotesStorage).length > 0) {
+      try {
+        await loadMenuReviews();
+        // Clear local votes after successful sync
+        localStorage.removeItem(`mmd_local_votes_${id}`);
+        setLocalVotes(new Map());
+      } catch (error) {
+        console.error('Error syncing pending votes:', error);
+      }
+    }
+  };
 
   const loadMenuReviews = async () => {
     try {
-      // Use mockBackend directly to get menu reviews
-      const reviews = mockBackend.getMenuReviews(id);
+      // Use apiService to get menu reviews
+      const reviews = await apiService.getMenuReviews(id);
       setMenuReviewsData(reviews);
     } catch (error) {
       console.error('Error loading menu reviews:', error);
+      // Fallback to empty array if API fails
+      setMenuReviewsData([]);
+    }
+  };
+
+  const loadUserVoteHistory = () => {
+    if (!user) return;
+    
+    try {
+      const storageKey = `mmd_user_votes_${user.email}_${id}`;
+      const savedVotes = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      setUserVoteHistory(new Map(Object.entries(savedVotes)));
+    } catch (error) {
+      console.error('Error loading user vote history:', error);
+    }
+  };
+
+  const saveUserVoteHistory = (reviewId, voteType) => {
+    if (!user) return;
+    
+    try {
+      const storageKey = `mmd_user_votes_${user.email}_${id}`;
+      const currentVotes = Object.fromEntries(userVoteHistory);
+      
+      if (voteType) {
+        currentVotes[reviewId] = voteType;
+      } else {
+        delete currentVotes[reviewId];
+      }
+      
+      localStorage.setItem(storageKey, JSON.stringify(currentVotes));
+      setUserVoteHistory(new Map(Object.entries(currentVotes)));
+    } catch (error) {
+      console.error('Error saving user vote history:', error);
+    }
+  };
+
+  const loadLocalVotes = () => {
+    try {
+      const storageKey = `mmd_local_votes_${id}`;
+      const savedVotes = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      setLocalVotes(new Map(Object.entries(savedVotes)));
+    } catch (error) {
+      console.error('Error loading local votes:', error);
+    }
+  };
+
+  const saveLocalVotes = (reviewId, upvoteDelta, downvoteDelta) => {
+    try {
+      const storageKey = `mmd_local_votes_${id}`;
+      const currentVotes = Object.fromEntries(localVotes);
+      
+      if (!currentVotes[reviewId]) {
+        currentVotes[reviewId] = { upvotes: 0, downvotes: 0 };
+      }
+      
+      currentVotes[reviewId].upvotes += upvoteDelta;
+      currentVotes[reviewId].downvotes += downvoteDelta;
+      
+      // Remove entry if both are 0
+      if (currentVotes[reviewId].upvotes === 0 && currentVotes[reviewId].downvotes === 0) {
+        delete currentVotes[reviewId];
+      }
+      
+      localStorage.setItem(storageKey, JSON.stringify(currentVotes));
+      setLocalVotes(new Map(Object.entries(currentVotes)));
+    } catch (error) {
+      console.error('Error saving local votes:', error);
     }
   };
 
@@ -127,7 +236,20 @@ const RestaurantDetail = () => {
   };
 
   const getSortedReviews = () => {
-    return sortReviews(menuReviewsData, sortBy);
+    // Apply local votes to review data before sorting
+    const reviewsWithLocalVotes = menuReviewsData.map(review => {
+      const localVote = localVotes.get(review.id);
+      if (localVote) {
+        return {
+          ...review,
+          upvotes: (review.upvotes || 0) + localVote.upvotes,
+          downvotes: (review.downvotes || 0) + localVote.downvotes
+        };
+      }
+      return review;
+    });
+
+    return sortReviews(reviewsWithLocalVotes, sortBy);
   };
 
   const handleFavoriteToggle = () => {
@@ -148,31 +270,30 @@ const RestaurantDetail = () => {
     loadEditSuggestions();
   };
 
-  const handleUpvote = async (reviewId) => {
+  const handleVote = async (reviewId, voteType) => {
     if (!user) return;
 
     try {
-      const result = mockBackend.voteOnReview(reviewId, id, user.email, 'up');
+      const result = await apiService.voteOnReview(reviewId, id, user.email, voteType);
       if (result) {
-        loadMenuReviews(); // Refresh reviews to show updated votes
+        setMenuReviewsData(prevReviews =>
+          prevReviews.map(review =>
+            review.id === reviewId ? {
+              ...review,
+              upvotes: result.upvotes || 0,
+              downvotes: result.downvotes || 0
+            } : review
+          )
+        );
       }
     } catch (error) {
-      console.error('Error upvoting review:', error);
+      console.error('Error voting:', error);
+      showNotification('Failed to record vote.', 'error');
     }
   };
 
-  const handleDownvote = async (reviewId) => {
-    if (!user) return;
-
-    try {
-      const result = mockBackend.voteOnReview(reviewId, id, user.email, 'down');
-      if (result) {
-        loadMenuReviews(); // Refresh reviews to show updated votes
-      }
-    } catch (error) {
-      console.error('Error downvoting review:', error);
-    }
-  };
+  const handleUpvote = (reviewId) => handleVote(reviewId, 'up');
+  const handleDownvote = (reviewId) => handleVote(reviewId, 'down');
 
   const showNotification = (message, type = 'success') => {
     setNotification({ show: true, message, type });
@@ -197,7 +318,7 @@ const RestaurantDetail = () => {
     }
 
     try {
-      const result = mockBackend.reportReview(reportingReviewId, id, user.email, reportReason.trim());
+      const result = await apiService.reportReview(reportingReviewId, id, user.email, reportReason.trim());
       if (result) {
         showNotification('Review reported successfully. Thank you for helping keep our community safe.', 'success');
         setShowReportModal(false);
@@ -455,6 +576,22 @@ const RestaurantDetail = () => {
                 )}
               </div>
 
+              {/* Show pending votes notification */}
+              {localVotes.size > 0 && (
+                <div className={`${styles.notification} ${styles.warning} ${styles.persistentNotification}`}>
+                  <div className={styles.notificationContent}>
+                    <span>You have {localVotes.size} pending vote{localVotes.size > 1 ? 's' : ''} that will sync when online.</span>
+                    <button 
+                      className={styles.syncButton}
+                      onClick={syncPendingVotes}
+                      title="Try to sync now"
+                    >
+                      🔄
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Add Review Section - Now at the top and collapsible */}
               {showAddReview && (
                 <div className={styles.addReviewSection}>
@@ -494,8 +631,13 @@ const RestaurantDetail = () => {
 
                   <div className={styles.menuReviewsList}>
                     {getSortedReviews().map(review => {
-                      const netScore = (review.upvotes || 0) - (review.downvotes || 0);
-                      const totalVotes = (review.upvotes || 0) + (review.downvotes || 0);
+                      const localVote = localVotes.get(review.id) || { upvotes: 0, downvotes: 0 };
+                      const displayUpvotes = (review.upvotes || 0) + localVote.upvotes;
+                      const displayDownvotes = (review.downvotes || 0) + localVote.downvotes;
+                      const netScore = displayUpvotes - displayDownvotes;
+                      const totalVotes = displayUpvotes + displayDownvotes;
+                      const userVote = userVoteHistory.get(review.id);
+                      const isPending = pendingVotes.has(review.id);
                       
                       // Use the displayName stored in the review (set at review creation time)
                       const displayName = review.displayName || `AnonymousUser${review.id.slice(-3)}`;
@@ -539,11 +681,12 @@ const RestaurantDetail = () => {
                             <div className={styles.voteButtons}>
                               {user && (
                                 <button
-                                  className={`${styles.voteButton} ${styles.upvoteButton} ${review.upvotedBy?.includes(user.email) ? styles.voted : ''}`}
+                                  className={`${styles.voteButton} ${styles.upvoteButton} ${userVote === 'up' ? styles.voted : ''} ${isPending ? styles.pending : ''}`}
                                   onClick={() => handleUpvote(review.id)}
-                                  title="Upvote"
+                                  title={userVote === 'up' ? "Remove upvote" : "Upvote"}
+                                  disabled={isPending}
                                 >
-                                  ↑
+                                  ↑ {isPending && pendingVotes.get(review.id) === 'up' ? '...' : ''}
                                 </button>
                               )}
                               <span className={`${styles.scoreDisplay} ${
@@ -555,11 +698,12 @@ const RestaurantDetail = () => {
                               </span>
                               {user && (
                                 <button
-                                  className={`${styles.voteButton} ${styles.downvoteButton} ${review.downvotedBy?.includes(user.email) ? styles.voted : ''}`}
+                                  className={`${styles.voteButton} ${styles.downvoteButton} ${userVote === 'down' ? styles.voted : ''} ${isPending ? styles.pending : ''}`}
                                   onClick={() => handleDownvote(review.id)}
-                                  title="Downvote"
+                                  title={userVote === 'down' ? "Remove downvote" : "Downvote"}
+                                  disabled={isPending}
                                 >
-                                  ↓
+                                  ↓ {isPending && pendingVotes.get(review.id) === 'down' ? '...' : ''}
                                 </button>
                               )}
                             </div>
