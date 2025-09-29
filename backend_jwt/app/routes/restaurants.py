@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
@@ -6,8 +6,14 @@ from datetime import datetime
 from app.models.restaurant import RestaurantResponse
 from app.database.database import get_db
 from app.database.models import Restaurant as DBRestaurant, User, MenuReview, ReviewVote, ReviewReport, RestaurantSubmission
+from app.auth.middleware import get_current_user, get_current_reviewer
+from pydantic import BaseModel, Field
 
 router = APIRouter()
+
+class SubmissionReviewRequest(BaseModel):
+    action: str = Field(..., pattern="^(approved|rejected|needs_changes)$")
+    comment: str = Field(default="", max_length=500)
 
 def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> dict:
     """Convert database restaurant to API response format matching mock backend"""
@@ -141,14 +147,9 @@ async def get_restaurants(
 async def submit_restaurant(
     request: Request,
     db: Session = Depends(get_db),
-    user_email: str = Header(alias="X-User-Email")
+    current_user: User = Depends(get_current_user)
 ):
-    """Submit a new restaurant for review"""
-
-    # Find user
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    """Submit a new restaurant for review - requires authentication"""
 
     # Get the request body
     try:
@@ -161,7 +162,7 @@ async def submit_restaurant(
     # Create submission
     submission = RestaurantSubmission(
         restaurant_name=restaurant_data.get('name', 'Unknown'),
-        submitted_by_id=user.id,
+        submitted_by_id=current_user.id,
         data=body_str
     )
 
@@ -234,55 +235,40 @@ async def get_submissions(
 @router.post("/restaurants/submissions/{submission_id}/review")
 async def review_submission(
     submission_id: str,
-    request: Request,
+    review_data: SubmissionReviewRequest,
     db: Session = Depends(get_db),
-    reviewer_email: str = Header(alias="X-User-Email")
+    reviewer: User = Depends(get_current_reviewer)
 ):
     """Review a restaurant submission - only reviewers can do this"""
     try:
         submission_id_int = int(submission_id)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid submission ID")
-
-    # Get the request body
-    try:
-        body = await request.body()
-        body_str = body.decode('utf-8')
-        review_data = json.loads(body_str)
-        action = review_data.get('action')  # 'approved', 'rejected', 'needs_changes'
-        comment = review_data.get('comment', '')
-    except:
-        raise HTTPException(status_code=422, detail="Invalid request body")
-
-    if not action or action not in ['approved', 'rejected', 'needs_changes']:
-        raise HTTPException(status_code=400, detail="Invalid action")
-
-    # Find reviewer and check permissions
-    reviewer = db.query(User).filter(User.email == reviewer_email).first()
-    if not reviewer:
-        raise HTTPException(status_code=404, detail="Reviewer not found")
-
-    if not reviewer.is_reviewer:
-        raise HTTPException(status_code=403, detail="Only reviewers can review submissions")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid submission ID"
+        )
 
     # Find the submission
     submission = db.query(RestaurantSubmission).filter(RestaurantSubmission.id == submission_id_int).first()
     if not submission:
-        raise HTTPException(status_code=404, detail="Submission not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Submission not found"
+        )
 
     # Update submission
-    submission.status = action
+    submission.status = review_data.action
     submission.approved_by_id = reviewer.id
     submission.reviewed_at = datetime.now()
-    submission.reviewer_comments = json.dumps({"comment": comment})
+    submission.reviewer_comments = json.dumps({"comment": review_data.comment})
 
     try:
         db.commit()
         return {
             "id": str(submission.id),
             "status": submission.status,
-            "action": action,
-            "message": f"Submission {action} successfully"
+            "action": review_data.action,
+            "message": f"Submission {review_data.action} successfully"
         }
     except Exception as e:
         db.rollback()
@@ -306,21 +292,16 @@ async def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
 async def delete_restaurant(
     restaurant_id: str,
     db: Session = Depends(get_db),
-    user_email: str = Header(alias="X-User-Email")
+    reviewer: User = Depends(get_current_reviewer)
 ):
     """Delete a restaurant - only reviewers/admins can do this"""
     try:
         restaurant_id_int = int(restaurant_id)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid restaurant ID")
-
-    # Find user and check if they are a reviewer
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if not user.is_reviewer:
-        raise HTTPException(status_code=403, detail="Only reviewers/admins can delete restaurants")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid restaurant ID"
+        )
 
     # Find the restaurant
     restaurant = db.query(DBRestaurant).filter(DBRestaurant.id == restaurant_id_int).first()

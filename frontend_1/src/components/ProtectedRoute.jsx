@@ -1,14 +1,36 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '60vh',
+          fontSize: '18px',
+        }}
+      >
+        Checking your session...
+      </div>
+    );
+  }
 
   if (!user) {
-    // user is not authenticated
-    return <Navigate to="/auth" />;
+    return (
+      <Navigate
+        to={`/auth?redirect=${encodeURIComponent(location.pathname)}`}
+        replace
+      />
+    );
   }
+
   return children;
 };
 

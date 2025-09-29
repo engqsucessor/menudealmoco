@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { getRestaurants } from '../services/api';
+import { restaurantsApi } from '../services/axiosApi';
 import { recentSearches } from '../services/localStorage';
 
 const SearchResults = () => {
@@ -46,7 +46,7 @@ const SearchResults = () => {
         recentSearches.add(filters.location.trim());
       }
 
-      const restaurants = await getRestaurants(filters);
+      const restaurants = await restaurantsApi.getAll(filters);
       setRestaurants(restaurants);
     } catch (err) {
       setError('Erro ao procurar restaurantes. Tente novamente.');

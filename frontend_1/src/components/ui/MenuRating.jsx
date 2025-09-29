@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { apiService } from '../../services/api';
+import { reviewsApi } from '../../services/axiosApi';
 import styles from './MenuRating.module.css';
 
 const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
@@ -21,7 +21,7 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
   const loadUserReviews = async () => {
     try {
       // Get all reviews for this restaurant and filter by current user
-      const allReviews = await apiService.getMenuReviews(restaurantId);
+      const allReviews = await reviewsApi.getForRestaurant(restaurantId);
       const userReviews = allReviews.filter(review => review.userId === user.email);
       setUserReviews(userReviews);
     } catch (error) {
@@ -48,7 +48,7 @@ const MenuRating = ({ restaurantId, restaurantName, onRatingSubmitted }) => {
       // Use the displayName from the user object (generated at signup)
       const displayName = user.displayName || `User${Math.floor(Math.random() * 10000)}`;
       
-      const result = await apiService.addMenuReview(restaurantId, user.email, rating, comment, displayName);
+      const result = await reviewsApi.add(restaurantId, rating, comment);
 
       if (result) {
         // Reset form

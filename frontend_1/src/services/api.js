@@ -1,21 +1,112 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 class ApiService {
-  async request(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const config = {
+  constructor() {
+    this.token = null;
+    this.refreshToken = null;
+    this.isRefreshing = false;
+    this.refreshSubscribers = [];
+  }
+
+  setTokens(accessToken, refreshToken) {
+    this.token = accessToken;
+    this.refreshToken = refreshToken;
+    if (accessToken) {
+      sessionStorage.setItem('access_token', accessToken);
+    } else {
+      sessionStorage.removeItem('access_token');
+    }
+    if (refreshToken) {
+      sessionStorage.setItem('refresh_token', refreshToken);
+    } else {
+      sessionStorage.removeItem('refresh_token');
+    }
+  }
+
+  getToken() {
+    if (!this.token) {
+      this.token = sessionStorage.getItem('access_token');
+    }
+    return this.token;
+  }
+
+  getRefreshToken() {
+    if (!this.refreshToken) {
+      this.refreshToken = sessionStorage.getItem('refresh_token');
+    }
+    return this.refreshToken;
+  }
+
+  clearTokens() {
+    this.token = null;
+    this.refreshToken = null;
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('refresh_token');
+  }
+
+  async refreshAccessToken() {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+
+    if (!response.ok) {
+      this.clearTokens();
+      throw new Error('Token refresh failed');
+    }
+
+    const data = await response.json();
+    this.setTokens(data.access_token, refreshToken);
+    return data.access_token;
+  }
+
+  async request(endpoint, options = {}) {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const token = this.getToken();
+
+    // Debug logging
+    if (endpoint.includes('edit-suggestions') && options.method === 'POST') {
+      console.log('🔐 Edit suggestion request - Token:', token ? `${token.substring(0, 20)}...` : 'NO TOKEN');
+    }
+
+    const config = {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
-      ...options,
     };
 
     try {
-      const response = await fetch(url, config);
+      let response = await fetch(url, config);
+
+      // Handle 401 (unauthorized) - try to refresh token
+      if (response.status === 401 && token && !endpoint.includes('/auth/')) {
+        try {
+          const newToken = await this.refreshAccessToken();
+          // Retry with new token
+          config.headers.Authorization = `Bearer ${newToken}`;
+          response = await fetch(url, config);
+        } catch (refreshError) {
+          // Refresh failed, redirect to login
+          this.clearTokens();
+          window.location.href = '/auth';
+          throw new Error('Session expired. Please login again.');
+        }
+      }
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json().catch(() => ({ detail: 'An error occurred' }));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
 
       return await response.json();
@@ -62,53 +153,63 @@ class ApiService {
 
   // ===== AUTHENTICATION =====
   async login(email, password) {
-    return await this.request('/auth/login', {
+    const response = await this.request('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
+
+    // JWT response format: { access_token, refresh_token, user }
+    if (response.access_token && response.refresh_token && response.user) {
+      this.setTokens(response.access_token, response.refresh_token);
+      return response.user;
+    } else {
+      throw new Error('Invalid login response format');
+    }
   }
 
   async signup(name, email, password) {
-    return await this.request('/auth/signup', {
+    const response = await this.request('/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ name, email, password }),
     });
+
+    // JWT response format: { access_token, refresh_token, user }
+    if (response.access_token && response.refresh_token && response.user) {
+      this.setTokens(response.access_token, response.refresh_token);
+      return response.user;
+    } else {
+      throw new Error('Invalid signup response format');
+    }
   }
 
-  async updateDisplayName(userEmail, newDisplayName) {
+  async logout() {
+    this.clearTokens();
+    // Optionally call backend logout endpoint if it exists
+  }
+
+  async updateDisplayName(newDisplayName) {
     return await this.request('/auth/update-display-name', {
       method: 'PUT',
       body: JSON.stringify({ displayName: newDisplayName }),
-      headers: {
-        'X-User-Email': userEmail
-      }
     });
   }
 
   // ===== REVIEWS =====
-  async getMenuReviews(restaurantId, userEmail = null) {
-    const headers = userEmail ? { 'X-User-Email': userEmail } : {};
-    return await this.request(`/restaurants/${restaurantId}/reviews`, { headers });
+  async getMenuReviews(restaurantId) {
+    return await this.request(`/restaurants/${restaurantId}/reviews`);
   }
 
-  async addMenuReview(restaurantId, userId, rating, comment, displayName) {
+  async addMenuReview(restaurantId, rating, comment) {
     return await this.request(`/restaurants/${restaurantId}/reviews`, {
       method: 'POST',
       body: JSON.stringify({ rating, comment }),
-      headers: {
-        'X-User-Email': userId,
-        'X-Display-Name': displayName
-      }
     });
   }
 
-  async voteOnReview(reviewId, restaurantId, userId, voteType) {
+  async voteOnReview(reviewId, restaurantId, userEmail, voteType) {
     return await this.request(`/reviews/${reviewId}/vote`, {
       method: 'POST',
       body: JSON.stringify({ vote_type: voteType }),
-      headers: {
-        'X-User-Email': userId
-      }
     });
   }
 

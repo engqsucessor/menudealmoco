@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { apiService } from '../services/api';
+import { restaurantsApi, reviewsApi } from '../services/axiosApi';
 import { favoriteRestaurants } from '../services/localStorage';
 import styles from './UserProfile.module.css';
 import ReviewerDashboard from './ReviewerDashboard';
@@ -26,7 +26,7 @@ const UserProfile = () => {
     try {
       // Load favorites from localStorage using the favoriteRestaurants service
       const favoriteIds = favoriteRestaurants.get();
-      const response = await apiService.getRestaurants();
+      const response = await restaurantsApi.getAll();
       // Handle both old format (array) and new format (object with restaurants array)
       const restaurants = Array.isArray(response) ? response : (response.restaurants || []);
       const favoriteRestaurantsList = restaurants.filter(restaurant =>
@@ -38,7 +38,7 @@ const UserProfile = () => {
       const allReviews = {};
       for (const restaurant of restaurants) {
         try {
-          const reviews = await apiService.getMenuReviews(restaurant.id);
+          const reviews = await reviewsApi.getForRestaurant(restaurant.id);
           reviews.forEach(review => {
             if (review.userId === user.email) {
               allReviews[review.id] = {

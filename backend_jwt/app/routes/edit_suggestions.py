@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 import json
 from app.database.database import get_db
 from app.database.models import EditSuggestion, User, Restaurant, EditSuggestionVote
+from app.auth.middleware import get_current_user, get_current_reviewer, get_optional_current_user
 from datetime import datetime
 
 router = APIRouter()
@@ -12,16 +13,9 @@ router = APIRouter()
 async def get_all_edit_suggestions(
     db: Session = Depends(get_db),
     status: str = "all",
-    user_email: str = Header(alias="X-User-Email", default=None)
+    current_user: User = Depends(get_current_reviewer)
 ):
-    """Get all edit suggestions across all restaurants for reviewers"""
-    # Check if user is reviewer
-    if user_email:
-        user = db.query(User).filter(User.email == user_email).first()
-        if not user or not user.is_reviewer:
-            raise HTTPException(status_code=403, detail="Only reviewers can access all edit suggestions")
-    else:
-        raise HTTPException(status_code=401, detail="Authentication required")
+    """Get all edit suggestions across all restaurants for reviewers - JWT protected"""
 
     # Build query
     query = db.query(EditSuggestion)
@@ -66,9 +60,10 @@ async def submit_edit_suggestion(
     restaurant_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    user_email: str = Header(alias="X-User-Email")
+    current_user: User = Depends(get_current_user)
 ):
-    """Submit an edit suggestion for a restaurant"""
+    """Submit an edit suggestion for a restaurant - JWT protected"""
+    print(f"📝 Submit edit suggestion called for restaurant {restaurant_id} by user {current_user.email}")
     try:
         restaurant_id_int = int(restaurant_id)
     except ValueError:
@@ -84,11 +79,6 @@ async def submit_edit_suggestion(
     except:
         raise HTTPException(status_code=422, detail="Invalid request body")
 
-    # Find user
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
     # Verify restaurant exists
     restaurant = db.query(Restaurant).filter(Restaurant.id == restaurant_id_int).first()
     if not restaurant:
@@ -97,7 +87,7 @@ async def submit_edit_suggestion(
     # Create edit suggestion
     suggestion = EditSuggestion(
         restaurant_id=restaurant_id_int,
-        user_id=user.id,
+        user_id=current_user.id,
         suggested_changes=json.dumps(suggested_changes),
         reason=reason,
         upvotes=0,
@@ -112,8 +102,8 @@ async def submit_edit_suggestion(
         return {
             "id": str(suggestion.id),
             "restaurant_id": str(suggestion.restaurant_id),
-            "user_email": user.email,
-            "display_name": user.display_name,
+            "user_email": current_user.email,
+            "display_name": current_user.display_name,
             "suggested_changes": suggested_changes,
             "reason": suggestion.reason,
             "status": suggestion.status,
@@ -130,9 +120,9 @@ async def get_edit_suggestions(
     restaurant_id: str,
     db: Session = Depends(get_db),
     status: str = "all",
-    user_email: str = Header(alias="X-User-Email", default=None)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
-    """Get edit suggestions for a restaurant"""
+    """Get edit suggestions for a restaurant - optionally authenticated"""
     try:
         restaurant_id_int = int(restaurant_id)
     except ValueError:
@@ -145,11 +135,6 @@ async def get_edit_suggestions(
         query = query.filter(EditSuggestion.status == status)
 
     suggestions = query.all()
-
-    # Get current user for vote tracking
-    current_user = None
-    if user_email:
-        current_user = db.query(User).filter(User.email == user_email).first()
 
     result = []
     for suggestion in suggestions:
@@ -193,7 +178,7 @@ async def vote_on_edit_suggestion(
     suggestion_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    user_email: str = Header(alias="X-User-Email")
+    current_user: User = Depends(get_current_user)
 ):
     """Vote on an edit suggestion"""
     try:
@@ -213,11 +198,6 @@ async def vote_on_edit_suggestion(
     if not vote_type or vote_type not in ['upvote', 'downvote']:
         raise HTTPException(status_code=400, detail="vote_type must be 'upvote' or 'downvote'")
 
-    # Find user
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
     # Find suggestion
     suggestion = db.query(EditSuggestion).filter(EditSuggestion.id == suggestion_id_int).first()
     if not suggestion:
@@ -225,7 +205,7 @@ async def vote_on_edit_suggestion(
 
     # Check for existing vote
     existing_vote = db.query(EditSuggestionVote).filter(
-        EditSuggestionVote.user_id == user.id,
+        EditSuggestionVote.user_id == current_user.id,
         EditSuggestionVote.suggestion_id == suggestion_id_int
     ).first()
 
@@ -259,7 +239,7 @@ async def vote_on_edit_suggestion(
             suggestion.downvotes += 1
 
         new_vote_record = EditSuggestionVote(
-            user_id=user.id,
+            user_id=current_user.id,
             suggestion_id=suggestion_id_int,
             vote_type=vote_db_type
         )
@@ -285,7 +265,7 @@ async def approve_edit_suggestion(
     suggestion_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    reviewer_email: str = Header(alias="X-User-Email")
+    current_reviewer: User = Depends(get_current_reviewer)
 ):
     """Approve an edit suggestion - only reviewers can do this"""
     try:
@@ -293,14 +273,7 @@ async def approve_edit_suggestion(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid suggestion ID")
 
-    # Find reviewer and check permissions
-    reviewer = db.query(User).filter(User.email == reviewer_email).first()
-    if not reviewer:
-        raise HTTPException(status_code=404, detail="Reviewer not found")
-
-    if not reviewer.is_reviewer:
-        raise HTTPException(status_code=403, detail="Only reviewers can approve suggestions")
-
+    # JWT authentication ensures current_reviewer is valid and is a reviewer
     # Find suggestion
     suggestion = db.query(EditSuggestion).filter(EditSuggestion.id == suggestion_id_int).first()
     if not suggestion:
@@ -386,7 +359,7 @@ async def approve_edit_suggestion(
 
     # Update suggestion status
     suggestion.status = "approved"
-    suggestion.reviewed_by_id = reviewer.id
+    suggestion.reviewed_by_id = current_reviewer.id
     suggestion.reviewed_at = datetime.now()
 
     try:
@@ -405,7 +378,7 @@ async def reject_edit_suggestion(
     suggestion_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    reviewer_email: str = Header(alias="X-User-Email")
+    current_reviewer: User = Depends(get_current_reviewer)
 ):
     """Reject an edit suggestion - only reviewers can do this"""
     try:
@@ -422,14 +395,7 @@ async def reject_edit_suggestion(
     except:
         raise HTTPException(status_code=422, detail="Invalid request body")
 
-    # Find reviewer and check permissions
-    reviewer = db.query(User).filter(User.email == reviewer_email).first()
-    if not reviewer:
-        raise HTTPException(status_code=404, detail="Reviewer not found")
-
-    if not reviewer.is_reviewer:
-        raise HTTPException(status_code=403, detail="Only reviewers can reject suggestions")
-
+    # JWT authentication ensures current_reviewer is valid and is a reviewer
     # Find suggestion
     suggestion = db.query(EditSuggestion).filter(EditSuggestion.id == suggestion_id_int).first()
     if not suggestion:
@@ -437,7 +403,7 @@ async def reject_edit_suggestion(
 
     # Update suggestion
     suggestion.status = "rejected"
-    suggestion.reviewed_by_id = reviewer.id
+    suggestion.reviewed_by_id = current_reviewer.id
     suggestion.reviewed_at = datetime.now()
     suggestion.rejection_reason = reason
 

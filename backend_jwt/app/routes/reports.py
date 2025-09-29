@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
 import json
 from app.database.database import get_db
 from app.database.models import ReviewReport, User, MenuReview
+from app.auth.middleware import get_current_user, get_current_reviewer
 from datetime import datetime
 
 router = APIRouter()
@@ -62,7 +63,7 @@ async def resolve_report(
     report_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    reviewer_email: str = Header(alias="X-User-Email")
+    current_reviewer: User = Depends(get_current_reviewer)
 ):
     """Resolve a reported review - only reviewers can do this"""
     try:
@@ -83,7 +84,7 @@ async def resolve_report(
         raise HTTPException(status_code=400, detail="Action is required")
 
     # Find reviewer and check permissions
-    reviewer = db.query(User).filter(User.email == reviewer_email).first()
+    reviewer = db.query(User).filter(User.id == current_reviewer.id).first()
     if not reviewer:
         raise HTTPException(status_code=404, detail="Reviewer not found")
 

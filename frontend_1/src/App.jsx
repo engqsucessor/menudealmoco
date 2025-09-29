@@ -38,7 +38,14 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/restaurant/:id" element={<RestaurantDetail />} />
-        <Route path="/add-restaurant" element={<AddRestaurant />} />
+        <Route
+          path="/add-restaurant"
+          element={
+            <ProtectedRoute>
+              <AddRestaurant />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/about" element={<About />} />
         <Route path="/auth" element={<Auth />} />
         <Route

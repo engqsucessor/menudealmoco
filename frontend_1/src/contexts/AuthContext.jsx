@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getUserDisplayName, updateUserDisplayName } from '../services/usernameService';
-import { apiService } from '../services/api';
+import { authApi } from '../services/axiosApi';
 
 const AuthContext = createContext();
 
@@ -14,28 +13,29 @@ export const AuthProvider = ({ children }) => {
 
   // Check for existing session on mount
   useEffect(() => {
-    const savedUser = localStorage.getItem('mmd_current_user');
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('mmd_current_user');
+    const checkAuthStatus = async () => {
+      const token = sessionStorage.getItem('access_token');
+      if (token) {
+        try {
+          const userInfo = await authApi.getCurrentUser();
+          setUser(userInfo);
+        } catch (error) {
+          console.error('Token validation failed:', error);
+          authApi.logout();
+        }
       }
-    }
-    setLoading(false);
+      setLoading(false);
+    };
+
+    checkAuthStatus();
   }, []);
 
   // Login function
   const login = async (email, password) => {
     try {
-      const userData = await apiService.login(email, password);
-      if (userData) {
-        setUser(userData);
-        localStorage.setItem('mmd_current_user', JSON.stringify(userData));
-        return userData;
-      }
-      return null;
+      const userData = await authApi.login(email, password);
+      setUser(userData);
+      return userData;
     } catch (error) {
       console.error('Login error:', error);
       return null;
@@ -45,9 +45,8 @@ export const AuthProvider = ({ children }) => {
   // Signup function
   const signup = async (name, email, password) => {
     try {
-      const newUser = await apiService.signup(name, email, password);
+      const newUser = await authApi.signup(name, email, password);
       setUser(newUser);
-      localStorage.setItem('mmd_current_user', JSON.stringify(newUser));
       return newUser;
     } catch (error) {
       console.error('Signup error:', error);
@@ -59,12 +58,8 @@ export const AuthProvider = ({ children }) => {
   const updateDisplayName = async (newDisplayName) => {
     if (user && newDisplayName.trim()) {
       try {
-        const updatedUser = await apiService.updateDisplayName(user.email, newDisplayName.trim());
+        const updatedUser = await authApi.updateDisplayName(newDisplayName.trim());
         setUser(updatedUser);
-        localStorage.setItem('mmd_current_user', JSON.stringify(updatedUser));
-
-        // Also update the local username service for backward compatibility
-        updateUserDisplayName(user.email, newDisplayName.trim());
         return true;
       } catch (error) {
         console.error('Error updating display name:', error);
@@ -76,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('mmd_current_user');
+    authApi.logout();
   };
 
   const value = {

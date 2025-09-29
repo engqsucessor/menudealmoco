@@ -91,4 +91,31 @@
     background-color: #e9e9e9;
     border-color: var(--primary-color);
   }
+
+  .testUserInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .testUserInfo strong {
+    font-size: 0.9rem;
+  }
+
+  .testUserInfo small {
+    font-size: 0.75rem;
+    color: #666;
+    font-family: monospace;
+  }
+
+  .testUserNote {
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  .testUserNote small {
+    color: #007bff;
+    font-style: italic;
+  }
   

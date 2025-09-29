@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Search.module.css';
-import { getRestaurants } from '../services/api';
+import { restaurantsApi } from '../services/axiosApi';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import FilterModal from '../components/ui/FilterModal';
@@ -55,7 +55,7 @@ const SearchPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await getRestaurants(filters);
+      const response = await restaurantsApi.getAll(filters);
       // Handle both old format (array) and new format (object with restaurants array)
       if (Array.isArray(response)) {
         // Old format - no pagination

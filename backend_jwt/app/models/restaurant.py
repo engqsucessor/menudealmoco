@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
 from datetime import datetime
 from enum import Enum
+import re
 
 class PriceRange(str, Enum):
     BUDGET = "6-8"
@@ -77,13 +78,29 @@ class RestaurantResponse(BaseModel):
 
 # User models
 class UserCreate(BaseModel):
-    name: str
-    email: str
-    password: str
+    name: str = Field(..., min_length=2, max_length=100, description="Full name")
+    email: EmailStr = Field(..., description="Valid email address")
+    password: str = Field(..., min_length=8, max_length=128, description="Password (8-128 characters)")
+
+    @field_validator('name')
+    @classmethod
+    def validate_name(cls, v):
+        if not re.match(r'^[a-zA-ZÀ-ÿ\s\'-]+$', v):
+            raise ValueError('Name can only contain letters, spaces, hyphens and apostrophes')
+        return v.strip()
+
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v):
+        if not re.search(r'[A-Za-z]', v):
+            raise ValueError('Password must contain at least one letter')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('Password must contain at least one number')
+        return v
 
 class UserLogin(BaseModel):
-    email: str
-    password: str
+    email: EmailStr = Field(..., description="Valid email address")
+    password: str = Field(..., min_length=1, max_length=128, description="Password")
 
 class UserResponse(BaseModel):
     id: str
@@ -99,8 +116,17 @@ class UserResponse(BaseModel):
 
 # Review models
 class MenuReviewCreate(BaseModel):
-    rating: float
-    comment: Optional[str] = ""
+    rating: float = Field(..., ge=1.0, le=5.0, description="Rating between 1 and 5")
+    comment: Optional[str] = Field(default="", max_length=1000, description="Review comment (max 1000 chars)")
+
+    @field_validator('comment')
+    @classmethod
+    def validate_comment(cls, v):
+        if v:
+            # Remove potential XSS attempts
+            cleaned = re.sub(r'<[^>]*>', '', v)
+            return cleaned.strip()
+        return ""
 
 class MenuReviewResponse(BaseModel):
     id: str

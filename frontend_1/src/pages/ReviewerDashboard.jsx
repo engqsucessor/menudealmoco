@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { apiService } from '../services/api';
+import { restaurantsApi, reportsApi, editSuggestionsApi } from '../services/axiosApi';
 import { getEditSuggestions, approveEditSuggestion, rejectEditSuggestion } from '../services/editSuggestionsService';
 import AddRestaurant from './AddRestaurant';
 import EditButton from '../components/ui/EditButton';
@@ -35,7 +35,7 @@ const ReviewerDashboard = () => {
 
   const loadSubmissions = async () => {
     try {
-      const submissions = await apiService.getSubmissions();
+      const submissions = await restaurantsApi.getSubmissions();
       setSubmissionsList(submissions);
     } catch (error) {
       console.error('Error loading submissions:', error);
@@ -46,7 +46,7 @@ const ReviewerDashboard = () => {
 
   const loadReportedReviews = async () => {
     try {
-      const reports = await apiService.getReportedReviews();
+      const reports = await reportsApi.getReportedReviews();
       setReportedReviews(reports);
     } catch (error) {
       console.error('Error loading reported reviews:', error);
@@ -56,9 +56,7 @@ const ReviewerDashboard = () => {
   const loadEditSuggestions = async () => {
     try {
       // Get all edit suggestions across all restaurants
-      const suggestions = await apiService.request('/edit-suggestions/all', {
-        headers: { 'X-User-Email': user?.email }
-      });
+      const suggestions = await editSuggestionsApi.getAll();
       setEditSuggestions(suggestions);
     } catch (error) {
       console.error('Error loading edit suggestions:', error);
@@ -116,7 +114,7 @@ const ReviewerDashboard = () => {
 
   const handleApprove = async (submissionId) => {
     try {
-      const updatedSubmission = await apiService.reviewSubmission(submissionId, 'approve', '', user.email);
+      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'approve', '');
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -128,7 +126,7 @@ const ReviewerDashboard = () => {
 
   const handleReject = async (submissionId, comment) => {
     try {
-      const updatedSubmission = await apiService.reviewSubmission(submissionId, 'reject', comment, user.email);
+      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'reject', comment);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -141,7 +139,7 @@ const ReviewerDashboard = () => {
 
   const handleRequestChanges = async (submissionId, comment) => {
     try {
-      const updatedSubmission = await apiService.reviewSubmission(submissionId, 'request_changes', comment, user.email);
+      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'request_changes', comment);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -154,7 +152,7 @@ const ReviewerDashboard = () => {
 
   const handleResolveReport = async (reportId, action) => {
     try {
-      const result = await apiService.resolveReport(reportId, user.email, action);
+      const result = await reportsApi.resolveReport(reportId, action);
       if (result) {
         await loadReportedReviews(); // Reload reported reviews
         setSelectedReport(null);

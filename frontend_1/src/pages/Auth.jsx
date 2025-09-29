@@ -10,10 +10,10 @@ const Auth = () => {
   const [name, setName] = useState('');
 
   const testUsers = [
-    { email: 'test@example.com', password: 'test123', name: 'Test User' },
-    { email: 'foodie@example.com', password: 'foodie123', name: 'Food Lover' },
-    { email: 'reviewer@example.com', password: 'reviewer123', name: 'Restaurant Reviewer' },
-    { email: 'admin@menudealmoco.com', password: 'admin123', name: 'Admin User' }
+    { email: 'test@example.com', password: 'testuser123', name: '👤 Test User', role: 'User' },
+    { email: 'foodie@example.com', password: 'foodlover456', name: '🍽️ Food Lover', role: 'User' },
+    { email: 'reviewer@example.com', password: 'reviewer789', name: '⭐ Reviewer', role: 'Reviewer' },
+    { email: 'admin@menudealmoco.com', password: 'admin2024secure', name: '🛡️ Admin', role: 'Admin' }
   ];
   const { login, signup } = useAuth();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const Auth = () => {
   useEffect(() => {
     if (isLogin) {
       setEmail('test@example.com');
-      setPassword('test123');
+      setPassword('testuser123');
     } else {
       setEmail('');
       setPassword('');
@@ -47,20 +47,25 @@ const Auth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLogin) {
-      const user = await login(email, password);
-      if (user) {
-        navigate(redirectUrl);
+    try {
+      if (isLogin) {
+        const user = await login(email, password);
+        if (user) {
+          navigate(redirectUrl);
+        } else {
+          alert('❌ Login failed: Invalid credentials\n\n🔧 Try using the test account buttons above!');
+        }
       } else {
-        alert('Invalid credentials');
+        const user = await signup(name, email, password);
+        if (user) {
+          navigate(redirectUrl);
+        } else {
+          alert('❌ Signup failed');
+        }
       }
-    } else {
-      const user = await signup(name, email, password);
-      if (user) {
-        navigate(redirectUrl);
-      } else {
-        alert('Signup failed');
-      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      alert(`❌ Authentication error: ${error.message}\n\n🔧 Check console for details`);
     }
   };
 
@@ -71,7 +76,7 @@ const Auth = () => {
 
         {isLogin && (
           <div className={styles.testUsers}>
-            <h3>Test Accounts:</h3>
+            <h3>🧪 Test Accounts - Click to Auto-Fill:</h3>
             <div className={styles.testUserButtons}>
               {testUsers.map((user, index) => (
                 <button
@@ -79,11 +84,18 @@ const Auth = () => {
                   type="button"
                   onClick={() => fillTestCredentials(user)}
                   className={styles.testUserButton}
-                  title={`${user.name} - ${user.email}`}
+                  title={`${user.email} | Password: ${user.password} | Role: ${user.role}`}
                 >
-                  {user.name}
+                  <div className={styles.testUserInfo}>
+                    <strong>{user.name}</strong>
+                    <small>{user.email}</small>
+                    <small>🔑 {user.password}</small>
+                  </div>
                 </button>
               ))}
+            </div>
+            <div className={styles.testUserNote}>
+              <small>ℹ️ All passwords are already updated for the new secure system!</small>
             </div>
           </div>
         )}

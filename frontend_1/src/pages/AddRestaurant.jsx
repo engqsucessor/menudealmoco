@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PRACTICAL_FEATURES, INCLUDED_FEATURES, getPracticalFeatureLabel, getIncludedFeatureLabel } from '../constants/labels';
 import { useAuth } from '../contexts/AuthContext';
-import { apiService } from '../services/api';
+import { restaurantsApi, reviewsApi } from '../services/axiosApi';
 import styles from './AddRestaurant.module.css';
 
 const AddRestaurant = ({
@@ -208,7 +208,7 @@ const AddRestaurant = ({
       }
 
       // Otherwise, submit to backend normally
-      const submission = await apiService.submitRestaurant(submissionData, user.email);
+      const submission = await restaurantsApi.submit(submissionData);
       setSubmitted(true);
       showNotification('Restaurant submitted successfully!', 'success');
     } catch (error) {

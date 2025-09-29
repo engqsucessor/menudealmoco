@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
-import { getRestaurant, apiService } from '../services/api';
+import { restaurantsApi, reviewsApi, reportsApi } from '../services/axiosApi';
 import { favoriteRestaurants } from '../services/localStorage';
 import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
@@ -34,7 +34,7 @@ const RestaurantDetail = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
-    getRestaurant(id).then(data => {
+    restaurantsApi.getById(id).then(data => {
       setRestaurant(data);
       setLoading(false);
     });
@@ -96,7 +96,7 @@ const RestaurantDetail = () => {
   const loadMenuReviews = async () => {
     try {
       // Use apiService to get menu reviews, passing user email for vote tracking
-      const reviews = await apiService.getMenuReviews(id, user?.email);
+      const reviews = await reviewsApi.getForRestaurant(id);
       setMenuReviewsData(reviews);
     } catch (error) {
       console.error('Error loading menu reviews:', error);
@@ -276,7 +276,7 @@ const RestaurantDetail = () => {
     if (!user) return;
 
     try {
-      const result = await apiService.voteOnReview(reviewId, id, user.email, voteType);
+      const result = await reviewsApi.vote(reviewId, voteType);
       if (result) {
         setMenuReviewsData(prevReviews =>
           prevReviews.map(review =>
@@ -324,7 +324,7 @@ const RestaurantDetail = () => {
     }
 
     try {
-      const result = await apiService.reportReview(reportingReviewId, id, user.email, reportReason.trim());
+      const result = await reportsApi.reportReview(reportingReviewId, id, reportReason.trim());
       if (result) {
         showNotification('Review reported successfully. Thank you for helping keep our community safe.', 'success');
         setShowReportModal(false);
@@ -524,7 +524,7 @@ const RestaurantDetail = () => {
     }
 
     try {
-      const result = await apiService.deleteRestaurant(id, user.email);
+      const result = await restaurantsApi.delete(id);
       if (result) {
         showNotification('Restaurant deleted successfully.', 'success');
         setShowDeleteModal(false);

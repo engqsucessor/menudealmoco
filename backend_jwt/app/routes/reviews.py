@@ -1,31 +1,38 @@
-from fastapi import APIRouter, Depends, HTTPException, Header, Request
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 import json
 from app.database.database import get_db
 from app.database.models import MenuReview, User, Restaurant, ReviewVote
 from app.models.restaurant import MenuReviewCreate, MenuReviewResponse
+from app.auth.middleware import get_current_user, get_optional_current_user
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 router = APIRouter()
 
+class VoteRequest(BaseModel):
+    vote_type: str = Field(..., pattern="^(up|down)$")
+
 @router.get("/restaurants/{restaurant_id}/reviews")
-async def get_menu_reviews(restaurant_id: str, db: Session = Depends(get_db), user_email: str = Header(alias="X-User-Email", default=None)):
+async def get_menu_reviews(
+    restaurant_id: str,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user)
+):
     """Get all reviews for a restaurant in the format frontend expects"""
     try:
         restaurant_id_int = int(restaurant_id)
     except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid restaurant ID")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid restaurant ID"
+        )
 
     reviews = db.query(MenuReview).filter(
         MenuReview.restaurant_id == restaurant_id_int,
         MenuReview.is_hidden == False
     ).all()
-
-    # Get current user for vote tracking
-    current_user = None
-    if user_email:
-        current_user = db.query(User).filter(User.email == user_email).first()
 
     result = []
     for review in reviews:
@@ -61,8 +68,7 @@ async def add_menu_review(
     restaurant_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    user_email: str = Header(alias="X-User-Email"),
-    display_name: str = Header(alias="X-Display-Name", default="Anonymous")
+    current_user: User = Depends(get_current_user)
 ):
     """Add a new review"""
     try:
@@ -91,14 +97,9 @@ async def add_menu_review(
     if not (0 <= review_data.rating <= 5):
         raise HTTPException(status_code=422, detail="Rating must be between 0 and 5")
 
-    # Find user by email
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    # Create review
+    # Create review using authenticated user
     new_review = MenuReview(
-        user_id=user.id,
+        user_id=current_user.id,
         restaurant_id=restaurant_id_int,
         rating=review_data.rating,
         comment=review_data.comment or "",
@@ -113,11 +114,11 @@ async def add_menu_review(
 
     return {
         "id": str(new_review.id),
-        "userId": user.email,
+        "userId": current_user.email,
         "restaurantId": str(new_review.restaurant_id),
         "rating": new_review.rating,
         "comment": new_review.comment,
-        "displayName": user.display_name,
+        "displayName": current_user.display_name,
         "upvotes": new_review.upvotes,
         "downvotes": new_review.downvotes,
         "createdAt": new_review.created_at.isoformat(),
@@ -129,7 +130,7 @@ async def vote_on_review(
     review_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    user_email: str = Header(alias="X-User-Email")
+    current_user: User = Depends(get_current_user)
 ):
     """Handle voting on reviews with proper vote tracking to prevent multiple votes"""
     try:
@@ -154,14 +155,9 @@ async def vote_on_review(
     if not review:
         raise HTTPException(status_code=404, detail="Review not found")
 
-    # Find user
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
     # Check if user has already voted on this review
     existing_vote = db.query(ReviewVote).filter(
-        ReviewVote.user_id == user.id,
+        ReviewVote.user_id == current_user.id,
         ReviewVote.review_id == review_id_int
     ).first()
 
@@ -196,7 +192,7 @@ async def vote_on_review(
 
         # Create new vote record
         new_vote = ReviewVote(
-            user_id=user.id,
+            user_id=current_user.id,
             review_id=review_id_int,
             vote_type=vote_type
         )
