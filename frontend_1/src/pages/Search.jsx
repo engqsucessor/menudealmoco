@@ -43,7 +43,6 @@ const SearchPage = () => {
     page: 1,
     limit: 10,
     minGoogleRating: 0,
-    minZomatoRating: 0,
     overallRating: 0,
     hasMenuReviews: false,
     lastUpdatedDays: '',
@@ -168,7 +167,6 @@ const SearchPage = () => {
       page: 1,
       limit: 10,
       minGoogleRating: 0,
-      minZomatoRating: 0,
       overallRating: 0,
       hasMenuReviews: false,
       lastUpdatedDays: '',
@@ -183,7 +181,6 @@ const SearchPage = () => {
     count += Object.values(filters.practicalFilters).filter(Boolean).length;
     if (filters.openNow) count++;
     if (filters.minGoogleRating > 0) count++;
-    if (filters.minZomatoRating > 0) count++;
     if (filters.overallRating > 0) count++;
     if (filters.hasMenuReviews) count++;
     if (filters.lastUpdatedDays) count++;

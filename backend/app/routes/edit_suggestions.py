@@ -362,32 +362,24 @@ async def approve_edit_suggestion(
                 else:
                     restaurant.whats_included = json.dumps([])
             elif field in ['cardsAccepted', 'quickService', 'groupFriendly', 'parking']:
-                # Handle practical fields
-                if restaurant.practical is None:
-                    restaurant.practical = json.dumps({})
-
-                try:
-                    practical_data = json.loads(restaurant.practical)
-                except:
-                    practical_data = {}
-
-                # Map frontend field names to backend field names
+                # Handle practical fields by mapping to individual database fields
                 field_mapping = {
-                    'cardsAccepted': 'cardsAccepted',
-                    'quickService': 'quickService',
-                    'groupFriendly': 'groupFriendly',
+                    'cardsAccepted': 'cards_accepted',
+                    'quickService': 'quick_service', 
+                    'groupFriendly': 'group_friendly',
                     'parking': 'parking'
                 }
-
-                if field in field_mapping:
-                    practical_data[field_mapping[field]] = bool(new_value)
-                    restaurant.practical = json.dumps(practical_data)
+                
+                db_field = field_mapping.get(field)
+                if db_field and hasattr(restaurant, db_field):
+                    setattr(restaurant, db_field, bool(new_value))
             elif field == 'restaurantPhoto':
-                restaurant.photo = new_value
+                restaurant.restaurant_photo = new_value
             elif field == 'menuPhoto':
                 restaurant.menu_photo = new_value
             elif field == 'distance':
-                restaurant.distance = new_value
+                # Distance is not stored in the restaurant model - it's calculated
+                pass
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error applying changes to restaurant: {str(e)}")

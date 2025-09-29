@@ -20,7 +20,6 @@ const RestaurantCard = ({ restaurant, style }) => {
     menuPrice,
     overallRating,
     googleRating,
-    zomatoRating,
     totalReviews,
     whatsIncluded = [],
     foodType,
@@ -76,18 +75,15 @@ const RestaurantCard = ({ restaurant, style }) => {
     !isOpenNow && styles.closed
   ].filter(Boolean).join(' ');
 
-  // Get practical features and amenities
+  // Process practical features
   const practicalFeatures = [];
-  if (restaurant.practical?.cardsAccepted) practicalFeatures.push(getPracticalFeatureLabel('takesCards', true, true));
-  if (restaurant.practical?.parking) practicalFeatures.push(getPracticalFeatureLabel('hasParking', true, true));
-  if (restaurant.practical?.quickService) practicalFeatures.push(getPracticalFeatureLabel('quickService', true, true));
-  if (restaurant.practical?.groupFriendly) practicalFeatures.push(getPracticalFeatureLabel('groupFriendly', true, true));
+  if (restaurant.practical?.cardsAccepted || restaurant.cardsAccepted) practicalFeatures.push(getPracticalFeatureLabel('cardsAccepted'));
+  if (restaurant.practical?.quickService || restaurant.quickService) practicalFeatures.push(getPracticalFeatureLabel('quickService'));
+  if (restaurant.practical?.groupFriendly || restaurant.groupFriendly) practicalFeatures.push(getPracticalFeatureLabel('groupFriendly'));
+  if (restaurant.practical?.parking || restaurant.parking) practicalFeatures.push(getPracticalFeatureLabel('parking'));
 
-  // Get food features from included
+  // Process food features for included items
   const foodFeatures = [];
-  if (restaurant.included?.coffee) foodFeatures.push('Coffee');
-  if (restaurant.included?.dessert) foodFeatures.push('Dessert');
-  if (restaurant.included?.wine) foodFeatures.push('Wine');
   if (restaurant.included?.bread) foodFeatures.push('Bread');
   if (restaurant.included?.soup) foodFeatures.push('Soup');
   if (restaurant.included?.main) foodFeatures.push('Main');
@@ -96,7 +92,19 @@ const RestaurantCard = ({ restaurant, style }) => {
   // Combine what's included with food features
   const allIncluded = foodFeatures.length > 0 ? foodFeatures : (whatsIncluded || []);
 
-  return (
+  // Count available photos
+  const getPhotoCount = () => {
+    let count = 0;
+    if (restaurant.restaurantPhoto) count++;
+    if (restaurant.menuPhoto) count++;
+    if (restaurant.photos && Array.isArray(restaurant.photos)) {
+      count += restaurant.photos.filter(photo => photo && photo.trim()).length;
+    }
+    if (restaurant.photo && !restaurant.restaurantPhoto) count++; // Legacy photo
+    return count;
+  };
+
+  const photoCount = getPhotoCount();  return (
     <article className={cardClasses} style={style}>
       <Link to={`/restaurant/${id}`} className={styles.cardLink}>
         {/* Content Section */}
@@ -208,6 +216,32 @@ const RestaurantCard = ({ restaurant, style }) => {
                   <span className={styles.distanceText}>
                     {distance < 1 ? `${Math.round(distance * 1000)}m` : `${distance.toFixed(1)}km`}
                   </span>
+                </div>
+              </div>
+            )}
+
+            {/* Photos Count Box */}
+            {photoCount > 0 && (
+              <div className={styles.infoBox}>
+                <h4 className={styles.boxTitle}>PHOTOS</h4>
+                <div className={styles.boxContent}>
+                  <div className={styles.photoInfo}>
+                    <span className={styles.photoCount}>📷 {photoCount} photo{photoCount > 1 ? 's' : ''}</span>
+                    {photoCount > 1 && (
+                      <div className={styles.photoThumbnails}>
+                        {Array.from({length: Math.min(photoCount, 3)}, (_, i) => (
+                          <div key={i} className={styles.photoThumbnail}>
+                            <span className={styles.thumbnailNumber}>{i + 1}</span>
+                          </div>
+                        ))}
+                        {photoCount > 3 && (
+                          <div className={styles.photoThumbnail}>
+                            <span className={styles.thumbnailNumber}>+{photoCount - 3}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

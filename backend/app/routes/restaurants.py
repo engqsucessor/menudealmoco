@@ -46,6 +46,8 @@ def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> d
         "description": db_restaurant.description,
         "dishes": json.loads(db_restaurant.dishes) if db_restaurant.dishes else [],
         "photos": json.loads(db_restaurant.photos) if db_restaurant.photos else [],
+        "restaurantPhoto": db_restaurant.restaurant_photo,
+        "menuPhoto": db_restaurant.menu_photo,
         "status": db_restaurant.status,
         "submittedBy": db_restaurant.submitter.email if db_restaurant.submitter else None,
         "submittedAt": db_restaurant.submitted_at.isoformat() if db_restaurant.submitted_at else None,

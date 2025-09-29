@@ -51,6 +51,8 @@ class Restaurant(Base):
     description = Column(Text, nullable=True)
     dishes = Column(Text, nullable=True)  # JSON string
     photos = Column(Text, nullable=True)  # JSON string
+    restaurant_photo = Column(Text, nullable=True)  # Base64 image data
+    menu_photo = Column(Text, nullable=True)  # Base64 image data
     status = Column(String, default="approved")  # approved, pending, rejected
 
     # Submission tracking

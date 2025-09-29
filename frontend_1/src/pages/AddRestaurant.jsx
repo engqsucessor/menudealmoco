@@ -24,6 +24,7 @@ const AddRestaurant = ({
     description: restaurant?.description || '',
     numberOfDishes: restaurant?.dishes?.length || '',
     dishes: restaurant?.dishes || [],
+    provideDishNames: (restaurant?.dishes?.length > 0 && restaurant?.dishes.some(dish => dish.trim())) || false,
     included: {
       soup: restaurant?.whatsIncluded?.includes('soup') || false,
       main: restaurant?.whatsIncluded?.includes('main') || true,
@@ -86,22 +87,27 @@ const AddRestaurant = ({
 
   const handleRatingChange = (e) => {
     const { name, value } = e.target;
-    const intValue = value === '' ? '' : Math.max(0, Math.min(5, parseInt(value, 10)));
-    setFormData(prev => ({ ...prev, [name]: intValue }));
+    const floatValue = value === '' ? '' : Math.max(0, Math.min(5, parseFloat(value)));
+    setFormData(prev => ({ ...prev, [name]: floatValue }));
   };
   
   const handleNumberOfDishesChange = (e) => {
     const count = Math.max(0, parseInt(e.target.value, 10) || 0);
     const currentDishes = formData.dishes || [];
 
-    // Preserve existing dishes, only add/remove as needed
+    // Only create/modify dishes array if provideDishNames is true
     let newDishes;
-    if (count > currentDishes.length) {
-      // Adding dishes - keep existing and add empty ones
-      newDishes = [...currentDishes, ...Array(count - currentDishes.length).fill('')];
+    if (formData.provideDishNames) {
+      if (count > currentDishes.length) {
+        // Adding dishes - keep existing and add empty ones
+        newDishes = [...currentDishes, ...Array(count - currentDishes.length).fill('')];
+      } else {
+        // Reducing dishes - keep only the first 'count' dishes
+        newDishes = currentDishes.slice(0, count);
+      }
     } else {
-      // Reducing dishes - keep only the first 'count' dishes
-      newDishes = currentDishes.slice(0, count);
+      // If not providing dish names, just keep an empty array
+      newDishes = [];
     }
 
     setFormData(prev => ({
@@ -109,6 +115,26 @@ const AddRestaurant = ({
       numberOfDishes: count,
       dishes: newDishes,
     }));
+  };
+
+  const handleProvideDishNamesChange = (e) => {
+    const { checked } = e.target;
+    setFormData(prev => {
+      let newDishes;
+      if (checked && prev.numberOfDishes > 0) {
+        // If enabling dish names and we have a count, create empty dish array
+        newDishes = Array(prev.numberOfDishes).fill('');
+      } else {
+        // If disabling dish names, clear the dishes array
+        newDishes = [];
+      }
+      
+      return {
+        ...prev,
+        provideDishNames: checked,
+        dishes: newDishes
+      };
+    });
   };
 
   const handleDishNameChange = (index, value) => {
@@ -286,7 +312,7 @@ const AddRestaurant = ({
           </div>
           <div className={styles.formGroup}>
             <label htmlFor="googleRating">Google Rating (0-5)</label>
-            <input id="googleRating" type="number" name="googleRating" className={styles.input} value={formData.googleRating} onChange={handleRatingChange} placeholder="e.g., 4" />
+            <input id="googleRating" type="number" name="googleRating" className={styles.input} value={formData.googleRating} onChange={handleRatingChange} placeholder="e.g., 4.1" step="0.1" min="0" max="5" />
           </div>
           <div className={styles.formGroup}>
             <label htmlFor="googleReviews">Number of Google Reviews</label>
@@ -335,8 +361,25 @@ const AddRestaurant = ({
             </small>
           </div>
 
-          {/* Dynamic dish name inputs */}
+          {/* Checkbox to choose whether to provide dish names */}
           {formData.numberOfDishes > 0 && (
+            <div className={styles.formGroup}>
+              <label className={styles.checkboxLabel}>
+                <input 
+                  type="checkbox" 
+                  checked={formData.provideDishNames}
+                  onChange={handleProvideDishNamesChange}
+                />
+                I want to provide example dish names
+              </label>
+              <small className={styles.helpText}>
+                Check this if you want to provide specific dish name examples. Otherwise, we'll just record the number of dishes available.
+              </small>
+            </div>
+          )}
+
+          {/* Dynamic dish name inputs */}
+          {formData.numberOfDishes > 0 && formData.provideDishNames && (
             <div className={styles.formGroup}>
               <label>Dish Names (Optional Examples)</label>
               <small className={styles.helpText}>

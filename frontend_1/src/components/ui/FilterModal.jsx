@@ -73,7 +73,6 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
       practicalFilters: {},
       openNow: false,
       minGoogleRating: 0,
-      minZomatoRating: 0,
       overallRating: 0,
       hasMenuReviews: false,
       lastUpdatedDays: '',
@@ -95,7 +94,6 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
         break;
       case 'ratings':
         updatedFilters.minGoogleRating = 0;
-        updatedFilters.minZomatoRating = 0;
         updatedFilters.overallRating = 0;
         break;
       case 'cuisine':
@@ -239,21 +237,6 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                   value={localFilters.minGoogleRating || 0}
                   onChange={(value) => handleRatingChange('minGoogleRating', value)}
                   label="Google rating"
-                  step={0.1}
-                />
-              </div>
-            </div>
-
-            {/* Zomato Rating */}
-            <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Zomato Rating</h3>
-              </div>
-              <div className={styles.sectionContent}>
-                <MinimumRatingSlider
-                  value={localFilters.minZomatoRating || 0}
-                  onChange={(value) => handleRatingChange('minZomatoRating', value)}
-                  label="Zomato rating"
                   step={0.1}
                 />
               </div>

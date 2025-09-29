@@ -63,9 +63,6 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
     if (activeFilters?.minGoogleRating > 0) {
       tags.push(createTag('google-rating', `Google ${activeFilters.minGoogleRating}+`, () => onFilterChange('minGoogleRating', null, 0)));
     }
-    if (activeFilters?.minZomatoRating > 0) {
-      tags.push(createTag('zomato-rating', `Zomato ${activeFilters.minZomatoRating}+`, () => onFilterChange('minZomatoRating', null, 0)));
-    }
     if (activeFilters?.hasMenuReviews) {
       tags.push(createTag('menu-reviews', 'Menu Reviews', () => onFilterChange('hasMenuReviews', null, false)));
     }

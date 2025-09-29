@@ -28,7 +28,6 @@ const FilterPanel = ({
       hasParking: initialFilters.practical?.hasParking || false
     },
     minGoogleRating: initialFilters.minGoogleRating || '',
-    minZomatoRating: initialFilters.minZomatoRating || '',
     hasMenuReviews: initialFilters.hasMenuReviews || false,
     lastUpdatedDays: initialFilters.lastUpdatedDays || '',
   });
@@ -109,7 +108,6 @@ const FilterPanel = ({
     count += Object.values(filters.includes).filter(Boolean).length;
     count += Object.values(filters.practical).filter(Boolean).length;
     if (filters.minGoogleRating) count++;
-    if (filters.minZomatoRating) count++;
     if (filters.hasMenuReviews) count++;
     if (filters.lastUpdatedDays) count++;
     return count;
@@ -288,20 +286,7 @@ const FilterPanel = ({
               <option value="3.5">3.5+</option>
             </select>
           </div>
-          <div className={styles.inputGroup}>
-            <label htmlFor="minZomatoRating">Min Zomato Rating</label>
-            <select
-              id="minZomatoRating"
-              className={styles.selectInput}
-              value={filters.minZomatoRating}
-              onChange={(e) => handleFilterChange('minZomatoRating', null, e.target.value)}
-            >
-              <option value="">Any</option>
-              <option value="4.5">4.5+</option>
-              <option value="4.0">4.0+</option>
-              <option value="3.5">3.5+</option>
-            </select>
-          </div>
+          
           <label className={`${styles.checkboxLabel} ${styles.fullWidth} ${filters.hasMenuReviews ? styles.checked : ''}`}>
             <input
               type="checkbox"

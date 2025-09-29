@@ -236,10 +236,48 @@
 }
 
 .distanceText {
-  font-size: 12px;
-  font-weight: 700;
-  color: #000000;
-  letter-spacing: 0.5px;
+  color: #3391ff;
+  font-weight: bold;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.photoCount {
+  color: #3391ff;
+  font-weight: bold;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.photoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.photoThumbnails {
+  display: flex;
+  gap: 4px;
+}
+
+.photoThumbnail {
+  width: 20px;
+  height: 20px;
+  background: #3391ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnailNumber {
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'Space Mono', monospace;
 }
 
 /* Quick Info Tags */

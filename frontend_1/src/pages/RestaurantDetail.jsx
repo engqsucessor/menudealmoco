@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
 import EditButton from '../components/ui/EditButton';
 import AddRestaurant from './AddRestaurant';
+import PhotoGallery from '../components/ui/PhotoGallery';
 import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
 
 const RestaurantDetail = () => {
@@ -551,7 +552,7 @@ const RestaurantDetail = () => {
     return <div>Restaurant not found</div>;
   }
 
-  const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, zomatoRating, zomatoReviews, menuReviews, menuPhoto } = restaurant;
+  const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, menuReviews, menuPhoto, description } = restaurant;
 
   // Calculate Menu de Almoço average rating
   const calculateMenuRating = () => {
@@ -693,50 +694,17 @@ const RestaurantDetail = () => {
         {activeTab === 'overview' && (
           <div>
             <h2>About {name}</h2>
-            <p>More details about the restaurant would go here, such as a description, opening hours, and contact information.</p>
+            {description ? (
+              <p>{description}</p>
+            ) : (
+              <p>No additional description provided for this restaurant.</p>
+            )}
           </div>
         )}
 
         {activeTab === 'photos' && (
           <div>
-            <h2>Photos</h2>
-            
-            {/* Restaurant Photo */}
-            {photo && (
-              <div className={styles.photoSection}>
-                <h3 className={styles.photoSectionTitle}>Restaurant</h3>
-                <div className={styles.photoContainer}>
-                  <img 
-                    src={photo} 
-                    alt={`${name} - Restaurant`} 
-                    className={styles.restaurantPhoto}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Menu de Almoço Photo */}
-            <div className={styles.photoSection}>
-              <h3 className={styles.photoSectionTitle}>Menu de Almoço</h3>
-              <div className={styles.photoContainer}>
-                {menuPhoto ? (
-                  <>
-                    <img 
-                      src={menuPhoto} 
-                      alt={`${name} - Menu de Almoço`} 
-                      className={styles.menuPhoto}
-                    />
-                    <p className={styles.menuPhotoCaption}>
-                      Current lunch menu with prices - €{menuPrice.toFixed(2)}
-                    </p>
-                  </>
-                ) : (
-                  <div className={styles.placeholderImage}>
-                    <span>No menu photo available</span>
-                  </div>
-                )}
-              </div>
-            </div>
+            <PhotoGallery restaurant={restaurant} />
           </div>
         )}
 

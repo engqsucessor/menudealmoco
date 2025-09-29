@@ -1,0 +1,174 @@
+.photoGallery {
+  width: 100%;
+}
+
+.galleryTitle {
+  font-family: 'Space Mono', monospace;
+  color: #f8f8f2;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  border-bottom: 2px solid #3391ff;
+  padding-bottom: 0.5rem;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.photoItem {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.photoItem:hover {
+  border-color: #3391ff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(51, 145, 255, 0.2);
+}
+
+.photoContainer {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.photoItem:hover .thumbnail {
+  transform: scale(1.05);
+}
+
+.photoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.photoItem:hover .photoOverlay {
+  opacity: 1;
+}
+
+.photoNumber {
+  background: #3391ff;
+  color: white;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  font-size: 18px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.clickHint {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  align-self: flex-end;
+}
+
+.photoLabel {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1a1a1a;
+  border-top: 1px solid #333;
+}
+
+.photoTitle {
+  font-family: 'Space Mono', monospace;
+  color: #f8f8f2;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.photoType {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.noPhotos {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+  font-family: 'Space Mono', monospace;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 2px dashed #333;
+  border-radius: 8px;
+  background: #111;
+}
+
+@media (max-width: 768px) {
+  .photoGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .photoContainer {
+    height: 180px;
+  }
+
+  .galleryTitle {
+    font-size: 1.2rem;
+  }
+
+  .photoTitle {
+    font-size: 0.8rem;
+  }
+
+  .photoNumber {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .photoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .photoContainer {
+    height: 160px;
+  }
+}
