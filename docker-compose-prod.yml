@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    image: 457393219772.dkr.ecr.eu-west-1.amazonaws.com/menudealmoco-backend:latest
+    ports:
+      - "8000:8088"
+    environment:
+      - DATABASE_URL=sqlite:///./menudealmoco.db
+    volumes:
+      - backend_data:/app/data
+    networks:
+      - app-network
+    restart: always
+
+  frontend:
+    image: 457393219772.dkr.ecr.eu-west-1.amazonaws.com/menudealmoco-frontend:latest
+    ports:
+      - "80:3000"
+    environment:
+      - REACT_APP_API_URL=http://3.249.10.91:8000/api
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: always
+
+volumes:
+  backend_data:
+
+networks:
+  app-network:
+    driver: bridge

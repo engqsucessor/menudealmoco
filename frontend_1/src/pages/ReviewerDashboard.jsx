@@ -1,13 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { restaurantsApi, reportsApi, editSuggestionsApi } from '../services/axiosApi';
-import { getEditSuggestions, approveEditSuggestion, rejectEditSuggestion } from '../services/editSuggestionsService';
+import { approveEditSuggestion, rejectEditSuggestion } from '../services/editSuggestionsService';
 import AddRestaurant from './AddRestaurant';
 import EditButton from '../components/ui/EditButton';
 import styles from './ReviewerDashboard.module.css';
 
 const ReviewerDashboard = () => {
   const { user } = useAuth();
+
+  const normalizeSubmission = (submission) => {
+    if (!submission) {
+      return null;
+    }
+
+    const reviewerComments = Array.isArray(submission.reviewerComments)
+      ? submission.reviewerComments
+      : Array.isArray(submission.reviewer_comments)
+        ? submission.reviewer_comments
+        : [];
+
+    return {
+      ...submission,
+      reviewerComments,
+    };
+  };
 
   // Helper function to format values for display
   const formatValue = (value) => {
@@ -35,8 +52,19 @@ const ReviewerDashboard = () => {
 
   const loadSubmissions = async () => {
     try {
+      setLoading(true);
       const submissions = await restaurantsApi.getSubmissions();
-      setSubmissionsList(submissions);
+      const normalized = submissions
+        .map(normalizeSubmission)
+        .filter(Boolean);
+      setSubmissionsList(normalized);
+      setSelectedSubmission((current) => {
+        if (!current) {
+          return current;
+        }
+        const next = normalized.find((submission) => submission.id === current.id);
+        return next || null;
+      });
     } catch (error) {
       console.error('Error loading submissions:', error);
     } finally {
@@ -66,15 +94,19 @@ const ReviewerDashboard = () => {
 
   const handleEditSubmission = (submissionData) => {
     // Update the submission with the edited data
-    const updatedSubmission = {
+    const updatedSubmission = normalizeSubmission({
       ...selectedSubmission,
       data: {
         ...submissionData,
         // Extract city and district from address
         city: submissionData.address.split(',').slice(-1)[0].trim(),
         district: submissionData.address.split(',').slice(-2, -1)[0]?.trim() || submissionData.address.split(',').slice(-1)[0].trim()
-      }
-    };
+      },
+    });
+
+    if (!updatedSubmission) {
+      return;
+    }
 
     // Update in backend
     const submissions = JSON.parse(localStorage.getItem('mmd_submissions') || '{}');
@@ -657,10 +689,10 @@ const ReviewerDashboard = () => {
               </div>
             )}
 
-            {selectedSubmission.reviewerComments.length > 0 && (
+            {Array.isArray(selectedSubmission?.reviewerComments) && selectedSubmission.reviewerComments.length > 0 && (
               <div className={styles.commentsHistory}>
                 <h4>Review History</h4>
-                {selectedSubmission.reviewerComments.map((comment, index) => (
+                {selectedSubmission.reviewerComments?.map((comment, index) => (
                   <div key={index} className={styles.commentItem}>
                     <p>{comment.comment}</p>
                     <small>{new Date(comment.timestamp).toLocaleString()}</small>
@@ -687,3 +719,4 @@ const ReviewerDashboard = () => {
 };
 
 export default ReviewerDashboard;
+

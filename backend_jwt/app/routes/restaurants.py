@@ -75,7 +75,16 @@ async def get_restaurants(
     sortBy: Optional[str] = Query("rating"),
     sortOrder: Optional[str] = Query("desc"),
     page: Optional[int] = Query(1),
-    limit: Optional[int] = Query(10)
+    limit: Optional[int] = Query(10),
+    # Additional frontend filter parameters (ignored for now)
+    maxDistance: Optional[float] = Query(None),
+    priceRange: Optional[str] = Query(None),
+    openNow: Optional[bool] = Query(None),
+    minGoogleRating: Optional[float] = Query(None),
+    overallRating: Optional[float] = Query(None),
+    hasMenuReviews: Optional[bool] = Query(None),
+    lastUpdatedDays: Optional[str] = Query(None),
+    showOnlyFavorites: Optional[bool] = Query(None)
 ):
     """Get restaurants with filtering and sorting - matches mock backend behavior"""
 

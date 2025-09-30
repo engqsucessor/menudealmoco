@@ -421,20 +421,19 @@ const AddRestaurant = ({
             )}
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="menuPhoto">{isEditMode ? 'New Menu de Almoço Photo (Optional)' : 'Photo of Menu (Required)'}</label>
+            <label htmlFor="menuPhoto">{isEditMode ? 'New Menu Photo (Optional)' : 'Photo of Menu (Optional)'}</label>
             <input
               id="menuPhoto"
               type="file"
               name="menuPhoto"
               className={styles.input}
               accept="image/*"
-              required={!isEditMode && !imagePreviews.menuPhoto}
               onChange={(e) => handleImageUpload(e, 'menuPhoto')}
             />
             <small className={styles.helpText}>
               {isEditMode
                 ? 'Upload a new photo of the lunch menu with prices (leave empty to keep current photo)'
-                : 'Upload a clear photo of the lunch menu with prices'}
+                : 'Upload a clear photo of the lunch menu with prices (optional but appreciated)'}
             </small>
             {imagePreviews.menuPhoto && (
               <div className={styles.imagePreview}>
@@ -526,3 +525,4 @@ const AddRestaurant = ({
 };
 
 export default AddRestaurant;
+

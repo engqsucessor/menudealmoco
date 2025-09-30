@@ -8,6 +8,14 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    host: true,
+    allowedHosts: [
+      'menudealmoco.duckdns.org',
+      'menudealmoco.pt',
+      'www.menudealmoco.pt',
+      'localhost',
+      '3.249.10.91'
+    ],
     fs: {
       // Allow serving files from one level up to the project root
       allow: ['..'],

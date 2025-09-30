@@ -5,15 +5,51 @@ from jwt import InvalidTokenError, ExpiredSignatureError
 from fastapi import HTTPException, status
 import os
 import logging
+import boto3
+from botocore.exceptions import ClientError
 
 # JWT Configuration
 logger = logging.getLogger(__name__)
 
-DEFAULT_SECRET_KEY = "change-me-in-production"
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", DEFAULT_SECRET_KEY)
+def get_jwt_secret() -> str:
+    """Fetch JWT secret from AWS Secrets Manager or environment variable"""
+    # First try environment variable (for local development)
+    secret_key = os.getenv("JWT_SECRET_KEY")
+    if secret_key:
+        logger.info("Using JWT secret from environment variable")
+        return secret_key
 
-if SECRET_KEY == DEFAULT_SECRET_KEY:
-    logger.warning("Using default JWT secret key. Set JWT_SECRET_KEY environment variable for production usage.")
+    # Try AWS Secrets Manager
+    secret_name = "menudealmoco/jwt-secret"
+    region_name = os.getenv("AWS_REGION", "eu-west-1")
+
+    try:
+        session = boto3.session.Session()
+        client = session.client(
+            service_name='secretsmanager',
+            region_name=region_name
+        )
+
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        secret = get_secret_value_response['SecretString']
+        logger.info("Successfully loaded JWT secret from AWS Secrets Manager")
+        return secret
+
+    except ClientError as e:
+        logger.error(f"Failed to retrieve secret from AWS Secrets Manager: {e}")
+        # Fall back to default (will warn below)
+        return "change-me-in-production"
+    except Exception as e:
+        logger.error(f"Unexpected error retrieving secret: {e}")
+        return "change-me-in-production"
+
+SECRET_KEY = get_jwt_secret()
+
+if SECRET_KEY == "change-me-in-production":
+    logger.warning("⚠️ CRITICAL SECURITY WARNING: Using default JWT secret key! Set JWT_SECRET_KEY environment variable or configure AWS Secrets Manager.")
+else:
+    logger.info("✓ JWT secret loaded successfully")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
