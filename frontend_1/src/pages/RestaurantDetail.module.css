@@ -676,6 +676,34 @@
   font-style: italic;
 }
 
+.noReviewsMessage div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loginButton {
+  font-family: 'Space Mono', monospace;
+  display: inline-block;
+  background: #000000;
+  color: #FFFFFF;
+  padding: 0.75rem 2rem;
+  text-decoration: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  border-radius: 0;
+  border: 2px solid #000000;
+}
+
+.loginButton:hover {
+  background: #FFFFFF;
+  color: #000000;
+  border-color: #000000;
+}
+
 .addReviewSection {
   margin-top: 3rem;
   padding: 2rem;

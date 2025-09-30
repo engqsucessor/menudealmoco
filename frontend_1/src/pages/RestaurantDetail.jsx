@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
 import { restaurantsApi, reviewsApi, reportsApi } from '../services/axiosApi';
@@ -32,61 +32,32 @@ const RestaurantDetail = () => {
   const [localVotes, setLocalVotes] = useState(new Map()); // Track votes locally for offline experience
   const [userVoteHistory, setUserVoteHistory] = useState(new Map()); // Track user's voting history
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const isMountedRef = useRef(true);
 
   useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let isActive = true;
-
-    const fetchRestaurant = async () => {
-      if (!isMountedRef.current) {
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const data = await restaurantsApi.getById(id);
-        if (!isMountedRef.current || !isActive) {
-          return;
-        }
-        setRestaurant(data);
-      } catch (error) {
-        console.error('Error loading restaurant:', error);
-        if (!isMountedRef.current || !isActive) {
-          return;
-        }
-        setRestaurant(null);
-        showNotification('Unable to load restaurant details.', 'error');
-      } finally {
-        if (isMountedRef.current && isActive) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchRestaurant();
+    restaurantsApi.getById(id).then(data => {
+      setRestaurant(data);
+      setLoading(false);
+    });
+    
+    // Load menu reviews
     loadMenuReviews();
+
+    // Load edit suggestions
     loadEditSuggestions();
 
+    // Check if restaurant is favorited (only if user is logged in)
     if (user) {
       const favoriteIds = favoriteRestaurants.get();
       setIsFavorite(favoriteIds.includes(id));
+      
+      // Load user's vote history for this restaurant
       loadUserVoteHistory();
     } else {
       setIsFavorite(false);
     }
 
+    // Load any pending local votes
     loadLocalVotes();
-
-    return () => {
-      isActive = false;
-    };
   }, [id, user]);
 
   // Cleanup timeouts on unmount and add visibility change handler
@@ -115,9 +86,6 @@ const RestaurantDetail = () => {
         await loadMenuReviews();
         // Clear local votes after successful sync
         localStorage.removeItem(`mmd_local_votes_${id}`);
-        if (!isMountedRef.current) {
-          return;
-        }
         setLocalVotes(new Map());
       } catch (error) {
         console.error('Error syncing pending votes:', error);
@@ -127,16 +95,12 @@ const RestaurantDetail = () => {
 
   const loadMenuReviews = async () => {
     try {
+      // Use reviewsApi to get menu reviews
       const reviews = await reviewsApi.getForRestaurant(id);
-      if (!isMountedRef.current) {
-        return;
-      }
       setMenuReviewsData(reviews);
     } catch (error) {
       console.error('Error loading menu reviews:', error);
-      if (!isMountedRef.current) {
-        return;
-      }
+      // Fallback to empty array if API fails
       setMenuReviewsData([]);
     }
   };
@@ -210,16 +174,9 @@ const RestaurantDetail = () => {
   const loadEditSuggestions = async () => {
     try {
       const suggestions = await getEditSuggestions(id, 'pending', user?.email);
-      if (!isMountedRef.current) {
-        return;
-      }
       setEditSuggestions(suggestions);
     } catch (error) {
       console.error('Error loading edit suggestions:', error);
-      if (!isMountedRef.current) {
-        return;
-      }
-      setEditSuggestions([]);
     }
   };
 

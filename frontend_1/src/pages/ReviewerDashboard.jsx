@@ -26,6 +26,14 @@ const ReviewerDashboard = () => {
     };
   };
 
+  // Helper function to check if a value is an image URL
+  const isImageUrl = (value) => {
+    if (typeof value !== 'string') return false;
+    return value.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i) ||
+           value.includes('blob:') ||
+           value.includes('data:image');
+  };
+
   // Helper function to format values for display
   const formatValue = (value) => {
     if (value === null || value === undefined) return 'null';
@@ -200,9 +208,13 @@ const ReviewerDashboard = () => {
       if (result.success) {
         await loadEditSuggestions(); // Reload edit suggestions
         setSelectedEditSuggestion(null);
+        // Switch to approved tab to show the approved suggestion
+        setActiveTab('edit-suggestions-approved');
+        alert('Edit suggestion approved successfully! Changes have been applied to the restaurant.');
       }
     } catch (error) {
       console.error('Error approving edit suggestion:', error);
+      alert('Failed to approve edit suggestion. Please try again.');
     }
   };
 
@@ -213,9 +225,13 @@ const ReviewerDashboard = () => {
         await loadEditSuggestions(); // Reload edit suggestions
         setSelectedEditSuggestion(null);
         setReviewComment('');
+        // Switch to rejected tab to show the rejected suggestion
+        setActiveTab('edit-suggestions-rejected');
+        alert('Edit suggestion rejected successfully.');
       }
     } catch (error) {
       console.error('Error rejecting edit suggestion:', error);
+      alert('Failed to reject edit suggestion. Please try again.');
     }
   };
 
@@ -342,7 +358,29 @@ const ReviewerDashboard = () => {
             setSelectedEditSuggestion(null);
           }}
         >
-          Edit Suggestions ({editSuggestions.filter(s => s.status === 'pending').length})
+          Edit Suggestions - Pending ({editSuggestions.filter(s => s.status === 'pending').length})
+        </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'edit-suggestions-approved' ? styles.activeTab : ''}`}
+          onClick={() => {
+            setActiveTab('edit-suggestions-approved');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+            setSelectedEditSuggestion(null);
+          }}
+        >
+          Edit Suggestions - Approved ({editSuggestions.filter(s => s.status === 'approved').length})
+        </button>
+        <button
+          className={`${styles.tab} ${activeTab === 'edit-suggestions-rejected' ? styles.activeTab : ''}`}
+          onClick={() => {
+            setActiveTab('edit-suggestions-rejected');
+            setSelectedSubmission(null);
+            setSelectedReport(null);
+            setSelectedEditSuggestion(null);
+          }}
+        >
+          Edit Suggestions - Rejected ({editSuggestions.filter(s => s.status === 'rejected').length})
         </button>
       </div>
 
@@ -464,12 +502,36 @@ const ReviewerDashboard = () => {
                     <strong className={styles.fieldName}>{field}:</strong>
                     {value && typeof value === 'object' && value.from !== undefined && value.to !== undefined ? (
                       <div className={styles.diffView}>
-                        <div className={styles.diffLine}>
-                          <span className={styles.diffRemoved}>- {formatValue(value.from)}</span>
-                        </div>
-                        <div className={styles.diffLine}>
-                          <span className={styles.diffAdded}>+ {formatValue(value.to)}</span>
-                        </div>
+                        {/* Check if it's an image field */}
+                        {isImageUrl(value.from) || isImageUrl(value.to) ? (
+                          <div className={styles.imageDiff}>
+                            <div className={styles.imageDiffItem}>
+                              <span className={styles.diffLabel}>Before:</span>
+                              {value.from ? (
+                                <img src={value.from} alt="Before" className={styles.diffImage} />
+                              ) : (
+                                <span className={styles.noImage}>No image</span>
+                              )}
+                            </div>
+                            <div className={styles.imageDiffItem}>
+                              <span className={styles.diffLabel}>After:</span>
+                              {value.to ? (
+                                <img src={value.to} alt="After" className={styles.diffImage} />
+                              ) : (
+                                <span className={styles.noImage}>No image</span>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <div className={styles.diffLine}>
+                              <span className={styles.diffRemoved}>- {formatValue(value.from)}</span>
+                            </div>
+                            <div className={styles.diffLine}>
+                              <span className={styles.diffAdded}>+ {formatValue(value.to)}</span>
+                            </div>
+                          </>
+                        )}
                       </div>
                     ) : (
                       <div className={styles.fallbackValue}>

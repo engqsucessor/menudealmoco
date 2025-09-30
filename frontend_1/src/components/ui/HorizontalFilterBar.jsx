@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { getPracticalFeatureLabel } from '../../constants/labels';
+import { isDefaultPriceRange, FEATURE_LABELS, DATA_FRESHNESS_OPTIONS } from '../../constants/filterConfig';
 import styles from './HorizontalFilterBar.module.css';
 import Button from './Button';
 
@@ -19,7 +20,8 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
     const tags = [];
     const createTag = (key, label, onRemove) => ({ key, label, onRemove });
 
-    if (activeFilters?.minPrice !== 6 || activeFilters?.maxPrice !== 25) {
+    // Only show price filter if it's not set to default 'any'
+    if (activeFilters?.priceRange && !isDefaultPriceRange(activeFilters.priceRange)) {
       tags.push(createTag(
         'price',
         `€${activeFilters.minPrice}-${activeFilters.maxPrice}`,
@@ -35,12 +37,8 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
 
     Object.entries(activeFilters?.features || {}).forEach(([key, value]) => {
       if (value) {
-        const labels = {
-          coffeeIncluded: 'Coffee Included', dessertIncluded: 'Dessert Included',
-          wineAvailable: 'Wine Available', breadSoupIncluded: 'Bread/Soup Included',
-          vegetarianOptions: 'Vegetarian Options'
-        };
-        tags.push(createTag(`feature-${key}`, labels[key], () => handleQuickFilter('features', key, false)));
+        const label = FEATURE_LABELS[key] || key;
+        tags.push(createTag(`feature-${key}`, label, () => handleQuickFilter('features', key, false)));
       }
     });
 
@@ -67,12 +65,8 @@ const HorizontalFilterBar = ({ onToggleAllFilters, onFilterChange, activeFilters
       tags.push(createTag('menu-reviews', 'Menu Reviews', () => onFilterChange('hasMenuReviews', null, false)));
     }
     if (activeFilters?.lastUpdatedDays) {
-      const dayLabels = {
-        '7': 'Last Week',
-        '30': 'Last Month',
-        '90': 'Last 3 Months'
-      };
-      const label = dayLabels[activeFilters.lastUpdatedDays] || `${activeFilters.lastUpdatedDays} days`;
+      const freshOption = DATA_FRESHNESS_OPTIONS.find(option => option.value === activeFilters.lastUpdatedDays);
+      const label = freshOption ? freshOption.label : `${activeFilters.lastUpdatedDays} days`;
       tags.push(createTag('data-freshness', label, () => onFilterChange('lastUpdatedDays', null, '')));
     }
 

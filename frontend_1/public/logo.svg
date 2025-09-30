@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <style>
+      .logo-m {
+        font-family: 'Space Mono', monospace;
+        font-weight: 700;
+        font-size: 120px;
+        fill: #000000;
+      }
+      .logo-underline {
+        fill: none;
+        stroke: #0066FF;
+        stroke-width: 8;
+        stroke-linecap: round;
+      }
+      .logo-text {
+        font-family: 'Space Mono', monospace;
+        font-weight: 400;
+        font-size: 16px;
+        fill: #000000;
+        letter-spacing: 1px;
+      }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" fill="#FFFFFF"/>
+
+  <!-- Large M -->
+  <text x="100" y="110" text-anchor="middle" class="logo-m">M</text>
+
+  <!-- Blue underline -->
+  <line x1="45" y1="125" x2="155" y2="125" class="logo-underline"/>
+
+  <!-- Text below -->
+  <text x="100" y="155" text-anchor="middle" class="logo-text">MENU DE</text>
+  <text x="100" y="175" text-anchor="middle" class="logo-text">ALMOÇO</text>
+</svg>

@@ -93,8 +93,62 @@ export const authApi = {
 // Restaurants API
 export const restaurantsApi = {
   getAll: async (filters = {}) => {
-    const { data } = await api.get('/restaurants', { params: filters });
-    return data;
+    const params = Object.entries(filters).reduce((acc, [key, value]) => {
+      if (value === undefined || value === null) {
+        return acc;
+      }
+
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed.length > 0) {
+          acc[key] = trimmed;
+        }
+        return acc;
+      }
+
+      if (Array.isArray(value)) {
+        if (value.length > 0) {
+          acc[key] = value.join(',');
+        }
+        return acc;
+      }
+
+      if (typeof value === 'object') {
+        const selected = Object.entries(value)
+          .filter(([, isSelected]) => Boolean(isSelected))
+          .map(([option]) => option);
+
+        if (selected.length > 0) {
+          acc[key] = selected.join(',');
+        }
+        return acc;
+      }
+
+      acc[key] = value;
+      return acc;
+    }, {});
+
+    const { data } = await api.get('/restaurants', { params });
+
+    const mapRestaurant = (restaurant) => ({
+      ...restaurant,
+      valueRating: restaurant.menuRating || restaurant.googleRating || 0,
+      reviewCount: restaurant.menuReviews || restaurant.googleReviews || 0,
+      distance: 0, // TODO: Calculate actual distance
+      included: restaurant.whatsIncluded || [],
+      features: restaurant.features || [],
+    });
+
+    if (Array.isArray(data)) {
+      return data.map(mapRestaurant);
+    }
+
+    const restaurants = Array.isArray(data?.restaurants) ? data.restaurants.map(mapRestaurant) : [];
+
+    return {
+      ...data,
+      restaurants,
+    };
   },
 
   getById: async (id) => {

@@ -4,6 +4,14 @@ import Button from './Button';
 import RatingSlider from './RatingSlider';
 import BudgetSlider from './BudgetSlider';
 import MinimumRatingSlider from './MinimumRatingSlider';
+import { 
+  PRICE_RANGES, 
+  createClearedFilters, 
+  DATA_FRESHNESS_OPTIONS,
+  FOOD_TYPE_OPTIONS,
+  FEATURE_LABELS,
+  SLIDER_CONFIG
+} from '../../constants/filterConfig';
 
 const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
   const [localFilters, setLocalFilters] = useState(filters);
@@ -31,15 +39,7 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
   };
 
   const handlePriceRangeChange = (value) => {
-    const priceRanges = {
-      'budget': { min: 6, max: 8 },
-      'standard': { min: 8, max: 10 },
-      'good': { min: 10, max: 12 },
-      'premium': { min: 12, max: 15 },
-      'high-end': { min: 15, max: 25 },
-      'any': { min: 6, max: 25 }
-    };
-    const range = priceRanges[value];
+    const range = PRICE_RANGES[value];
     setLocalFilters(prev => ({ 
       ...prev, 
       priceRange: value,
@@ -63,21 +63,7 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
   };
 
   const handleClearAll = () => {
-    const clearedFilters = {
-      ...filters,
-      priceRange: 'any',
-      minPrice: 6,
-      maxPrice: 25,
-      foodTypes: [],
-      features: {},
-      practicalFilters: {},
-      openNow: false,
-      minGoogleRating: 0,
-      overallRating: 0,
-      hasMenuReviews: false,
-      lastUpdatedDays: '',
-      showOnlyFavorites: false
-    };
+    const clearedFilters = createClearedFilters(filters);
     setLocalFilters(clearedFilters);
     onFiltersChange(clearedFilters);
     showClearFeedback('All filters cleared!');
@@ -88,9 +74,10 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
 
     switch (sectionName) {
       case 'price':
+        const anyRange = PRICE_RANGES.any;
         updatedFilters.priceRange = 'any';
-        updatedFilters.minPrice = 6;
-        updatedFilters.maxPrice = 25;
+        updatedFilters.minPrice = anyRange.min;
+        updatedFilters.maxPrice = anyRange.max;
         break;
       case 'ratings':
         updatedFilters.minGoogleRating = 0;
@@ -195,12 +182,12 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
               </div>
               <div className={styles.sectionContent}>
                 <BudgetSlider
-                  min={6}
-                  max={25}
-                  value={[localFilters.minPrice || 6, localFilters.maxPrice || 25]}
+                  min={SLIDER_CONFIG.price.min}
+                  max={SLIDER_CONFIG.price.max}
+                  value={[localFilters.minPrice || SLIDER_CONFIG.price.min, localFilters.maxPrice || SLIDER_CONFIG.price.max]}
                   onChange={handleBudgetSliderChange}
-                  step={0.5}
-                  label="Your budget (per meal)"
+                  step={SLIDER_CONFIG.price.step}
+                  label={SLIDER_CONFIG.price.label}
                 />
               </div>
             </div>
@@ -248,12 +235,7 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 <h3 className={styles.sectionTitle}>Data Freshness</h3>
               </div>
               <div className={styles.sectionContent}>
-                {renderRadioGroup('dataFreshness', 'lastUpdatedDays', [
-                  { value: '', label: 'Anytime' },
-                  { value: '7', label: 'Last Week' },
-                  { value: '30', label: 'Last Month' },
-                  { value: '90', label: 'Last 3 Months' }
-                ])}
+                {renderRadioGroup('dataFreshness', 'lastUpdatedDays', DATA_FRESHNESS_OPTIONS)}
               </div>
             </div>
 
@@ -270,12 +252,9 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 </button>
               </div>
               <div className={styles.sectionContent}>
-                {renderCheckbox('foodTypes', 'Traditional Portuguese', 'Traditional Portuguese')}
-                {renderCheckbox('foodTypes', 'Modern/Contemporary', 'Modern/Contemporary')}
-                {renderCheckbox('foodTypes', 'Seafood specialist', 'Seafood')}
-                {renderCheckbox('foodTypes', 'Meat-focused', 'Meat-focused')}
-                {renderCheckbox('foodTypes', 'Vegetarian-friendly', 'Vegetarian-friendly')}
-                {renderCheckbox('foodTypes', 'International', 'International')}
+                {FOOD_TYPE_OPTIONS.map(foodType => 
+                  renderCheckbox('foodTypes', foodType, foodType)
+                )}
               </div>
             </div>
 
@@ -292,11 +271,9 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                 </button>
               </div>
               <div className={styles.sectionContent}>
-                {renderCheckbox('features', 'coffeeIncluded', 'Coffee Included')}
-                {renderCheckbox('features', 'dessertIncluded', 'Dessert Included')}
-                {renderCheckbox('features', 'wineAvailable', 'Wine Available')}
-                {renderCheckbox('features', 'breadSoupIncluded', 'Bread/Soup Included')}
-                {renderCheckbox('features', 'vegetarianOptions', 'Vegetarian Options')}
+                {Object.entries(FEATURE_LABELS).map(([key, label]) =>
+                  renderCheckbox('features', key, label)
+                )}
               </div>
             </div>
 

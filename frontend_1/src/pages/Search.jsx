@@ -2,6 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Search.module.css';
 import { restaurantsApi } from '../services/axiosApi';
+import { 
+  createInitialFilters, 
+  createClearedFilters, 
+  PRICE_RANGES, 
+  prepareFiltersForAPI 
+} from '../constants/filterConfig';
 import RestaurantCard from '../components/ui/RestaurantCard';
 import HorizontalFilterBar from '../components/ui/HorizontalFilterBar';
 import FilterModal from '../components/ui/FilterModal';
@@ -13,7 +19,7 @@ const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
 
-const SearchPage = () => {
+const Search = () => {
   const query = useQuery();
   const navigate = useNavigate();
   const initialQuery = query.get('query') || '';
@@ -26,28 +32,12 @@ const SearchPage = () => {
   const [isFilterModalOpen, setFilterModalOpen] = useState(false);
 
   // Complex filter state matching MONO design
-  const [filters, setFilters] = useState({
-    query: initialQuery,
-    location: initialLocation,
-    userLocation: null,
-    maxDistance: 50,
-    priceRange: 'any',
-    minPrice: 6,
-    maxPrice: 25,
-    foodTypes: [],
-    features: {},
-    practicalFilters: {},
-    openNow: false,
-    sortBy: 'rating',
-    sortOrder: 'desc',
-    page: 1,
-    limit: 10,
-    minGoogleRating: 0,
-    overallRating: 0,
-    hasMenuReviews: false,
-    lastUpdatedDays: '',
-    showOnlyFavorites: false
-  });
+  const [filters, setFilters] = useState(
+    createInitialFilters({
+      query: initialQuery,
+      location: initialLocation
+    })
+  );
 
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -55,7 +45,10 @@ const SearchPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await restaurantsApi.getAll(filters);
+      // Use the centralized helper to prepare filters for API
+      const apiFilters = prepareFiltersForAPI(filters);
+      
+      const response = await restaurantsApi.getAll(apiFilters);
       // Handle both old format (array) and new format (object with restaurants array)
       if (Array.isArray(response)) {
         // Old format - no pagination
@@ -115,16 +108,8 @@ const SearchPage = () => {
     let newFilters = { ...filters, page: 1 };
 
     if (category === 'priceRange') {
-      // Handle price range changes with proper min/max updates
-      const priceRanges = {
-        'budget': { min: 6, max: 10 },
-        'standard': { min: 10, max: 12 },
-        'good': { min: 12, max: 15 },
-        'premium': { min: 15, max: 20 },
-        'high-end': { min: 20, max: 25 },
-        'any': { min: 6, max: 25 }
-      };
-      const range = priceRanges[value] || priceRanges['any'];
+      // Handle price range changes using centralized config
+      const range = PRICE_RANGES[value] || PRICE_RANGES.any;
       newFilters.priceRange = value;
       newFilters.minPrice = range.min;
       newFilters.maxPrice = range.max;
@@ -151,28 +136,7 @@ const SearchPage = () => {
   };
 
   const clearAllFilters = () => {
-    const clearedFilters = {
-      ...filters,
-      query: '',
-      location: '',
-      priceRange: 'any',
-      minPrice: 6,
-      maxPrice: 25,
-      foodTypes: [],
-      features: {},
-      practicalFilters: {},
-      openNow: false,
-      sortBy: 'rating',
-      sortOrder: 'desc',
-      page: 1,
-      limit: 10,
-      minGoogleRating: 0,
-      overallRating: 0,
-      hasMenuReviews: false,
-      lastUpdatedDays: '',
-      showOnlyFavorites: false
-    };
-    setFilters(clearedFilters);
+    setFilters(createClearedFilters(filters));
   };  const getActiveFiltersCount = () => {
     let count = 0;
     if (filters.showOnlyFavorites) count++;
@@ -352,5 +316,5 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default Search;
 

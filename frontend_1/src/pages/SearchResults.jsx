@@ -46,8 +46,9 @@ const SearchResults = () => {
         recentSearches.add(filters.location.trim());
       }
 
-      const restaurants = await restaurantsApi.getAll(filters);
-      setRestaurants(restaurants);
+      const response = await restaurantsApi.getAll(filters);
+      const normalizedRestaurants = Array.isArray(response) ? response : (response?.restaurants || []);
+      setRestaurants(normalizedRestaurants);
     } catch (err) {
       setError('Erro ao procurar restaurantes. Tente novamente.');
       console.error('Search error:', err);

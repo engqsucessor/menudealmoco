@@ -31,7 +31,7 @@ const Layout = ({ children, className = '' }) => {
 
         <div className={styles.footerBottom}>
           <p className={styles.copyright}>
-            © 2024 MENU DEAL MOÇO — ALL RIGHTS RESERVED
+            © 2025 MENU DEAL MOÇO — ALL RIGHTS RESERVED
           </p>
         </div>
       </footer>

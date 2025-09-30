@@ -1,0 +1,29 @@
+services:
+  backend:
+    image: menudealmoco-backend-local:latest
+    ports:
+      - "8000:8088"
+    environment:
+      - DATABASE_URL=sqlite:///./data/menudealmoco.db
+      - JWT_SECRET_KEY=local-dev-secret-key-change-in-production-12345678
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+      - ALLOWED_HOSTS=localhost,127.0.0.1,frontend,backend
+    volumes:
+      - ../backend_jwt:/app/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  frontend:
+    image: menudealmoco-frontend-local:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge

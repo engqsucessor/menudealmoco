@@ -104,10 +104,11 @@ async def get_restaurants(
             any(query_lower in dish.lower() for dish in r["dishes"])
         )]
 
-    # Apply location filter
+    # Apply location filter - also search restaurant names
     if location:
         location_lower = location.lower()
         restaurants = [r for r in restaurants if (
+            location_lower in r["name"].lower() or
             location_lower in r["city"].lower() or
             location_lower in r["district"].lower() or
             location_lower in r["address"].lower()
