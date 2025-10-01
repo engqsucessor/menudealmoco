@@ -84,7 +84,7 @@ const RestaurantCard = ({ restaurant, style }) => {
 
   // Process food features for included items
   const foodFeatures = [];
-  if (restaurant.included?.bread) foodFeatures.push('Bread');
+  if (restaurant.included?.couvert) foodFeatures.push('Couvert');
   if (restaurant.included?.soup) foodFeatures.push('Soup');
   if (restaurant.included?.main) foodFeatures.push('Main');
   if (restaurant.included?.drink) foodFeatures.push('Drink');

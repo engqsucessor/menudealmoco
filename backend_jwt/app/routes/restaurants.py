@@ -66,6 +66,7 @@ def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> d
 
 @router.get("/restaurants")
 async def get_restaurants(
+    request: Request,
     db: Session = Depends(get_db),
     current_user: Optional[User] = Depends(get_optional_current_user),
     query: Optional[str] = Query(None),
@@ -88,6 +89,14 @@ async def get_restaurants(
     showOnlyFavorites: Optional[bool] = Query(None)
 ):
     """Get restaurants with filtering and sorting - matches mock backend behavior"""
+
+    # Get query parameters for features and practicalFilters
+    query_params = dict(request.query_params)
+
+    # Debug: print received parameters
+    print(f"🔍 Received query params: {query_params}")
+    print(f"🔍 showOnlyFavorites: {showOnlyFavorites}, openNow: {openNow}")
+    print(f"🔍 minGoogleRating: {minGoogleRating}, overallRating: {overallRating}")
 
     # Get all approved restaurants
     restaurants_query = db.query(DBRestaurant).filter(DBRestaurant.status == "approved")
@@ -133,6 +142,61 @@ async def get_restaurants(
         min_p = minPrice if minPrice is not None else 0
         max_p = maxPrice if maxPrice is not None else float('inf')
         restaurants = [r for r in restaurants if min_p <= r["menuPrice"] <= max_p]
+
+    # Apply Google rating filter
+    if minGoogleRating is not None and minGoogleRating > 0:
+        restaurants = [r for r in restaurants if r["googleRating"] and r["googleRating"] >= minGoogleRating]
+
+    # Apply menu rating filter (overallRating)
+    if overallRating is not None and overallRating > 0:
+        restaurants = [r for r in restaurants if r["menuRating"] >= overallRating]
+
+    # Apply menu reviews filter
+    if hasMenuReviews:
+        restaurants = [r for r in restaurants if r["menuReviews"] > 0]
+
+    # Apply practical filters (cards, parking, quick service, group friendly)
+    # Check for practicalFilters.takesCards, practicalFilters.hasParking, etc.
+    for key, value in query_params.items():
+        if key.startswith('practicalFilters[') and value.lower() == 'true':
+            filter_name = key.split('[')[1].rstrip(']')
+            if filter_name == 'takesCards':
+                restaurants = [r for r in restaurants if r["practical"]["cardsAccepted"]]
+            elif filter_name == 'hasParking':
+                restaurants = [r for r in restaurants if r["practical"]["parking"]]
+            elif filter_name == 'quickService':
+                restaurants = [r for r in restaurants if r["practical"]["quickService"]]
+            elif filter_name == 'groupFriendly':
+                restaurants = [r for r in restaurants if r["practical"]["groupFriendly"]]
+
+    # Apply features filters (coffee, dessert, wine, bread included)
+    for key, value in query_params.items():
+        if key.startswith('features[') and value.lower() == 'true':
+            filter_name = key.split('[')[1].rstrip(']')
+            # Map frontend feature names to backend whatsIncluded items (lowercase)
+            feature_map = {
+                'coffeeIncluded': 'coffee',
+                'dessertIncluded': 'dessert',
+                'wineAvailable': 'wine',
+                'breadSoupIncluded': 'couvert'
+                # TODO: Add vegetarianOptions mapping when implemented
+            }
+            if filter_name in feature_map:
+                required_item = feature_map[filter_name]
+                restaurants = [r for r in restaurants if required_item in r["whatsIncluded"]]
+
+    # TODO: Implement openNow filter - requires restaurant hours in database
+    # if openNow:
+    #     restaurants = [r for r in restaurants if is_open_now(r)]
+
+    # TODO: Implement lastUpdatedDays filter - requires updated_at timestamp
+    # if lastUpdatedDays:
+    #     cutoff_date = datetime.now() - timedelta(days=int(lastUpdatedDays))
+    #     restaurants = [r for r in restaurants if r["updatedAt"] >= cutoff_date]
+
+    # TODO: Implement maxDistance filter - requires geolocation calculation
+    # if maxDistance and userLocation:
+    #     restaurants = [r for r in restaurants if calculate_distance(r, userLocation) <= maxDistance]
 
     # Apply sorting
     reverse = sortOrder == "desc"

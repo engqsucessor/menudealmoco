@@ -25,7 +25,7 @@ const FilterPanel = ({
       coffee: initialFilters.includes?.coffee || false,
       dessert: initialFilters.includes?.dessert || false,
       wine: initialFilters.includes?.wine || false,
-      bread: initialFilters.includes?.bread || false
+      couvert: initialFilters.includes?.couvert || false
     },
     practical: {
       openNow: initialFilters.practical?.openNow || false,

@@ -113,6 +113,18 @@ export const restaurantsApi = {
       }
 
       if (typeof value === 'object') {
+        // Special handling for features and practicalFilters objects
+        // Send as individual query parameters: features[coffee]=true
+        if (key === 'features' || key === 'practicalFilters') {
+          Object.entries(value).forEach(([subKey, isSelected]) => {
+            if (Boolean(isSelected)) {
+              acc[`${key}[${subKey}]`] = 'true';
+            }
+          });
+          return acc;
+        }
+
+        // For other objects, join selected keys as comma-separated string
         const selected = Object.entries(value)
           .filter(([, isSelected]) => Boolean(isSelected))
           .map(([option]) => option);
@@ -126,6 +138,9 @@ export const restaurantsApi = {
       acc[key] = value;
       return acc;
     }, {});
+
+    // Debug: log the parameters being sent
+    console.log('🔍 API Request params:', params);
 
     const { data } = await api.get('/restaurants', { params });
 

@@ -32,7 +32,7 @@ const AddRestaurant = ({
       coffee: restaurant?.whatsIncluded?.includes('coffee') || false,
       dessert: restaurant?.whatsIncluded?.includes('dessert') || false,
       wine: restaurant?.whatsIncluded?.includes('wine') || false,
-      bread: restaurant?.whatsIncluded?.includes('bread') || false,
+      couvert: restaurant?.whatsIncluded?.includes('couvert') || false,
     },
     practical: {
       takesCards: restaurant?.practical?.cardsAccepted || false,

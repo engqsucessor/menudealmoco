@@ -105,8 +105,9 @@ export const FEATURE_LABELS = {
   coffeeIncluded: 'Coffee Included',
   dessertIncluded: 'Dessert Included',
   wineAvailable: 'Wine Available',
-  breadSoupIncluded: 'Bread/Soup Included',
-  vegetarianOptions: 'Vegetarian Options'
+  breadSoupIncluded: 'Couvert Included'
+  // TODO: Add vegetarianOptions when backend mapping is implemented
+  // vegetarianOptions: 'Vegetarian Options'
 };
 
 // Slider configurations

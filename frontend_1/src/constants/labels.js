@@ -8,7 +8,7 @@ export const PRACTICAL_FEATURES = {
     shortLabel: 'Cards'
   },
   hasParking: {
-    emoji: '🚗', 
+    emoji: '🚗',
     label: 'Has Parking',
     shortLabel: 'Parking'
   },
@@ -19,14 +19,15 @@ export const PRACTICAL_FEATURES = {
   },
   groupFriendly: {
     emoji: '👥',
-    label: 'Group Friendly', 
+    label: 'Group Friendly',
     shortLabel: 'Group Friendly'
-  },
-  nearMetro: {
-    emoji: '🚇',
-    label: 'Near Metro',
-    shortLabel: 'Near Metro'
   }
+  // TODO: Add nearMetro when database column is added
+  // nearMetro: {
+  //   emoji: '🚇',
+  //   label: 'Near Metro',
+  //   shortLabel: 'Near Metro'
+  // }
 };
 
 // Food included features
@@ -57,7 +58,7 @@ export const INCLUDED_FEATURES = {
   },
   bread: {
     emoji: '🥖',
-    label: 'Bread'
+    label: 'Couvert'
   }
 };
 
