@@ -4,10 +4,13 @@ import { restaurantsApi, reportsApi, editSuggestionsApi } from '../services/axio
 import { approveEditSuggestion, rejectEditSuggestion } from '../services/editSuggestionsService';
 import AddRestaurant from './AddRestaurant';
 import EditButton from '../components/ui/EditButton';
+import Notification from '../components/ui/Notification';
+import { useNotification } from '../hooks/useNotification';
 import styles from './ReviewerDashboard.module.css';
 
 const ReviewerDashboard = () => {
   const { user } = useAuth();
+  const { notification, showNotification, hideNotification } = useNotification();
 
   const normalizeSubmission = (submission) => {
     if (!submission) {
@@ -210,11 +213,11 @@ const ReviewerDashboard = () => {
         setSelectedEditSuggestion(null);
         // Switch to approved tab to show the approved suggestion
         setActiveTab('edit-suggestions-approved');
-        alert('Edit suggestion approved successfully! Changes have been applied to the restaurant.');
+        showNotification('Edit suggestion approved successfully! Changes have been applied to the restaurant.', 'success');
       }
     } catch (error) {
       console.error('Error approving edit suggestion:', error);
-      alert('Failed to approve edit suggestion. Please try again.');
+      showNotification('Failed to approve edit suggestion. Please try again.', 'error');
     }
   };
 
@@ -227,11 +230,11 @@ const ReviewerDashboard = () => {
         setReviewComment('');
         // Switch to rejected tab to show the rejected suggestion
         setActiveTab('edit-suggestions-rejected');
-        alert('Edit suggestion rejected successfully.');
+        showNotification('Edit suggestion rejected successfully.', 'success');
       }
     } catch (error) {
       console.error('Error rejecting edit suggestion:', error);
-      alert('Failed to reject edit suggestion. Please try again.');
+      showNotification('Failed to reject edit suggestion. Please try again.', 'error');
     }
   };
 
@@ -776,6 +779,14 @@ const ReviewerDashboard = () => {
           onSubmit={handleEditSubmission}
         />
       )}
+
+      {/* Notification Component */}
+      <Notification
+        show={notification.show}
+        message={notification.message}
+        type={notification.type}
+        onClose={hideNotification}
+      />
     </div>
   );
 };

@@ -8,11 +8,14 @@ import MenuRating from '../components/ui/MenuRating';
 import EditButton from '../components/ui/EditButton';
 import AddRestaurant from './AddRestaurant';
 import PhotoGallery from '../components/ui/PhotoGallery';
+import Notification from '../components/ui/Notification';
+import { useNotification } from '../hooks/useNotification';
 import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
 
 const RestaurantDetail = () => {
   const { id } = useParams();
   const { user } = useAuth();
+  const { notification, showNotification, hideNotification } = useNotification();
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -25,7 +28,6 @@ const RestaurantDetail = () => {
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportingReviewId, setReportingReviewId] = useState(null);
   const [reportReason, setReportReason] = useState('');
-  const [notification, setNotification] = useState({ show: false, message: '', type: '' });
   const [expandedReviews, setExpandedReviews] = useState(new Set());
   const [pendingVotes, setPendingVotes] = useState(new Map()); // Track pending vote operations
   const [voteTimeouts, setVoteTimeouts] = useState(new Map()); // Track debounce timeouts
@@ -301,13 +303,6 @@ const RestaurantDetail = () => {
   const handleUpvote = (reviewId) => handleVote(reviewId, 'up');
   const handleDownvote = (reviewId) => handleVote(reviewId, 'down');
 
-  const showNotification = (message, type = 'success') => {
-    setNotification({ show: true, message, type });
-    setTimeout(() => {
-      setNotification({ show: false, message: '', type: '' });
-    }, 4000);
-  };
-
   const handleReportReview = async (reviewId) => {
     if (!user) {
       showNotification('Please login to report reviews.', 'error');
@@ -471,12 +466,7 @@ const RestaurantDetail = () => {
       // Check if there are actually any changes
       if (Object.keys(changes).length === 0) {
         // Show notification that no changes were detected
-        setNotification({
-          show: true,
-          message: 'No changes detected - suggestion not submitted',
-          type: 'info'
-        });
-        setTimeout(() => setNotification({ show: false, message: '', type: '' }), 3000);
+        showNotification('No changes detected - suggestion not submitted', 'info', 3000);
         setShowEditModal(false);
         return;
       }
@@ -495,12 +485,7 @@ const RestaurantDetail = () => {
         loadEditSuggestions(); // Refresh suggestions
 
         // Show success notification
-        setNotification({
-          show: true,
-          message: 'Edit suggestion submitted successfully! 🎉',
-          type: 'success'
-        });
-        setTimeout(() => setNotification({ show: false, message: '', type: '' }), 4000);
+        showNotification('Edit suggestion submitted successfully! 🎉', 'success', 4000);
       }
     } catch (error) {
       console.error('Error submitting edit suggestion:', error);
@@ -1026,19 +1011,13 @@ const RestaurantDetail = () => {
       )}
 
       {/* Notification */}
-      {notification.show && (
-        <div className={`${styles.notification} ${styles[notification.type]}`}>
-          <div className={styles.notificationContent}>
-            <span>{notification.message}</span>
-            <button 
-              className={styles.notificationClose}
-              onClick={() => setNotification({ show: false, message: '', type: '' })}
-            >
-              ✕
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Notification Component */}
+      <Notification
+        show={notification.show}
+        message={notification.message}
+        type={notification.type}
+        onClose={hideNotification}
+      />
     </div>
   );
 };
