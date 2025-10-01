@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import Button from './Button';
 import styles from './FilterPanel.module.css';
+import {
+  PRICE_RANGE_OPTIONS,
+  DISTANCE_OPTIONS,
+  FOOD_TYPE_OPTIONS,
+  INCLUDES_OPTIONS,
+  PRACTICAL_OPTIONS
+} from '../../constants/filterOptions';
 
 const FilterPanel = ({
   onFiltersChange,
@@ -31,47 +38,6 @@ const FilterPanel = ({
     hasMenuReviews: initialFilters.hasMenuReviews || false,
     lastUpdatedDays: initialFilters.lastUpdatedDays || '',
   });
-
-  // Filter options from MVP specification
-  const priceRanges = [
-    { value: '6-8', label: '€6-8', subtitle: 'Budget deals' },
-    { value: '8-10', label: '€8-10', subtitle: 'Standard' },
-    { value: '10-12', label: '€10-12', subtitle: 'Good value' },
-    { value: '12-15', label: '€12-15', subtitle: 'Premium' },
-    { value: '15+', label: '€15+', subtitle: 'High-end' }
-  ];
-
-  const foodTypes = [
-    'Traditional Portuguese',
-    'Modern/Contemporary',
-    'Seafood specialist',
-    'Meat-focused',
-    'Vegetarian-friendly',
-    'International'
-  ];
-
-  const distanceOptions = [
-    { value: '0.5', label: '500m', subtitle: 'Walking distance' },
-    { value: '1', label: '1km', subtitle: 'Short walk' },
-    { value: '2', label: '2km', subtitle: 'Bike/drive' },
-    { value: '5', label: '5km', subtitle: 'Driving distance' },
-    { value: 'any', label: 'Any', subtitle: 'No limit' }
-  ];
-
-  const includesOptions = [
-    { key: 'coffee', label: 'Coffee included', icon: '☕' },
-    { key: 'dessert', label: 'Dessert included', icon: '🍰' },
-    { key: 'wine', label: 'Wine available', icon: '🍷' },
-    { key: 'bread', label: 'Bread/soup included', icon: '🍞' }
-  ];
-
-  const practicalOptions = [
-    { key: 'openNow', label: 'Open now', icon: '🕐' },
-    { key: 'takesCards', label: 'Takes credit cards', icon: '💳' },
-    { key: 'quickService', label: 'Quick service', icon: '⚡' },
-    { key: 'groupFriendly', label: 'Group-friendly', icon: '👥' },
-    { key: 'hasParking', label: 'Has parking', icon: '🚗' }
-  ];
 
   const handleFilterChange = (category, key, value) => {
     let newFilters;
@@ -158,7 +124,7 @@ const FilterPanel = ({
         <div className={styles.filterSection}>
           <h4 className={styles.sectionTitle}>PRICE RANGE</h4>
           <div className={styles.optionGrid}>
-            {priceRanges.map((range) => (
+            {PRICE_RANGE_OPTIONS.map((range) => (
               <button
                 key={range.value}
                 className={`${styles.optionButton} ${
@@ -180,7 +146,7 @@ const FilterPanel = ({
         <div className={styles.filterSection}>
           <h4 className={styles.sectionTitle}>DISTANCE</h4>
           <div className={styles.optionGrid}>
-            {distanceOptions.map((distance) => (
+            {DISTANCE_OPTIONS.map((distance) => (
               <button
                 key={distance.value}
                 className={`${styles.optionButton} ${
@@ -202,7 +168,7 @@ const FilterPanel = ({
         <div className={styles.filterSection}>
           <h4 className={styles.sectionTitle}>FOOD TYPE</h4>
           <div className={styles.checkboxGrid}>
-            {foodTypes.map((type) => (
+            {FOOD_TYPE_OPTIONS.map((type) => (
               <label
                 key={type}
                 className={`${styles.checkboxLabel} ${
@@ -225,7 +191,7 @@ const FilterPanel = ({
         <div className={styles.filterSection}>
           <h4 className={styles.sectionTitle}>WHAT'S INCLUDED</h4>
           <div className={styles.checkboxGrid}>
-            {includesOptions.map((option) => (
+            {INCLUDES_OPTIONS.map((option) => (
               <label
                 key={option.key}
                 className={`${styles.checkboxLabel} ${
@@ -249,7 +215,7 @@ const FilterPanel = ({
         <div className={styles.filterSection}>
           <h4 className={styles.sectionTitle}>PRACTICAL</h4>
           <div className={styles.checkboxGrid}>
-            {practicalOptions.map((option) => (
+            {PRACTICAL_OPTIONS.map((option) => (
               <label
                 key={option.key}
                 className={`${styles.checkboxLabel} ${

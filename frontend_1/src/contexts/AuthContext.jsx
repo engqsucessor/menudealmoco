@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { authApi } from '../services/axiosApi';
+import { authApi, favoritesApi } from '../services/axiosApi';
+import { favoriteRestaurants } from '../services/localStorage';
 
 const AuthContext = createContext();
 
@@ -11,6 +12,34 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Sync favorites from backend to localStorage
+  const syncFavorites = async () => {
+    try {
+      const backendFavorites = await favoritesApi.getAll();
+      const localFavorites = favoriteRestaurants.get();
+
+      // Merge: add any backend favorites not in localStorage
+      backendFavorites.forEach(id => {
+        if (!localFavorites.includes(id)) {
+          favoriteRestaurants.add(id);
+        }
+      });
+
+      // Sync any localStorage favorites to backend
+      for (const id of localFavorites) {
+        if (!backendFavorites.includes(id)) {
+          try {
+            await favoritesApi.add(id);
+          } catch (error) {
+            console.error(`Failed to sync favorite ${id} to backend:`, error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing favorites:', error);
+    }
+  };
+
   // Check for existing session on mount
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -19,6 +48,8 @@ export const AuthProvider = ({ children }) => {
         try {
           const userInfo = await authApi.getCurrentUser();
           setUser(userInfo);
+          // Sync favorites after successful login
+          await syncFavorites();
         } catch (error) {
           console.error('Token validation failed:', error);
           authApi.logout();
@@ -35,6 +66,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const userData = await authApi.login(email, password);
       setUser(userData);
+      // Sync favorites after successful login
+      await syncFavorites();
       return userData;
     } catch (error) {
       console.error('Login error:', error);
@@ -47,6 +80,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const newUser = await authApi.signup(name, email, password);
       setUser(newUser);
+      // Sync favorites after successful signup
+      await syncFavorites();
       return newUser;
     } catch (error) {
       console.error('Signup error:', error);

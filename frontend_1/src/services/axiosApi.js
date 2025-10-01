@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+import { API_BASE_URL } from '../constants/apiConfig';
 
 // Create axios instance
 const api = axios.create({
@@ -263,6 +262,32 @@ export const reportsApi = {
   resolveReport: async (reportId, action) => {
     const { data } = await api.post(`/reports/${reportId}/resolve`, { action });
     return data;
+  },
+};
+
+// Favorites API
+export const favoritesApi = {
+  getAll: async () => {
+    const { data } = await api.get('/favorites');
+    return data.favorites; // Returns array of restaurant IDs
+  },
+
+  add: async (restaurantId) => {
+    const { data } = await api.post(`/favorites/${restaurantId}`);
+    return data;
+  },
+
+  remove: async (restaurantId) => {
+    const { data } = await api.delete(`/favorites/${restaurantId}`);
+    return data;
+  },
+
+  toggle: async (restaurantId, currentlyFavorited) => {
+    if (currentlyFavorited) {
+      return await favoritesApi.remove(restaurantId);
+    } else {
+      return await favoritesApi.add(restaurantId);
+    }
   },
 };
 

@@ -1,0 +1,187 @@
+/* Reddit-style Review Card */
+.review {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: white;
+  border-left: 2px solid transparent;
+  transition: border-left-color 0.2s ease;
+}
+
+.review:hover {
+  border-left-color: #ccc;
+}
+
+.reviewMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: #666;
+  font-family: 'Space Mono', monospace;
+}
+
+.username {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: black;
+  font-family: 'Space Mono', monospace;
+}
+
+.rating {
+  color: #666;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewDate {
+  color: #666;
+  font-size: 0.75rem;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewCommentSection {
+  margin: 0.5rem 0;
+}
+
+.reviewComment {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: black;
+  margin: 0;
+  font-family: 'Space Mono', monospace;
+}
+
+.reviewActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.voteButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.voteButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0.1rem 0.25rem;
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  transition: all 0.2s ease;
+}
+
+.upvoteButton:hover {
+  color: #ff4500;
+  background: rgba(255, 69, 0, 0.1);
+}
+
+.downvoteButton:hover {
+  color: #7193ff;
+  background: rgba(113, 147, 255, 0.1);
+}
+
+.voteButton.voted.upvoteButton {
+  color: #ff4500;
+}
+
+.voteButton.voted.downvoteButton {
+  color: #7193ff;
+}
+
+.voteButton.pending {
+  opacity: 0.6;
+  cursor: not-allowed;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.scoreDisplay {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Space Mono', monospace;
+}
+
+.positiveScore {
+  color: #ff4500;
+}
+
+.negativeScore {
+  color: #7193ff;
+}
+
+.neutralScore {
+  color: #666;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.2s ease;
+}
+
+.actionButton:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.reportButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.2s ease;
+}
+
+.reportButton:hover {
+  background: rgba(255, 0, 0, 0.1);
+  color: #d32f2f;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .reviewMeta {
+    flex-wrap: wrap;
+  }
+
+  .voteButtons {
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+
+  .scoreDisplay {
+    margin: 0 0.25rem;
+  }
+}

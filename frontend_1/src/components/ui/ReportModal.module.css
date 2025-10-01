@@ -1,0 +1,177 @@
+/* Report Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.reportModal {
+  background: white;
+  border: 2px solid black;
+  max-width: 500px;
+  width: 90%;
+  font-family: 'Space Mono', monospace;
+}
+
+.reportModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid black;
+  background: black;
+  color: white;
+}
+
+.reportModalHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.reportModalBody {
+  padding: 20px;
+}
+
+.reportModalBody p {
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reportReasons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reasonOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.reasonOption:hover {
+  background: #f5f5f5;
+  border-color: black;
+}
+
+.reasonOption input[type="radio"] {
+  margin: 0;
+}
+
+.reasonOption span {
+  font-size: 12px;
+  color: black;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.otherReasonText {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 2px solid black;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  resize: vertical;
+  min-height: 80px;
+  background: white;
+  color: black;
+}
+
+.otherReasonText:focus {
+  outline: none;
+  background: #f5f5f5;
+}
+
+.reportModalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px;
+  border-top: 2px solid black;
+  background: #f5f5f5;
+}
+
+.cancelButton {
+  background: white;
+  border: 2px solid black;
+  color: black;
+  padding: 10px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: black;
+  color: white;
+}
+
+.submitReportButton {
+  background: black;
+  border: 2px solid black;
+  color: white;
+  padding: 10px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submitReportButton:hover {
+  background: #333;
+}
+
+.submitReportButton:disabled {
+  background: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.submitReportButton:disabled:hover {
+  background: #ccc;
+}

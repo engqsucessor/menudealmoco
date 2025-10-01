@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import styles from './RestaurantDetail.module.css';
-import { restaurantsApi, reviewsApi, reportsApi } from '../services/axiosApi';
-import { favoriteRestaurants } from '../services/localStorage';
+import { restaurantsApi, reviewsApi, reportsApi, favoritesApi } from '../services/axiosApi';
+import { favoriteRestaurants, restaurantVotes } from '../services/localStorage';
 import { useAuth } from '../contexts/AuthContext';
 import MenuRating from '../components/ui/MenuRating';
 import EditButton from '../components/ui/EditButton';
@@ -11,6 +11,10 @@ import PhotoGallery from '../components/ui/PhotoGallery';
 import Notification from '../components/ui/Notification';
 import { useNotification } from '../hooks/useNotification';
 import { getEditSuggestions, voteOnEditSuggestion } from '../services/editSuggestionsService';
+import { sortReviews } from '../utils/reviewSorting';
+import ReviewCard from '../components/ui/ReviewCard';
+import ReportModal from '../components/ui/ReportModal';
+import DeleteConfirmationModal from '../components/ui/DeleteConfirmationModal';
 
 const RestaurantDetail = () => {
   const { id } = useParams();
@@ -80,14 +84,14 @@ const RestaurantDetail = () => {
   }, [user]);
 
   const syncPendingVotes = async () => {
-    const localVotesStorage = JSON.parse(localStorage.getItem(`mmd_local_votes_${id}`) || '{}');
-    
+    const localVotesStorage = restaurantVotes.getLocalVotes(id);
+
     // If there are local votes to sync, refresh the reviews
     if (Object.keys(localVotesStorage).length > 0) {
       try {
         await loadMenuReviews();
         // Clear local votes after successful sync
-        localStorage.removeItem(`mmd_local_votes_${id}`);
+        restaurantVotes.clearLocalVotes(id);
         setLocalVotes(new Map());
       } catch (error) {
         console.error('Error syncing pending votes:', error);
@@ -109,10 +113,9 @@ const RestaurantDetail = () => {
 
   const loadUserVoteHistory = () => {
     if (!user) return;
-    
+
     try {
-      const storageKey = `mmd_user_votes_${user.email}_${id}`;
-      const savedVotes = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      const savedVotes = restaurantVotes.getUserVoteHistory(user.email, id);
       setUserVoteHistory(new Map(Object.entries(savedVotes)));
     } catch (error) {
       console.error('Error loading user vote history:', error);
@@ -121,19 +124,11 @@ const RestaurantDetail = () => {
 
   const saveUserVoteHistory = (reviewId, voteType) => {
     if (!user) return;
-    
+
     try {
-      const storageKey = `mmd_user_votes_${user.email}_${id}`;
-      const currentVotes = Object.fromEntries(userVoteHistory);
-      
-      if (voteType) {
-        currentVotes[reviewId] = voteType;
-      } else {
-        delete currentVotes[reviewId];
-      }
-      
-      localStorage.setItem(storageKey, JSON.stringify(currentVotes));
-      setUserVoteHistory(new Map(Object.entries(currentVotes)));
+      restaurantVotes.updateUserVote(user.email, id, reviewId, voteType);
+      const updatedVotes = restaurantVotes.getUserVoteHistory(user.email, id);
+      setUserVoteHistory(new Map(Object.entries(updatedVotes)));
     } catch (error) {
       console.error('Error saving user vote history:', error);
     }
@@ -141,8 +136,7 @@ const RestaurantDetail = () => {
 
   const loadLocalVotes = () => {
     try {
-      const storageKey = `mmd_local_votes_${id}`;
-      const savedVotes = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      const savedVotes = restaurantVotes.getLocalVotes(id);
       setLocalVotes(new Map(Object.entries(savedVotes)));
     } catch (error) {
       console.error('Error loading local votes:', error);
@@ -151,23 +145,9 @@ const RestaurantDetail = () => {
 
   const saveLocalVotes = (reviewId, upvoteDelta, downvoteDelta) => {
     try {
-      const storageKey = `mmd_local_votes_${id}`;
-      const currentVotes = Object.fromEntries(localVotes);
-      
-      if (!currentVotes[reviewId]) {
-        currentVotes[reviewId] = { upvotes: 0, downvotes: 0 };
-      }
-      
-      currentVotes[reviewId].upvotes += upvoteDelta;
-      currentVotes[reviewId].downvotes += downvoteDelta;
-      
-      // Remove entry if both are 0
-      if (currentVotes[reviewId].upvotes === 0 && currentVotes[reviewId].downvotes === 0) {
-        delete currentVotes[reviewId];
-      }
-      
-      localStorage.setItem(storageKey, JSON.stringify(currentVotes));
-      setLocalVotes(new Map(Object.entries(currentVotes)));
+      restaurantVotes.updateLocalVote(id, reviewId, upvoteDelta, downvoteDelta);
+      const updatedVotes = restaurantVotes.getLocalVotes(id);
+      setLocalVotes(new Map(Object.entries(updatedVotes)));
     } catch (error) {
       console.error('Error saving local votes:', error);
     }
@@ -179,63 +159,6 @@ const RestaurantDetail = () => {
       setEditSuggestions(suggestions);
     } catch (error) {
       console.error('Error loading edit suggestions:', error);
-    }
-  };
-
-  const sortReviews = (reviews, sortType) => {
-    const sortedReviews = [...reviews];
-    
-    switch (sortType) {
-      case 'recent':
-        return sortedReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      
-      case 'upvotes':
-        return sortedReviews.sort((a, b) => {
-          const scoreA = (a.upvotes || 0) - (a.downvotes || 0);
-          const scoreB = (b.upvotes || 0) - (b.downvotes || 0);
-          return scoreB - scoreA; // Highest score first
-        });
-      
-      case 'rating':
-        return sortedReviews.sort((a, b) => {
-          if (b.rating !== a.rating) {
-            return b.rating - a.rating; // Highest rating first
-          }
-          // If ratings are equal, sort by upvotes as tiebreaker
-          const scoreA = (a.upvotes || 0) - (a.downvotes || 0);
-          const scoreB = (b.upvotes || 0) - (b.downvotes || 0);
-          return scoreB - scoreA;
-        });
-      
-      case 'lowestRating':
-        return sortedReviews.sort((a, b) => {
-          if (a.rating !== b.rating) {
-            return a.rating - b.rating; // Lowest rating first
-          }
-          // If ratings are equal, sort by downvotes (most downvoted first)
-          const scoreA = (a.downvotes || 0) - (a.upvotes || 0);
-          const scoreB = (b.downvotes || 0) - (b.upvotes || 0);
-          return scoreB - scoreA;
-        });
-      
-      case 'controversial':
-        return sortedReviews.sort((a, b) => {
-          // Controversial = high engagement (lots of both up and down votes)
-          const engagementA = (a.upvotes || 0) + (a.downvotes || 0);
-          const engagementB = (b.upvotes || 0) + (b.downvotes || 0);
-          
-          if (engagementB !== engagementA) {
-            return engagementB - engagementA;
-          }
-          
-          // Secondary sort: closer to 50/50 split = more controversial
-          const ratioA = Math.abs(0.5 - ((a.upvotes || 0) / Math.max(1, engagementA)));
-          const ratioB = Math.abs(0.5 - ((b.upvotes || 0) / Math.max(1, engagementB)));
-          return ratioA - ratioB;
-        });
-      
-      default:
-        return sortedReviews;
     }
   };
 
@@ -256,12 +179,23 @@ const RestaurantDetail = () => {
     return sortReviews(reviewsWithLocalVotes, sortBy);
   };
 
-  const handleFavoriteToggle = () => {
+  const handleFavoriteToggle = async () => {
     if (!user) return;
 
-    // Toggle using the favoriteRestaurants service
-    const newFavoriteStatus = favoriteRestaurants.toggle(id);
-    setIsFavorite(newFavoriteStatus);
+    try {
+      // Toggle on backend
+      await favoritesApi.toggle(id, isFavorite);
+
+      // Update local state
+      const newFavoriteStatus = !isFavorite;
+      setIsFavorite(newFavoriteStatus);
+
+      // Also update localStorage for offline support
+      favoriteRestaurants.toggle(id);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      showNotification('Failed to update favorite. Please try again.', 'error');
+    }
   };
 
   const handleRatingSubmitted = (newAverageRating) => {
@@ -764,100 +698,24 @@ const RestaurantDetail = () => {
                   <div className={styles.menuReviewsList}>
                     {getSortedReviews().map(review => {
                       const localVote = localVotes.get(review.id) || { upvotes: 0, downvotes: 0 };
-                      const displayUpvotes = (review.upvotes || 0) + localVote.upvotes;
-                      const displayDownvotes = (review.downvotes || 0) + localVote.downvotes;
-                      const netScore = displayUpvotes - displayDownvotes;
-                      const totalVotes = displayUpvotes + displayDownvotes;
                       // Use server-provided vote status if available, fallback to local storage
                       const userVote = review.userVotes?.currentUserVote || userVoteHistory.get(review.id);
-                      const isPending = pendingVotes.has(review.id);
-                      
-                      // Use the displayName stored in the review (set at review creation time)
-                      const displayName = review.displayName || `AnonymousUser${review.id.slice(-3)}`;
+                      const isPending = pendingVotes.get(review.id);
 
                       return (
-                        <div key={review.id} className={styles.review}>
-                          <div className={styles.reviewMeta}>
-                            <strong className={styles.username}>{displayName}</strong>
-                            <span className={styles.reviewDate}>
-                              • {new Date(review.createdAt).toLocaleDateString('en-GB', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                              })}
-                            </span>
-                            <span className={styles.rating}>
-                              • {review.rating}/5 ★
-                            </span>
-                          </div>
-                          
-                          {review.comment && !expandedReviews.has(review.id) && (
-                            <div className={styles.reviewCommentSection}>
-                              <p className={styles.reviewComment}>
-                                {review.comment.length > 200 
-                                  ? review.comment.substring(0, 200) + '...'
-                                  : review.comment
-                                }
-                              </p>
-                            </div>
-                          )}
-
-                          {review.comment && expandedReviews.has(review.id) && (
-                            <div className={styles.reviewCommentSection}>
-                              <p className={styles.reviewComment}>
-                                {review.comment}
-                              </p>
-                            </div>
-                          )}
-
-                          <div className={styles.reviewActions}>
-                            <div className={styles.voteButtons}>
-                              {user && (
-                                <button
-                                  className={`${styles.voteButton} ${styles.upvoteButton} ${userVote === 'up' ? styles.voted : ''} ${isPending ? styles.pending : ''}`}
-                                  onClick={() => handleUpvote(review.id)}
-                                  title={userVote === 'up' ? "Remove upvote" : "Upvote"}
-                                  disabled={isPending}
-                                >
-                                  ↑ {isPending && pendingVotes.get(review.id) === 'up' ? '...' : ''}
-                                </button>
-                              )}
-                              <span className={`${styles.scoreDisplay} ${
-                                netScore > 0 ? styles.positiveScore :
-                                netScore < 0 ? styles.negativeScore :
-                                styles.neutralScore
-                              }`}>
-                                {netScore > 0 ? '+' : ''}{netScore}
-                              </span>
-                              {user && (
-                                <button
-                                  className={`${styles.voteButton} ${styles.downvoteButton} ${userVote === 'down' ? styles.voted : ''} ${isPending ? styles.pending : ''}`}
-                                  onClick={() => handleDownvote(review.id)}
-                                  title={userVote === 'down' ? "Remove downvote" : "Downvote"}
-                                  disabled={isPending}
-                                >
-                                  ↓ {isPending && pendingVotes.get(review.id) === 'down' ? '...' : ''}
-                                </button>
-                              )}
-                            </div>
-
-                            <button
-                              className={styles.reportButton}
-                              onClick={() => handleReportReview(review.id)}
-                            >
-                              Report
-                            </button>
-
-                            {review.comment && review.comment.length > 200 && (
-                              <button 
-                                className={styles.actionButton}
-                                onClick={() => toggleReviewExpansion(review.id)}
-                              >
-                                {expandedReviews.has(review.id) ? 'Collapse' : 'Expand'}
-                              </button>
-                            )}
-                          </div>
-                        </div>
+                        <ReviewCard
+                          key={review.id}
+                          review={review}
+                          user={user}
+                          onUpvote={handleUpvote}
+                          onDownvote={handleDownvote}
+                          onReport={handleReportReview}
+                          onToggleExpand={toggleReviewExpansion}
+                          isExpanded={expandedReviews.has(review.id)}
+                          userVote={userVote}
+                          isPending={isPending}
+                          localVotes={localVote}
+                        />
                       );
                     })}
                   </div>
@@ -887,128 +745,21 @@ const RestaurantDetail = () => {
       )}
 
       {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.deleteModal}>
-            <div className={styles.deleteModalHeader}>
-              <h3>Delete Restaurant</h3>
-              <button
-                className={styles.closeButton}
-                onClick={cancelDelete}
-              >
-                ✕
-              </button>
-            </div>
-            <div className={styles.deleteModalBody}>
-              <p><strong>Are you sure you want to delete "{name}"?</strong></p>
-              <p>This action will permanently delete:</p>
-              <ul>
-                <li>The restaurant and all its information</li>
-                <li>All reviews and ratings for this restaurant</li>
-                <li>All user votes on reviews</li>
-                <li>All reports related to reviews</li>
-                <li>All user favorites for this restaurant</li>
-              </ul>
-              <p><strong>This action cannot be undone!</strong></p>
-            </div>
-            <div className={styles.deleteModalActions}>
-              <button
-                className={styles.cancelButton}
-                onClick={cancelDelete}
-              >
-                Cancel
-              </button>
-              <button
-                className={styles.confirmDeleteButton}
-                onClick={handleDeleteRestaurant}
-              >
-                Delete Restaurant
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={cancelDelete}
+        onConfirm={handleDeleteRestaurant}
+        restaurantName={name}
+      />
 
       {/* Report Modal */}
-      {showReportModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.reportModal}>
-            <div className={styles.reportModalHeader}>
-              <h3>Report Review</h3>
-              <button 
-                className={styles.closeButton}
-                onClick={cancelReport}
-              >
-                ✕
-              </button>
-            </div>
-            <div className={styles.reportModalBody}>
-              <p>Please provide a reason for reporting this review:</p>
-              <div className={styles.reportReasons}>
-                <label className={styles.reasonOption}>
-                  <input 
-                    type="radio" 
-                    name="reportReason" 
-                    value="spam"
-                    onChange={(e) => setReportReason(e.target.value)}
-                  />
-                  <span>Spam or irrelevant content</span>
-                </label>
-                <label className={styles.reasonOption}>
-                  <input 
-                    type="radio" 
-                    name="reportReason" 
-                    value="inappropriate"
-                    onChange={(e) => setReportReason(e.target.value)}
-                  />
-                  <span>Inappropriate or offensive language</span>
-                </label>
-                <label className={styles.reasonOption}>
-                  <input 
-                    type="radio" 
-                    name="reportReason" 
-                    value="fake"
-                    onChange={(e) => setReportReason(e.target.value)}
-                  />
-                  <span>Fake or misleading review</span>
-                </label>
-                <label className={styles.reasonOption}>
-                  <input 
-                    type="radio" 
-                    name="reportReason" 
-                    value="other"
-                    onChange={(e) => setReportReason(e.target.value)}
-                  />
-                  <span>Other</span>
-                </label>
-              </div>
-              {reportReason === 'other' && (
-                <textarea
-                  className={styles.otherReasonText}
-                  placeholder="Please specify..."
-                  value={reportReason === 'other' ? '' : reportReason}
-                  onChange={(e) => setReportReason(e.target.value)}
-                />
-              )}
-            </div>
-            <div className={styles.reportModalActions}>
-              <button 
-                className={styles.cancelButton}
-                onClick={cancelReport}
-              >
-                Cancel
-              </button>
-              <button 
-                className={styles.submitReportButton}
-                onClick={submitReport}
-                disabled={!reportReason.trim()}
-              >
-                Submit Report
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={cancelReport}
+        onSubmit={submitReport}
+        reportReason={reportReason}
+        setReportReason={setReportReason}
+      />
 
       {/* Notification */}
       {/* Notification Component */}

@@ -1,0 +1,444 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  font-family: 'Space Mono', monospace;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 3px solid #000000;
+}
+
+.pageTitle {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.pageDescription {
+  font-size: 18px;
+  font-weight: 400;
+  color: #666666;
+  line-height: 1.6;
+}
+
+.searchSection {
+  margin-bottom: 32px;
+}
+
+.mainSearch {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.searchInput {
+  flex: 1;
+  padding: 16px;
+  border: 3px solid #000000;
+  background: #ffffff;
+  font-size: 16px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 400;
+}
+
+.searchButton {
+  padding: 16px 32px;
+  border: 3px solid #000000;
+  background: #000000;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.searchButton:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.searchButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.filterToggle {
+  padding: 12px 24px;
+  border: 2px solid #666666;
+  background: transparent;
+  color: #666666;
+  font-size: 12px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterToggle:hover {
+  border-color: #000000;
+  color: #000000;
+}
+
+.filtersPanel {
+  border: 3px solid #e5e5e5;
+  background: #f5f5f5;
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.filtersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #000000;
+}
+
+.filterSelect {
+  padding: 12px;
+  border: 2px solid #999999;
+  background: #ffffff;
+  font-size: 14px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 400;
+}
+
+.clearButton {
+  padding: 12px 24px;
+  border: 2px solid #999999;
+  background: transparent;
+  color: #666666;
+  font-size: 12px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
+.clearButton:hover {
+  border-color: #000000;
+  color: #000000;
+}
+
+.featureFilters {
+  padding-top: 24px;
+  border-top: 2px solid #e5e5e5;
+}
+
+.featureButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.featureButton {
+  padding: 8px 16px;
+  border: 2px solid #999999;
+  background: transparent;
+  color: #666666;
+  font-size: 12px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.featureButton:hover {
+  border-color: #000000;
+  color: #000000;
+}
+
+.featureButtonActive {
+  border-color: #000000;
+  background: #000000;
+  color: #ffffff;
+}
+
+.featureButtonActive:hover {
+  background: #333333;
+  border-color: #333333;
+}
+
+.resultsHeader {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.resultsCount {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #000000;
+}
+
+.loadingText {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #666666;
+}
+
+.errorMessage {
+  background: #f5f5f5;
+  border: 2px solid #999999;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.errorText {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666666;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.retryButton {
+  padding: 12px 24px;
+  border: 2px solid #000000;
+  background: #000000;
+  color: #ffffff;
+  font-size: 12px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.retryButton:hover {
+  background: #333333;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 64px 24px;
+}
+
+.emptyTitle {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.emptyDescription {
+  font-size: 16px;
+  font-weight: 400;
+  color: #666666;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.emptyButton {
+  padding: 16px 32px;
+  border: 3px solid #000000;
+  background: #000000;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.emptyButton:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.restaurantList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.restaurantCard {
+  border: 3px solid #e5e5e5;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.restaurantCard:hover {
+  border-color: #000000;
+  transform: translateY(-2px);
+}
+
+.cardContent {
+  padding: 24px;
+}
+
+.cardMain {
+  margin-bottom: 16px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.restaurantName {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.priceSection {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.price {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000000;
+}
+
+.priceRange {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.restaurantAddress {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666666;
+  margin-bottom: 16px;
+  margin: 0;
+}
+
+.cardMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stars {
+  font-size: 16px;
+  color: #000000;
+}
+
+.ratingText {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.distance {
+  font-size: 14px;
+  font-weight: 700;
+  color: #000000;
+}
+
+.cardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.foodType {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #000000;
+  text-transform: uppercase;
+}
+
+.included {
+  font-size: 14px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.features {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.feature {
+  padding: 4px 8px;
+  border: 1px solid #e5e5e5;
+  background: #f5f5f5;
+  font-size: 10px;
+  font-weight: 400;
+  color: #666666;
+}
+
+.cardAction {
+  padding-top: 16px;
+  border-top: 2px solid #e5e5e5;
+  text-align: right;
+}
+
+.viewMore {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #000000;
+}
+
+.loadMoreSection {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.loadMoreButton {
+  padding: 16px 32px;
+  border: 3px solid #000000;
+  background: transparent;
+  color: #000000;
+  font-size: 14px;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.loadMoreButton:hover {
+  background: #000000;
+  color: #ffffff;
+}

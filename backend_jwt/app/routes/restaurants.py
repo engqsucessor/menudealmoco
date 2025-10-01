@@ -6,7 +6,7 @@ from datetime import datetime
 from app.models.restaurant import RestaurantResponse
 from app.database.database import get_db
 from app.database.models import Restaurant as DBRestaurant, User, MenuReview, ReviewVote, ReviewReport, RestaurantSubmission
-from app.auth.middleware import get_current_user, get_current_reviewer
+from app.auth.middleware import get_current_user, get_current_reviewer, get_optional_current_user
 from pydantic import BaseModel, Field
 
 router = APIRouter()
@@ -67,6 +67,7 @@ def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> d
 @router.get("/restaurants")
 async def get_restaurants(
     db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
     query: Optional[str] = Query(None),
     location: Optional[str] = Query(None),
     foodTypes: Optional[str] = Query(None),
@@ -76,7 +77,7 @@ async def get_restaurants(
     sortOrder: Optional[str] = Query("desc"),
     page: Optional[int] = Query(1),
     limit: Optional[int] = Query(10),
-    # Additional frontend filter parameters (ignored for now)
+    # Additional frontend filter parameters
     maxDistance: Optional[float] = Query(None),
     priceRange: Optional[str] = Query(None),
     openNow: Optional[bool] = Query(None),
@@ -90,6 +91,14 @@ async def get_restaurants(
 
     # Get all approved restaurants
     restaurants_query = db.query(DBRestaurant).filter(DBRestaurant.status == "approved")
+
+    # Apply favorites filter if requested and user is authenticated
+    if showOnlyFavorites and current_user:
+        # Filter to only restaurants favorited by the current user
+        restaurants_query = restaurants_query.join(DBRestaurant.favorited_by).filter(
+            User.id == current_user.id
+        )
+
     db_restaurants = restaurants_query.all()
 
     # Convert to response format with menu rating calculation
@@ -351,3 +360,74 @@ async def delete_restaurant(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error deleting restaurant: {str(e)}")
+
+# ==================== FAVORITES ENDPOINTS ====================
+
+@router.get("/favorites")
+async def get_user_favorites(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get all favorite restaurant IDs for the current user"""
+    favorite_ids = [str(restaurant.id) for restaurant in current_user.favorite_restaurants]
+    return {"favorites": favorite_ids}
+
+@router.post("/favorites/{restaurant_id}")
+async def add_favorite(
+    restaurant_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Add a restaurant to user's favorites"""
+    try:
+        restaurant_id_int = int(restaurant_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid restaurant ID")
+
+    # Check if restaurant exists
+    restaurant = db.query(DBRestaurant).filter(DBRestaurant.id == restaurant_id_int).first()
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    # Check if already favorited
+    if restaurant in current_user.favorite_restaurants:
+        return {"message": "Restaurant already in favorites", "favorited": True}
+
+    # Add to favorites
+    current_user.favorite_restaurants.append(restaurant)
+
+    try:
+        db.commit()
+        return {"message": "Restaurant added to favorites", "favorited": True}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error adding favorite: {str(e)}")
+
+@router.delete("/favorites/{restaurant_id}")
+async def remove_favorite(
+    restaurant_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Remove a restaurant from user's favorites"""
+    try:
+        restaurant_id_int = int(restaurant_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid restaurant ID")
+
+    # Check if restaurant exists
+    restaurant = db.query(DBRestaurant).filter(DBRestaurant.id == restaurant_id_int).first()
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    # Remove from favorites if present
+    if restaurant in current_user.favorite_restaurants:
+        current_user.favorite_restaurants.remove(restaurant)
+        try:
+            db.commit()
+            return {"message": "Restaurant removed from favorites", "favorited": False}
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=500, detail=f"Error removing favorite: {str(e)}")
+
+    return {"message": "Restaurant was not in favorites", "favorited": False}

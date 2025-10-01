@@ -6,7 +6,10 @@ const STORAGE_KEYS = {
   USER_PREFERENCES: 'menudealmoco_user_preferences',
   FAVORITE_RESTAURANTS: 'menudealmoco_favorites',
   RECENT_SEARCHES: 'menudealmoco_recent_searches',
-  USER_REVIEWS: 'menudealmoco_user_reviews'
+  USER_REVIEWS: 'menudealmoco_user_reviews',
+  // Dynamic keys for restaurant voting
+  LOCAL_VOTES: (restaurantId) => `mmd_local_votes_${restaurantId}`,
+  USER_VOTES: (email, restaurantId) => `mmd_user_votes_${email}_${restaurantId}`
 };
 
 // Generic storage utilities
@@ -230,6 +233,130 @@ export const userReviews = {
 
   clear() {
     return storage.remove(STORAGE_KEYS.USER_REVIEWS);
+  }
+};
+
+/**
+ * Restaurant voting management
+ * Handles local votes (for offline support) and user vote history
+ */
+export const restaurantVotes = {
+  /**
+   * Get local votes for a specific restaurant
+   * Local votes are used to track pending votes when offline or for immediate UI updates
+   * @param {string} restaurantId - The restaurant ID
+   * @returns {Object} Object mapping review IDs to vote deltas {upvotes, downvotes}
+   */
+  getLocalVotes(restaurantId) {
+    const key = STORAGE_KEYS.LOCAL_VOTES(restaurantId);
+    return storage.get(key) || {};
+  },
+
+  /**
+   * Save local votes for a specific restaurant
+   * @param {string} restaurantId - The restaurant ID
+   * @param {Object} votes - Object mapping review IDs to vote deltas
+   * @returns {boolean} Success status
+   */
+  saveLocalVotes(restaurantId, votes) {
+    const key = STORAGE_KEYS.LOCAL_VOTES(restaurantId);
+    return storage.set(key, votes);
+  },
+
+  /**
+   * Update local votes for a specific review
+   * @param {string} restaurantId - The restaurant ID
+   * @param {string} reviewId - The review ID
+   * @param {number} upvoteDelta - Change in upvotes (+1, -1, or 0)
+   * @param {number} downvoteDelta - Change in downvotes (+1, -1, or 0)
+   * @returns {boolean} Success status
+   */
+  updateLocalVote(restaurantId, reviewId, upvoteDelta, downvoteDelta) {
+    const currentVotes = this.getLocalVotes(restaurantId);
+
+    if (!currentVotes[reviewId]) {
+      currentVotes[reviewId] = { upvotes: 0, downvotes: 0 };
+    }
+
+    currentVotes[reviewId].upvotes += upvoteDelta;
+    currentVotes[reviewId].downvotes += downvoteDelta;
+
+    // Remove entry if both are 0
+    if (currentVotes[reviewId].upvotes === 0 && currentVotes[reviewId].downvotes === 0) {
+      delete currentVotes[reviewId];
+    }
+
+    return this.saveLocalVotes(restaurantId, currentVotes);
+  },
+
+  /**
+   * Clear local votes for a specific restaurant
+   * @param {string} restaurantId - The restaurant ID
+   * @returns {boolean} Success status
+   */
+  clearLocalVotes(restaurantId) {
+    const key = STORAGE_KEYS.LOCAL_VOTES(restaurantId);
+    return storage.remove(key);
+  },
+
+  /**
+   * Get user's vote history for a specific restaurant
+   * Tracks which reviews the user has voted on and how they voted
+   * @param {string} email - User's email
+   * @param {string} restaurantId - The restaurant ID
+   * @returns {Object} Object mapping review IDs to vote types ('up', 'down', or null)
+   */
+  getUserVoteHistory(email, restaurantId) {
+    if (!email) return {};
+    const key = STORAGE_KEYS.USER_VOTES(email, restaurantId);
+    return storage.get(key) || {};
+  },
+
+  /**
+   * Save user's vote history for a specific restaurant
+   * @param {string} email - User's email
+   * @param {string} restaurantId - The restaurant ID
+   * @param {Object} votes - Object mapping review IDs to vote types
+   * @returns {boolean} Success status
+   */
+  saveUserVoteHistory(email, restaurantId, votes) {
+    if (!email) return false;
+    const key = STORAGE_KEYS.USER_VOTES(email, restaurantId);
+    return storage.set(key, votes);
+  },
+
+  /**
+   * Update a single vote in user's vote history
+   * @param {string} email - User's email
+   * @param {string} restaurantId - The restaurant ID
+   * @param {string} reviewId - The review ID
+   * @param {string|null} voteType - Vote type ('up', 'down', or null to remove)
+   * @returns {boolean} Success status
+   */
+  updateUserVote(email, restaurantId, reviewId, voteType) {
+    if (!email) return false;
+
+    const currentVotes = this.getUserVoteHistory(email, restaurantId);
+
+    if (voteType) {
+      currentVotes[reviewId] = voteType;
+    } else {
+      delete currentVotes[reviewId];
+    }
+
+    return this.saveUserVoteHistory(email, restaurantId, currentVotes);
+  },
+
+  /**
+   * Clear user's vote history for a specific restaurant
+   * @param {string} email - User's email
+   * @param {string} restaurantId - The restaurant ID
+   * @returns {boolean} Success status
+   */
+  clearUserVoteHistory(email, restaurantId) {
+    if (!email) return false;
+    const key = STORAGE_KEYS.USER_VOTES(email, restaurantId);
+    return storage.remove(key);
   }
 };
 
