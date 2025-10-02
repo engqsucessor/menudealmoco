@@ -37,6 +37,11 @@ const ReviewerDashboard = () => {
            value.includes('data:image');
   };
 
+  // Helper function to check if a value is an array of images
+  const isImageArray = (value) => {
+    return Array.isArray(value) && value.length > 0 && isImageUrl(value[0]);
+  };
+
   // Helper function to format values for display
   const formatValue = (value) => {
     if (value === null || value === undefined) return 'null';
@@ -505,8 +510,35 @@ const ReviewerDashboard = () => {
                     <strong className={styles.fieldName}>{field}:</strong>
                     {value && typeof value === 'object' && value.from !== undefined && value.to !== undefined ? (
                       <div className={styles.diffView}>
-                        {/* Check if it's an image field */}
-                        {isImageUrl(value.from) || isImageUrl(value.to) ? (
+                        {/* Check if it's an array of images */}
+                        {isImageArray(value.from) || isImageArray(value.to) ? (
+                          <div className={styles.imageDiff}>
+                            <div className={styles.imageDiffItem}>
+                              <span className={styles.diffLabel}>Before ({Array.isArray(value.from) ? value.from.length : 0} photos):</span>
+                              <div className={styles.imageGrid}>
+                                {Array.isArray(value.from) && value.from.length > 0 ? (
+                                  value.from.map((img, idx) => (
+                                    <img key={idx} src={img} alt={`Before ${idx + 1}`} className={styles.diffImage} />
+                                  ))
+                                ) : (
+                                  <span className={styles.noImage}>No images</span>
+                                )}
+                              </div>
+                            </div>
+                            <div className={styles.imageDiffItem}>
+                              <span className={styles.diffLabel}>After ({Array.isArray(value.to) ? value.to.length : 0} photos):</span>
+                              <div className={styles.imageGrid}>
+                                {Array.isArray(value.to) && value.to.length > 0 ? (
+                                  value.to.map((img, idx) => (
+                                    <img key={idx} src={img} alt={`After ${idx + 1}`} className={styles.diffImage} />
+                                  ))
+                                ) : (
+                                  <span className={styles.noImage}>No images</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ) : isImageUrl(value.from) || isImageUrl(value.to) ? (
                           <div className={styles.imageDiff}>
                             <div className={styles.imageDiffItem}>
                               <span className={styles.diffLabel}>Before:</span>

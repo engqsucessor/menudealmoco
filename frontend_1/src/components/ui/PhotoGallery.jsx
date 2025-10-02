@@ -8,9 +8,20 @@ const PhotoGallery = ({ restaurant }) => {
   // Combine all photos from different sources
   const getAllPhotos = () => {
     const photos = [];
-    
-    // Add restaurant photo if it exists
-    if (restaurant.restaurantPhoto) {
+
+    // Add restaurant photos (new multi-photo support)
+    if (restaurant.restaurantPhotos && Array.isArray(restaurant.restaurantPhotos)) {
+      restaurant.restaurantPhotos.forEach((photo, index) => {
+        if (photo) {
+          photos.push({
+            src: photo,
+            title: `Restaurant Photo ${index + 1}`,
+            type: 'restaurant'
+          });
+        }
+      });
+    } else if (restaurant.restaurantPhoto) {
+      // Fallback to single photo
       photos.push({
         src: restaurant.restaurantPhoto,
         title: 'Restaurant Photo',
@@ -18,8 +29,19 @@ const PhotoGallery = ({ restaurant }) => {
       });
     }
 
-    // Add menu photo if it exists  
-    if (restaurant.menuPhoto) {
+    // Add menu photos (new multi-photo support)
+    if (restaurant.menuPhotos && Array.isArray(restaurant.menuPhotos)) {
+      restaurant.menuPhotos.forEach((photo, index) => {
+        if (photo) {
+          photos.push({
+            src: photo,
+            title: `Menu de Almoço ${index + 1}`,
+            type: 'menu'
+          });
+        }
+      });
+    } else if (restaurant.menuPhoto) {
+      // Fallback to single photo
       photos.push({
         src: restaurant.menuPhoto,
         title: 'Menu de Almoço',

@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { favoriteRestaurants } from '../../services/localStorage';
 import { getPracticalFeatureLabel } from '../../constants/labels';
 import { useAuth } from '../../contexts/AuthContext';
+import { favoritesApi } from '../../services/axiosApi';
 import styles from './RestaurantCard.module.css';
 
-const RestaurantCard = ({ restaurant, style }) => {
+const RestaurantCard = ({ restaurant, style, onFavoriteToggle }) => {
   const { user } = useAuth();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -24,7 +25,7 @@ const RestaurantCard = ({ restaurant, style }) => {
     whatsIncluded = [],
     foodType,
     photos = [],
-    isOpenNow = true,
+    isOpenNow,
     distance,
     features = {},
     description = '',
@@ -48,12 +49,32 @@ const RestaurantCard = ({ restaurant, style }) => {
     setImageLoaded(true);
   };
 
-  const handleFavoriteToggle = (e) => {
+  const handleFavoriteToggle = async (e) => {
     e.preventDefault(); // Prevent navigation to restaurant detail
     e.stopPropagation(); // Stop event bubbling
-    
+
     const newFavoriteStatus = favoriteRestaurants.toggle(id);
     setIsFavorite(newFavoriteStatus);
+
+    // Sync with backend if user is logged in
+    if (user) {
+      try {
+        if (newFavoriteStatus) {
+          await favoritesApi.add(id);
+        } else {
+          await favoritesApi.remove(id);
+        }
+      } catch (error) {
+        console.error('Error syncing favorite with backend:', error);
+        // Revert localStorage change if API call failed
+        favoriteRestaurants.toggle(id);
+        setIsFavorite(!newFavoriteStatus);
+      }
+    }
+
+    if (typeof onFavoriteToggle === 'function') {
+      onFavoriteToggle(id, newFavoriteStatus);
+    }
   };
 
   const renderStars = (rating) => {
@@ -104,7 +125,9 @@ const RestaurantCard = ({ restaurant, style }) => {
     return count;
   };
 
-  const photoCount = getPhotoCount();  return (
+  const photoCount = getPhotoCount();
+
+  return (
     <article className={cardClasses} style={style}>
       <Link to={`/restaurant/${id}`} className={styles.cardLink}>
         {/* Content Section */}
@@ -147,13 +170,19 @@ const RestaurantCard = ({ restaurant, style }) => {
             <div className={styles.infoBox}>
               <h4 className={styles.boxTitle}>MENU DE ALMOÇO RATING</h4>
               <div className={styles.boxContent}>
-                {renderStars(restaurant.menuRating || overallRating || 0)}
-                <span className={styles.ratingValue}>
-                  {restaurant.menuRating || overallRating || 0}/5
-                </span>
-                <span className={styles.reviewCount}>
-                  ({restaurant.menuReviews || totalReviews || 0} reviews)
-                </span>
+                {(restaurant.menuRating || overallRating) ? (
+                  <>
+                    {renderStars(restaurant.menuRating || overallRating)}
+                    <span className={styles.ratingValue}>
+                      {restaurant.menuRating || overallRating}/5
+                    </span>
+                    <span className={styles.reviewCount}>
+                      ({restaurant.menuReviews || totalReviews || 0} reviews)
+                    </span>
+                  </>
+                ) : (
+                  <span className={styles.noRating}>No ratings yet</span>
+                )}
               </div>
             </div>
 
@@ -193,7 +222,7 @@ const RestaurantCard = ({ restaurant, style }) => {
             </div>
 
             {/* Practical Features Box */}
-            {practicalFeatures.length > 0 && (
+            {practicalFeatures.length > 0 ? (
               <div className={styles.infoBox}>
                 <h4 className={styles.boxTitle}>AMENITIES</h4>
                 <div className={styles.boxContent}>
@@ -206,10 +235,20 @@ const RestaurantCard = ({ restaurant, style }) => {
                   </div>
                 </div>
               </div>
+            ) : null}
+
+            {/* Hours Box */}
+            {restaurant.hours && (
+              <div className={styles.infoBox}>
+                <h4 className={styles.boxTitle}>LUNCH HOURS</h4>
+                <div className={styles.boxContent}>
+                  <span className={styles.hoursText}>{restaurant.hours}</span>
+                </div>
+              </div>
             )}
 
             {/* Distance Box */}
-            {distance && (
+            {distance != null && distance !== '' ? (
               <div className={styles.infoBox}>
                 <h4 className={styles.boxTitle}>DISTANCE</h4>
                 <div className={styles.boxContent}>
@@ -218,33 +257,33 @@ const RestaurantCard = ({ restaurant, style }) => {
                   </span>
                 </div>
               </div>
-            )}
+            ) : null}
 
             {/* Photos Count Box */}
-            {photoCount > 0 && (
+            {photoCount > 0 ? (
               <div className={styles.infoBox}>
                 <h4 className={styles.boxTitle}>PHOTOS</h4>
                 <div className={styles.boxContent}>
                   <div className={styles.photoInfo}>
                     <span className={styles.photoCount}>📷 {photoCount} photo{photoCount > 1 ? 's' : ''}</span>
-                    {photoCount > 1 && (
+                    {photoCount > 1 ? (
                       <div className={styles.photoThumbnails}>
                         {Array.from({length: Math.min(photoCount, 3)}, (_, i) => (
                           <div key={i} className={styles.photoThumbnail}>
                             <span className={styles.thumbnailNumber}>{i + 1}</span>
                           </div>
                         ))}
-                        {photoCount > 3 && (
+                        {photoCount > 3 ? (
                           <div className={styles.photoThumbnail}>
                             <span className={styles.thumbnailNumber}>+{photoCount - 3}</span>
                           </div>
-                        )}
+                        ) : null}
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </Link>

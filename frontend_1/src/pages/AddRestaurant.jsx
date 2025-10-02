@@ -22,7 +22,7 @@ const AddRestaurant = ({
     googleRating: restaurant?.googleRating || '',
     googleReviews: restaurant?.googleReviews || '',
     description: restaurant?.description || '',
-    numberOfDishes: restaurant?.dishes?.length || '',
+    numberOfDishes: restaurant?.dishes?.length > 0 ? restaurant?.dishes?.length : '',
     dishes: restaurant?.dishes || [],
     provideDishNames: (restaurant?.dishes?.length > 0 && restaurant?.dishes.some(dish => dish.trim())) || false,
     included: {
@@ -42,16 +42,18 @@ const AddRestaurant = ({
     },
     priceRange: restaurant?.priceRange || '',
     distance: restaurant?.distance || '',
+    // Operating hours
+    hours: restaurant?.hours || '12:30-15:00',
     // Edit-specific fields
     reason: '',
-    // Image fields
-    restaurantPhoto: restaurant?.restaurantPhoto || '',
-    menuPhoto: restaurant?.menuPhoto || ''
+    // Image fields - now arrays for multiple photos
+    restaurantPhotos: restaurant?.restaurantPhotos || [],
+    menuPhotos: restaurant?.menuPhotos || []
   });
 
   const [imagePreviews, setImagePreviews] = useState({
-    restaurantPhoto: restaurant?.restaurantPhoto || '',
-    menuPhoto: restaurant?.menuPhoto || ''
+    restaurantPhotos: restaurant?.restaurantPhotos || [],
+    menuPhotos: restaurant?.menuPhotos || []
   });
   const [submitted, setSubmitted] = useState(false);
   const [notification, setNotification] = useState({ show: false, message: '', type: '' });
@@ -92,7 +94,20 @@ const AddRestaurant = ({
   };
   
   const handleNumberOfDishesChange = (e) => {
-    const count = Math.max(0, parseInt(e.target.value, 10) || 0);
+    const value = e.target.value;
+
+    // Allow empty string
+    if (value === '') {
+      setFormData(prev => ({
+        ...prev,
+        numberOfDishes: '',
+        dishes: [],
+        provideDishNames: false
+      }));
+      return;
+    }
+
+    const count = Math.max(0, parseInt(value, 10) || 0);
     const currentDishes = formData.dishes || [];
 
     // Only create/modify dishes array if provideDishNames is true
@@ -143,27 +158,51 @@ const AddRestaurant = ({
     setFormData(prev => ({ ...prev, dishes: newDishes }));
   };
 
+
   const handleImageUpload = (e, imageType) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Create a preview URL for the image
+    const files = Array.from(e.target.files);
+    const maxPhotos = 5;
+
+    // Get current photos
+    const currentPhotos = formData[imageType] || [];
+
+    // Check if adding these files would exceed the limit
+    if (currentPhotos.length + files.length > maxPhotos) {
+      showNotification(`You can only upload up to ${maxPhotos} photos`, 'error');
+      return;
+    }
+
+    // Process each file
+    files.forEach(file => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const imageUrl = event.target.result;
-        setImagePreviews(prev => ({ ...prev, [imageType]: imageUrl }));
-        setFormData(prev => ({ ...prev, [imageType]: imageUrl }));
+        setImagePreviews(prev => ({
+          ...prev,
+          [imageType]: [...(prev[imageType] || []), imageUrl]
+        }));
+        setFormData(prev => ({
+          ...prev,
+          [imageType]: [...(prev[imageType] || []), imageUrl]
+        }));
       };
       reader.readAsDataURL(file);
-    }
+    });
+  };
+
+  const handleRemoveImage = (imageType, index) => {
+    setImagePreviews(prev => ({
+      ...prev,
+      [imageType]: prev[imageType].filter((_, i) => i !== index)
+    }));
+    setFormData(prev => ({
+      ...prev,
+      [imageType]: prev[imageType].filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!user) {
-      showNotification('You must be logged in to submit a restaurant', 'error');
-      return;
-    }
 
     if (isEditMode) {
       // Handle edit mode
@@ -196,8 +235,9 @@ const AddRestaurant = ({
         dishes: formData.dishes.filter(dish => dish.trim()),
         whatsIncluded: Object.keys(formData.included).filter(key => formData.included[key]),
         practical: formData.practical,
-        restaurantPhoto: formData.restaurantPhoto,
-        menuPhoto: formData.menuPhoto,
+        restaurantPhotos: formData.restaurantPhotos,
+        menuPhotos: formData.menuPhotos,
+        hours: formData.hours,
         reason: formData.reason
       };
 
@@ -340,6 +380,26 @@ const AddRestaurant = ({
           </div>
         </fieldset>
 
+        {/* Section: Operating Hours */}
+        <fieldset className={`${styles.fieldset} ${styles.gridSpan2}`}>
+          <legend className={styles.legend}>Operating Hours</legend>
+          <div className={styles.formGroup}>
+            <label htmlFor="hours">Lunch Menu Hours</label>
+            <input
+              id="hours"
+              type="text"
+              name="hours"
+              className={styles.input}
+              value={formData.hours}
+              onChange={handleInputChange}
+              placeholder="e.g., 12:30-15:00"
+            />
+            <small className={styles.helpText}>
+              Enter the general lunch hours (e.g., 12:30-15:00)
+            </small>
+          </div>
+        </fieldset>
+
         {/* Section 5: Daily Dishes */}
         <fieldset className={`${styles.fieldset} ${styles.gridSpan2}`}>
           <legend className={styles.legend}>Daily Dishes</legend>
@@ -404,41 +464,69 @@ const AddRestaurant = ({
         <fieldset className={`${styles.fieldset} ${styles.gridSpan2}`}>
           <legend className={styles.legend}>Photos & Submission</legend>
           <div className={styles.formGroup}>
-            <label htmlFor="restaurantPhoto">Restaurant Photo (Optional)</label>
+            <label htmlFor="restaurantPhotos">Restaurant Photos (Optional - Max 5)</label>
             <input
-              id="restaurantPhoto"
+              id="restaurantPhotos"
               type="file"
-              name="restaurantPhoto"
+              name="restaurantPhotos"
               className={styles.input}
               accept="image/*"
-              onChange={(e) => handleImageUpload(e, 'restaurantPhoto')}
+              multiple
+              onChange={(e) => handleImageUpload(e, 'restaurantPhotos')}
             />
-            <small className={styles.helpText}>Upload a photo of the restaurant exterior or interior</small>
-            {imagePreviews.restaurantPhoto && (
-              <div className={styles.imagePreview}>
-                <img src={imagePreviews.restaurantPhoto} alt="Restaurant preview" className={styles.previewImage} />
+            <small className={styles.helpText}>
+              Upload photos of the restaurant exterior or interior (up to 5 photos).
+              {imagePreviews.restaurantPhotos.length > 0 && ` ${imagePreviews.restaurantPhotos.length}/5 uploaded`}
+            </small>
+            {imagePreviews.restaurantPhotos.length > 0 && (
+              <div className={styles.imagePreviewGrid}>
+                {imagePreviews.restaurantPhotos.map((photo, index) => (
+                  <div key={index} className={styles.imagePreviewItem}>
+                    <img src={photo} alt={`Restaurant preview ${index + 1}`} className={styles.previewImage} />
+                    <button
+                      type="button"
+                      className={styles.removeImageButton}
+                      onClick={() => handleRemoveImage('restaurantPhotos', index)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="menuPhoto">{isEditMode ? 'New Menu de Almoço Photo (Optional)' : 'Photo of Menu (Required)'}</label>
+            <label htmlFor="menuPhotos">{isEditMode ? 'New Menu de Almoço Photos (Optional - Max 5)' : 'Photos of Menu (Required - Max 5)'}</label>
             <input
-              id="menuPhoto"
+              id="menuPhotos"
               type="file"
-              name="menuPhoto"
+              name="menuPhotos"
               className={styles.input}
               accept="image/*"
-              required={!isEditMode && !imagePreviews.menuPhoto}
-              onChange={(e) => handleImageUpload(e, 'menuPhoto')}
+              multiple
+              required={!isEditMode && imagePreviews.menuPhotos.length === 0}
+              onChange={(e) => handleImageUpload(e, 'menuPhotos')}
             />
             <small className={styles.helpText}>
               {isEditMode
-                ? 'Upload a new photo of the lunch menu with prices (leave empty to keep current photo)'
-                : 'Upload a clear photo of the lunch menu with prices'}
+                ? 'Upload new photos of the lunch menu with prices (leave empty to keep current photos)'
+                : 'Upload clear photos of the lunch menu with prices (up to 5 photos)'}
+              {imagePreviews.menuPhotos.length > 0 && ` ${imagePreviews.menuPhotos.length}/5 uploaded`}
             </small>
-            {imagePreviews.menuPhoto && (
-              <div className={styles.imagePreview}>
-                <img src={imagePreviews.menuPhoto} alt="Menu preview" className={styles.previewImage} />
+            {imagePreviews.menuPhotos.length > 0 && (
+              <div className={styles.imagePreviewGrid}>
+                {imagePreviews.menuPhotos.map((photo, index) => (
+                  <div key={index} className={styles.imagePreviewItem}>
+                    <img src={photo} alt={`Menu preview ${index + 1}`} className={styles.previewImage} />
+                    <button
+                      type="button"
+                      className={styles.removeImageButton}
+                      onClick={() => handleRemoveImage('menuPhotos', index)}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>

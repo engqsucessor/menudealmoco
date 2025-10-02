@@ -11,6 +11,48 @@ from pydantic import BaseModel, Field
 
 router = APIRouter()
 
+def is_restaurant_open(hours: str) -> bool:
+    """Check if restaurant is currently open based on hours string like '12:30-15:00'"""
+    if not hours:
+        return True  # Default to open if no hours specified
+
+    try:
+        # Get current time
+        now = datetime.now()
+        current_time = now.time()
+
+        # Parse hours string (format: "12:30-15:00")
+        if '-' not in hours:
+            return True
+
+        parts = hours.split('-')
+        if len(parts) != 2:
+            return True
+
+        # Parse start and end times
+        start_str, end_str = parts[0].strip(), parts[1].strip()
+
+        # Handle time formats
+        start_parts = start_str.split(':')
+        end_parts = end_str.split(':')
+
+        if len(start_parts) != 2 or len(end_parts) != 2:
+            return True
+
+        start_hour, start_min = int(start_parts[0]), int(start_parts[1])
+        end_hour, end_min = int(end_parts[0]), int(end_parts[1])
+
+        # Create time objects
+        from datetime import time
+        start_time = time(start_hour, start_min)
+        end_time = time(end_hour, end_min)
+
+        # Check if current time is within range
+        return start_time <= current_time <= end_time
+    except Exception as e:
+        print(f"Error parsing hours '{hours}': {e}")
+        return True  # Default to open on error
+
 class SubmissionReviewRequest(BaseModel):
     action: str = Field(..., pattern="^(approved|rejected|needs_changes)$")
     comment: str = Field(default="", max_length=500)
@@ -54,6 +96,10 @@ def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> d
         "photos": json.loads(db_restaurant.photos) if db_restaurant.photos else [],
         "restaurantPhoto": db_restaurant.restaurant_photo,
         "menuPhoto": db_restaurant.menu_photo,
+        "restaurantPhotos": json.loads(db_restaurant.restaurant_photo) if db_restaurant.restaurant_photo and db_restaurant.restaurant_photo.startswith('[') else ([db_restaurant.restaurant_photo] if db_restaurant.restaurant_photo else []),
+        "menuPhotos": json.loads(db_restaurant.menu_photo) if db_restaurant.menu_photo and db_restaurant.menu_photo.startswith('[') else ([db_restaurant.menu_photo] if db_restaurant.menu_photo else []),
+        "hours": db_restaurant.hours,
+        "isOpenNow": is_restaurant_open(db_restaurant.hours),
         "status": db_restaurant.status,
         "submittedBy": db_restaurant.submitter.email if db_restaurant.submitter else None,
         "submittedAt": db_restaurant.submitted_at.isoformat() if db_restaurant.submitted_at else None,
@@ -230,9 +276,9 @@ async def get_restaurants(
 async def submit_restaurant(
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
-    """Submit a new restaurant for review - requires authentication"""
+    """Submit a new restaurant for review - authentication optional"""
 
     # Get the request body
     try:
@@ -245,7 +291,7 @@ async def submit_restaurant(
     # Create submission
     submission = RestaurantSubmission(
         restaurant_name=restaurant_data.get('name', 'Unknown'),
-        submitted_by_id=current_user.id,
+        submitted_by_id=current_user.id if current_user else None,
         data=body_str
     )
 

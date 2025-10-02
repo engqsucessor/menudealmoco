@@ -53,6 +53,7 @@ class Restaurant(Base):
     photos = Column(Text, nullable=True)  # JSON string
     restaurant_photo = Column(Text, nullable=True)  # Base64 image data
     menu_photo = Column(Text, nullable=True)  # Base64 image data
+    hours = Column(Text, nullable=True)  # JSON string with operating hours
     status = Column(String, default="approved")  # approved, pending, rejected
 
     # Submission tracking
@@ -72,7 +73,7 @@ class RestaurantSubmission(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     restaurant_name = Column(String, nullable=False)
-    submitted_by_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    submitted_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     submitted_at = Column(DateTime(timezone=True), server_default=func.now())
     status = Column(String, default="pending")  # pending, approved, rejected, needs_changes
 
@@ -145,7 +146,7 @@ class EditSuggestion(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     restaurant_id = Column(Integer, ForeignKey("restaurants.id"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     suggested_changes = Column(Text, nullable=False)  # JSON string with proposed changes
     reason = Column(Text, nullable=True)  # Reason for the suggestion
     status = Column(String, default="pending")  # pending, approved, rejected

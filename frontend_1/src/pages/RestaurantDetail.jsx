@@ -356,21 +356,20 @@ const RestaurantDetail = () => {
       // Add ALL missing fields to form values
       form.priceRange = formData.priceRange;
       form.distance = formData.distance;
-      form.restaurantPhoto = formData.restaurantPhoto;
-      form.menuPhoto = formData.menuPhoto;
+      form.restaurantPhotos = formData.restaurantPhotos || [];
+      form.menuPhotos = formData.menuPhotos || [];
 
       // Add ALL missing fields to current values
       current.priceRange = restaurant.priceRange || '';
       current.distance = restaurant.distance || '';
-      current.restaurantPhoto = restaurant.restaurantPhoto || '';
-      current.menuPhoto = restaurant.menuPhoto || '';
+      current.restaurantPhotos = restaurant.restaurantPhotos || [];
+      current.menuPhotos = restaurant.menuPhotos || [];
 
       // Check ALL fields that exist in the form
       const fieldsToCheck = [
         'name', 'address', 'district', 'city', 'menuPrice', 'priceRange', 'distance',
         'foodType', 'googleRating', 'googleReviews', 'description', 'numberOfDishes',
-        'cardsAccepted', 'quickService', 'groupFriendly', 'parking',
-        'restaurantPhoto', 'menuPhoto'
+        'cardsAccepted', 'quickService', 'groupFriendly', 'parking'
       ];
 
       fieldsToCheck.forEach(field => {
@@ -397,6 +396,17 @@ const RestaurantDetail = () => {
         addChange('dishes', currentDishes, formDishes);
       }
 
+      // Check photo arrays
+      if (JSON.stringify(current.restaurantPhotos) !== JSON.stringify(form.restaurantPhotos)) {
+        console.log(`CHANGE DETECTED in restaurantPhotos: ${current.restaurantPhotos.length} → ${form.restaurantPhotos.length}`);
+        addChange('restaurantPhotos', current.restaurantPhotos, form.restaurantPhotos);
+      }
+
+      if (JSON.stringify(current.menuPhotos) !== JSON.stringify(form.menuPhotos)) {
+        console.log(`CHANGE DETECTED in menuPhotos: ${current.menuPhotos.length} → ${form.menuPhotos.length}`);
+        addChange('menuPhotos', current.menuPhotos, form.menuPhotos);
+      }
+
       // Check if there are actually any changes
       if (Object.keys(changes).length === 0) {
         // Show notification that no changes were detected
@@ -409,7 +419,7 @@ const RestaurantDetail = () => {
 
       const result = await submitEditSuggestion(
         id,
-        user.email,
+        user?.email || 'anonymous',
         changes,
         formData.reason
       );
@@ -538,6 +548,9 @@ const RestaurantDetail = () => {
             <strong>Included:</strong> {whatsIncluded && whatsIncluded.join(' + ')}
           </div>
           <p><strong>Cuisine:</strong> {foodType}</p>
+          {restaurant.hours && (
+            <p><strong>Lunch Hours:</strong> {restaurant.hours}</p>
+          )}
           <div className={styles.externalReviews}>
             {menuRating.average && (
               <div className={styles.externalReview}>

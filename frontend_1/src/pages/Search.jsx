@@ -137,7 +137,17 @@ const Search = () => {
 
   const clearAllFilters = () => {
     setFilters(createClearedFilters(filters));
-  };  const getActiveFiltersCount = () => {
+  };
+
+  const handleCardFavoriteToggle = useCallback((restaurantId, newStatus) => {
+    if (filters.showOnlyFavorites) {
+      // When showing only favorites, refresh the results after any toggle
+      // This ensures the list stays in sync with localStorage
+      fetchRestaurants();
+    }
+  }, [filters.showOnlyFavorites, fetchRestaurants]);
+
+  const getActiveFiltersCount = () => {
     let count = 0;
     if (filters.showOnlyFavorites) count++;
     count += filters.foodTypes.length;
@@ -177,7 +187,12 @@ const Search = () => {
     return (
       <div className={styles.restaurantGrid}>
         {restaurants.map((restaurant, index) => (
-          <RestaurantCard key={restaurant.id} restaurant={restaurant} style={{ animationDelay: `${index * 50}ms` }} />
+          <RestaurantCard
+            key={restaurant.id}
+            restaurant={restaurant}
+            style={{ animationDelay: `${index * 50}ms` }}
+            onFavoriteToggle={handleCardFavoriteToggle}
+          />
         ))}
       </div>
     );

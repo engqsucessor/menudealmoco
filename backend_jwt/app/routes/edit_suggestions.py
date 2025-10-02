@@ -60,10 +60,11 @@ async def submit_edit_suggestion(
     restaurant_id: str,
     request: Request,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
-    """Submit an edit suggestion for a restaurant - JWT protected"""
-    print(f"📝 Submit edit suggestion called for restaurant {restaurant_id} by user {current_user.email}")
+    """Submit an edit suggestion for a restaurant - authentication optional"""
+    user_email = current_user.email if current_user else "anonymous"
+    print(f"📝 Submit edit suggestion called for restaurant {restaurant_id} by user {user_email}")
     try:
         restaurant_id_int = int(restaurant_id)
     except ValueError:
@@ -87,7 +88,7 @@ async def submit_edit_suggestion(
     # Create edit suggestion
     suggestion = EditSuggestion(
         restaurant_id=restaurant_id_int,
-        user_id=current_user.id,
+        user_id=current_user.id if current_user else None,
         suggested_changes=json.dumps(suggested_changes),
         reason=reason,
         upvotes=0,
@@ -102,8 +103,8 @@ async def submit_edit_suggestion(
         return {
             "id": str(suggestion.id),
             "restaurant_id": str(suggestion.restaurant_id),
-            "user_email": current_user.email,
-            "display_name": current_user.display_name,
+            "user_email": user_email,
+            "display_name": current_user.display_name if current_user else "Anonymous",
             "suggested_changes": suggested_changes,
             "reason": suggestion.reason,
             "status": suggestion.status,
@@ -296,6 +297,9 @@ async def approve_edit_suggestion(
             # Handle the git-style diff format: { from: oldValue, to: newValue }
             if isinstance(change_data, dict) and 'to' in change_data:
                 new_value = change_data['to']
+            elif isinstance(change_data, dict) and 'from' in change_data and 'to' not in change_data:
+                # If there's only 'from' and no 'to', skip this field (no change)
+                continue
             else:
                 # Fallback for old format
                 new_value = change_data
@@ -346,10 +350,22 @@ async def approve_edit_suggestion(
                 db_field = field_mapping.get(field)
                 if db_field and hasattr(restaurant, db_field):
                     setattr(restaurant, db_field, bool(new_value))
-            elif field == 'restaurantPhoto':
-                restaurant.restaurant_photo = new_value
-            elif field == 'menuPhoto':
-                restaurant.menu_photo = new_value
+            elif field in ['restaurantPhoto', 'restaurantPhotos']:
+                # Handle both single photo and photo arrays
+                if isinstance(new_value, list):
+                    restaurant.restaurant_photo = json.dumps(new_value) if new_value else None
+                elif isinstance(new_value, str) and new_value:
+                    restaurant.restaurant_photo = new_value
+                else:
+                    restaurant.restaurant_photo = None
+            elif field in ['menuPhoto', 'menuPhotos']:
+                # Handle both single photo and photo arrays
+                if isinstance(new_value, list):
+                    restaurant.menu_photo = json.dumps(new_value) if new_value else None
+                elif isinstance(new_value, str) and new_value:
+                    restaurant.menu_photo = new_value
+                else:
+                    restaurant.menu_photo = None
             elif field == 'distance':
                 # Distance is not stored in the restaurant model - it's calculated
                 pass
