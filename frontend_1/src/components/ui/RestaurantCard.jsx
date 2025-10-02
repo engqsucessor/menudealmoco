@@ -116,12 +116,51 @@ const RestaurantCard = ({ restaurant, style, onFavoriteToggle }) => {
   // Count available photos
   const getPhotoCount = () => {
     let count = 0;
-    if (restaurant.restaurantPhoto) count++;
-    if (restaurant.menuPhoto) count++;
+
+    // Handle restaurantPhoto (can be string, JSON array string, or array)
+    if (restaurant.restaurantPhoto) {
+      if (Array.isArray(restaurant.restaurantPhoto)) {
+        count += restaurant.restaurantPhoto.filter(photo => photo && photo.trim()).length;
+      } else if (typeof restaurant.restaurantPhoto === 'string') {
+        try {
+          const parsed = JSON.parse(restaurant.restaurantPhoto);
+          if (Array.isArray(parsed)) {
+            count += parsed.filter(photo => photo && photo.trim()).length;
+          } else {
+            count++;
+          }
+        } catch {
+          count++; // Single photo URL
+        }
+      }
+    }
+
+    // Handle menuPhoto (can be string, JSON array string, or array)
+    if (restaurant.menuPhoto) {
+      if (Array.isArray(restaurant.menuPhoto)) {
+        count += restaurant.menuPhoto.filter(photo => photo && photo.trim()).length;
+      } else if (typeof restaurant.menuPhoto === 'string') {
+        try {
+          const parsed = JSON.parse(restaurant.menuPhoto);
+          if (Array.isArray(parsed)) {
+            count += parsed.filter(photo => photo && photo.trim()).length;
+          } else {
+            count++;
+          }
+        } catch {
+          count++; // Single photo URL
+        }
+      }
+    }
+
+    // Handle photos array
     if (restaurant.photos && Array.isArray(restaurant.photos)) {
       count += restaurant.photos.filter(photo => photo && photo.trim()).length;
     }
-    if (restaurant.photo && !restaurant.restaurantPhoto) count++; // Legacy photo
+
+    // Legacy photo field
+    if (restaurant.photo && !restaurant.restaurantPhoto) count++;
+
     return count;
   };
 

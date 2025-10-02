@@ -170,6 +170,11 @@ export const restaurantsApi = {
     return data;
   },
 
+  getDetails: async (id) => {
+    const { data } = await api.get(`/restaurants/${id}/details`);
+    return data;
+  },
+
   delete: async (id) => {
     const { data } = await api.delete(`/restaurants/${id}`);
     return data;
@@ -199,6 +204,11 @@ export const restaurantsApi = {
 export const reviewsApi = {
   getForRestaurant: async (restaurantId) => {
     const { data } = await api.get(`/restaurants/${restaurantId}/reviews`);
+    return data;
+  },
+
+  getMyReviews: async () => {
+    const { data } = await api.get('/reviews/my-reviews');
     return data;
   },
 
@@ -285,6 +295,11 @@ export const favoritesApi = {
   getAll: async () => {
     const { data } = await api.get('/favorites');
     return data.favorites; // Returns array of restaurant IDs
+  },
+
+  getRestaurants: async () => {
+    const { data } = await api.get('/favorites/restaurants');
+    return data.restaurants; // Returns full restaurant data
   },
 
   add: async (restaurantId) => {

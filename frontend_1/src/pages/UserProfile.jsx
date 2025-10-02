@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
-import { restaurantsApi, reviewsApi } from '../services/axiosApi';
+import { restaurantsApi, favoritesApi, reviewsApi } from '../services/axiosApi';
 import { favoriteRestaurants } from '../services/localStorage';
 import styles from './UserProfile.module.css';
 import ReviewerDashboard from './ReviewerDashboard';

@@ -217,3 +217,33 @@ async def vote_on_review(
         "createdAt": review.created_at.isoformat(),
         "userVotes": {"currentUserVote": new_vote_type}
     }
+
+@router.get("/reviews/my-reviews")
+async def get_my_reviews(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get all reviews by the current user"""
+    reviews = db.query(MenuReview).filter(
+        MenuReview.user_id == current_user.id
+    ).all()
+
+    result = []
+    for review in reviews:
+        # Get restaurant info
+        restaurant = db.query(Restaurant).filter(Restaurant.id == review.restaurant_id).first()
+
+        result.append({
+            "id": str(review.id),
+            "userId": current_user.email,
+            "restaurantId": str(review.restaurant_id),
+            "restaurantName": restaurant.name if restaurant else "Unknown",
+            "rating": review.rating,
+            "comment": review.comment,
+            "displayName": current_user.display_name,
+            "upvotes": review.upvotes,
+            "downvotes": review.downvotes,
+            "createdAt": review.created_at.isoformat()
+        })
+
+    return result

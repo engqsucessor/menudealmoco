@@ -5,7 +5,7 @@ import json
 from datetime import datetime
 from app.models.restaurant import RestaurantResponse
 from app.database.database import get_db
-from app.database.models import Restaurant as DBRestaurant, User, MenuReview, ReviewVote, ReviewReport, RestaurantSubmission
+from app.database.models import Restaurant as DBRestaurant, User, MenuReview, ReviewVote, ReviewReport, RestaurantSubmission, EditSuggestion
 from app.auth.middleware import get_current_user, get_current_reviewer, get_optional_current_user
 from pydantic import BaseModel, Field
 
@@ -417,6 +417,86 @@ async def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
 
     return convert_db_to_response(db_restaurant, db)
 
+@router.get("/restaurants/{restaurant_id}/details")
+async def get_restaurant_details(
+    restaurant_id: str,
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user)
+):
+    """Get restaurant with reviews and edit suggestions in one call - optimized for detail page"""
+    try:
+        restaurant_id_int = int(restaurant_id)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid restaurant ID")
+
+    # Get restaurant
+    db_restaurant = db.query(DBRestaurant).filter(DBRestaurant.id == restaurant_id_int).first()
+    if not db_restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+
+    restaurant_data = convert_db_to_response(db_restaurant, db)
+
+    # Get reviews
+    reviews = db.query(MenuReview).filter(
+        MenuReview.restaurant_id == restaurant_id_int,
+        MenuReview.is_hidden == False
+    ).all()
+
+    reviews_data = []
+    for review in reviews:
+        user = db.query(User).filter(User.id == review.user_id).first()
+
+        # Get user's vote on this review if user is logged in
+        user_vote = None
+        if current_user:
+            vote = db.query(ReviewVote).filter(
+                ReviewVote.user_id == current_user.id,
+                ReviewVote.review_id == review.id
+            ).first()
+            if vote:
+                user_vote = vote.vote_type
+
+        reviews_data.append({
+            "id": str(review.id),
+            "userId": user.email if user else "unknown",
+            "restaurantId": str(review.restaurant_id),
+            "rating": review.rating,
+            "comment": review.comment,
+            "displayName": user.display_name if user else f"User{review.user_id}",
+            "upvotes": review.upvotes,
+            "downvotes": review.downvotes,
+            "createdAt": review.created_at.isoformat(),
+            "userVotes": {"currentUserVote": user_vote} if current_user else {}
+        })
+
+    # Get pending edit suggestions
+    edit_suggestions = db.query(EditSuggestion).filter(
+        EditSuggestion.restaurant_id == restaurant_id_int,
+        EditSuggestion.status == "pending"
+    ).all()
+
+    suggestions_data = []
+    for suggestion in edit_suggestions:
+        user = db.query(User).filter(User.id == suggestion.user_id).first()
+        suggestions_data.append({
+            "id": str(suggestion.id),
+            "restaurant_id": str(suggestion.restaurant_id),
+            "user_email": user.email if user else "anonymous",
+            "display_name": user.display_name if user else "Anonymous",
+            "suggested_changes": json.loads(suggestion.suggested_changes),
+            "reason": suggestion.reason,
+            "status": suggestion.status,
+            "created_at": suggestion.created_at.isoformat(),
+            "upvotes": suggestion.upvotes,
+            "downvotes": suggestion.downvotes
+        })
+
+    return {
+        "restaurant": restaurant_data,
+        "reviews": reviews_data,
+        "editSuggestions": suggestions_data
+    }
+
 @router.delete("/restaurants/{restaurant_id}")
 async def delete_restaurant(
     restaurant_id: str,
@@ -481,6 +561,16 @@ async def get_user_favorites(
     """Get all favorite restaurant IDs for the current user"""
     favorite_ids = [str(restaurant.id) for restaurant in current_user.favorite_restaurants]
     return {"favorites": favorite_ids}
+
+@router.get("/favorites/restaurants")
+async def get_favorite_restaurants(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get full restaurant data for all favorited restaurants"""
+    favorite_restaurants = current_user.favorite_restaurants
+    restaurants = [convert_db_to_response(r, db) for r in favorite_restaurants]
+    return {"restaurants": restaurants}
 
 @router.post("/favorites/{restaurant_id}")
 async def add_favorite(
