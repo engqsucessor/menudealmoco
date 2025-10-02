@@ -231,9 +231,9 @@ async def get_restaurants(
                 required_item = feature_map[filter_name]
                 restaurants = [r for r in restaurants if required_item in r["whatsIncluded"]]
 
-    # TODO: Implement openNow filter - requires restaurant hours in database
-    # if openNow:
-    #     restaurants = [r for r in restaurants if is_open_now(r)]
+    # Apply openNow filter
+    if openNow:
+        restaurants = [r for r in restaurants if r.get("isOpenNow", False)]
 
     # TODO: Implement lastUpdatedDays filter - requires updated_at timestamp
     # if lastUpdatedDays:
