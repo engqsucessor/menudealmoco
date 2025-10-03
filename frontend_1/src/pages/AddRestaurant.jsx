@@ -159,7 +159,35 @@ const AddRestaurant = ({
   };
 
 
-  const handleImageUpload = (e, imageType) => {
+  // Function to compress image to reduce file size
+  const compressImage = (file, maxWidth = 1200, quality = 0.7) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+
+      img.onload = () => {
+        // Calculate new dimensions
+        let { width, height } = img;
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+
+        // Set canvas dimensions
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw and compress
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(resolve, 'image/jpeg', quality);
+      };
+
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleImageUpload = async (e, imageType) => {
     const files = Array.from(e.target.files);
     const maxPhotos = 5;
 
@@ -173,21 +201,30 @@ const AddRestaurant = ({
     }
 
     // Process each file
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const imageUrl = event.target.result;
-        setImagePreviews(prev => ({
-          ...prev,
-          [imageType]: [...(prev[imageType] || []), imageUrl]
-        }));
-        setFormData(prev => ({
-          ...prev,
-          [imageType]: [...(prev[imageType] || []), imageUrl]
-        }));
-      };
-      reader.readAsDataURL(file);
-    });
+    for (const file of files) {
+      try {
+        // Compress the image first
+        const compressedFile = await compressImage(file);
+        
+        // Convert to base64
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageUrl = event.target.result;
+          setImagePreviews(prev => ({
+            ...prev,
+            [imageType]: [...(prev[imageType] || []), imageUrl]
+          }));
+          setFormData(prev => ({
+            ...prev,
+            [imageType]: [...(prev[imageType] || []), imageUrl]
+          }));
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        showNotification('Error processing image. Please try again.', 'error');
+      }
+    }
   };
 
   const handleRemoveImage = (imageType, index) => {
@@ -496,7 +533,7 @@ const AddRestaurant = ({
             )}
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="menuPhotos">{isEditMode ? 'New Menu de Almoço Photos (Optional - Max 5)' : 'Photos of Menu (Required - Max 5)'}</label>
+            <label htmlFor="menuPhotos">Photos of Menu (Optional - Max 5)</label>
             <input
               id="menuPhotos"
               type="file"
@@ -504,7 +541,6 @@ const AddRestaurant = ({
               className={styles.input}
               accept="image/*"
               multiple
-              required={!isEditMode && imagePreviews.menuPhotos.length === 0}
               onChange={(e) => handleImageUpload(e, 'menuPhotos')}
             />
             <small className={styles.helpText}>

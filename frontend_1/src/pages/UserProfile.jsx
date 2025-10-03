@@ -300,7 +300,12 @@ const UserProfile = () => {
                 )}
               </div>
             </div>
-            <button className={styles.reviewerButton}>Become a Reviewer</button>
+            <button
+              className={styles.reviewerButton}
+              onClick={() => setShowApplicationModal(true)}
+            >
+              Become a Reviewer
+            </button>
           </div>
         );
       default:
