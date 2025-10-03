@@ -44,18 +44,21 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       const token = sessionStorage.getItem('access_token');
+
+      // Set loading false immediately to not block page render
+      setLoading(false);
+
       if (token) {
         try {
           const userInfo = await authApi.getCurrentUser();
           setUser(userInfo);
-          // Sync favorites after successful login
-          await syncFavorites();
+          // Sync favorites in background (non-blocking)
+          syncFavorites().catch(err => console.error('Favorites sync failed:', err));
         } catch (error) {
           console.error('Token validation failed:', error);
           authApi.logout();
         }
       }
-      setLoading(false);
     };
 
     checkAuthStatus();

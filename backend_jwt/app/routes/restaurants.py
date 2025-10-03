@@ -66,12 +66,13 @@ class SubmissionReviewRequest(BaseModel):
     action: str = Field(..., pattern="^(approved|rejected|needs_changes)$")
     comment: str = Field(default="", max_length=500)
 
-def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None) -> dict:
+def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None, include_photos: bool = True) -> dict:
     """Convert database restaurant to API response format matching mock backend
 
     Args:
         db_restaurant: Database restaurant object
         menu_stats: Pre-calculated menu rating stats dict with 'avg_rating' and 'review_count'
+        include_photos: Whether to include base64 photo data (False for list views to reduce payload)
     """
 
     # Use pre-calculated stats if provided (much faster than querying)
@@ -83,7 +84,7 @@ def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None)
         menu_rating = round(stats['avg_rating'], 1) if stats['avg_rating'] else 0.0
         menu_reviews_count = stats['review_count']
 
-    return {
+    base_data = {
         "id": str(db_restaurant.id),
         "name": db_restaurant.name,
         "address": db_restaurant.address,
@@ -103,11 +104,6 @@ def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None)
         "googleReviews": db_restaurant.google_reviews,
         "description": db_restaurant.description,
         "dishes": json.loads(db_restaurant.dishes) if db_restaurant.dishes else [],
-        "photos": json.loads(db_restaurant.photos) if db_restaurant.photos else [],
-        "restaurantPhoto": db_restaurant.restaurant_photo,
-        "menuPhoto": db_restaurant.menu_photo,
-        "restaurantPhotos": json.loads(db_restaurant.restaurant_photo) if db_restaurant.restaurant_photo and db_restaurant.restaurant_photo.startswith('[') else ([db_restaurant.restaurant_photo] if db_restaurant.restaurant_photo else []),
-        "menuPhotos": json.loads(db_restaurant.menu_photo) if db_restaurant.menu_photo and db_restaurant.menu_photo.startswith('[') else ([db_restaurant.menu_photo] if db_restaurant.menu_photo else []),
         "hours": db_restaurant.hours,
         "isOpenNow": is_restaurant_open(db_restaurant.hours),
         "status": db_restaurant.status,
@@ -119,6 +115,28 @@ def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None)
         "menuRating": menu_rating,
         "menuReviews": menu_reviews_count
     }
+
+    # Only include heavy photo data if requested (for detail view)
+    if include_photos:
+        base_data.update({
+            "photos": json.loads(db_restaurant.photos) if db_restaurant.photos else [],
+            "restaurantPhoto": db_restaurant.restaurant_photo,
+            "menuPhoto": db_restaurant.menu_photo,
+            "restaurantPhotos": json.loads(db_restaurant.restaurant_photo) if db_restaurant.restaurant_photo and db_restaurant.restaurant_photo.startswith('[') else ([db_restaurant.restaurant_photo] if db_restaurant.restaurant_photo else []),
+            "menuPhotos": json.loads(db_restaurant.menu_photo) if db_restaurant.menu_photo and db_restaurant.menu_photo.startswith('[') else ([db_restaurant.menu_photo] if db_restaurant.menu_photo else []),
+        })
+    else:
+        # For list views: just send photo count, not the actual data
+        base_data.update({
+            "hasPhotos": bool(db_restaurant.restaurant_photo or db_restaurant.menu_photo),
+            "photos": [],
+            "restaurantPhoto": None,
+            "menuPhoto": None,
+            "restaurantPhotos": [],
+            "menuPhotos": []
+        })
+
+    return base_data
 
 @router.get("/restaurants")
 async def get_restaurants(
@@ -184,7 +202,8 @@ async def get_restaurants(
         }
 
     # Convert to response format with pre-calculated menu ratings
-    restaurants = [convert_db_to_response(r, menu_stats) for r in db_restaurants]
+    # Don't include photos in list view (saves 350KB+ per restaurant!)
+    restaurants = [convert_db_to_response(r, menu_stats, include_photos=False) for r in db_restaurants]
 
     # Apply text search filter
     if query:
