@@ -154,7 +154,8 @@ const ReviewerDashboard = () => {
       dishes: submission.data.dishes || [],
       whatsIncluded: submission.data.whatsIncluded || [],
       practical: submission.data.practical || {},
-      photos: submission.data.photos || []
+      restaurantPhotos: submission.data.restaurantPhotos || [],
+      menuPhotos: submission.data.menuPhotos || []
     };
   };
 
@@ -720,30 +721,41 @@ const ReviewerDashboard = () => {
 
             {/* Photos Section */}
             <div className={styles.photosSection}>
-              <h3>Photos</h3>
+              <h3>Restaurant Photos</h3>
               <div className={styles.photoGrid}>
-                {selectedSubmission.data.restaurantPhoto && (
-                  <div className={styles.photoItem}>
-                    <img
-                      src={selectedSubmission.data.restaurantPhoto}
-                      alt="Restaurant"
-                      className={styles.photo}
-                    />
-                    <p>Restaurant Photo</p>
-                  </div>
+                {selectedSubmission.data.restaurantPhotos && selectedSubmission.data.restaurantPhotos.length > 0 ? (
+                  selectedSubmission.data.restaurantPhotos.map((photo, index) => (
+                    <div key={`restaurant-${index}`} className={styles.photoItem}>
+                      <img
+                        src={photo}
+                        alt={`Restaurant ${index + 1}`}
+                        className={styles.photo}
+                      />
+                      <p>Restaurant Photo {index + 1}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No restaurant photos uploaded</p>
                 )}
-                {selectedSubmission.data.menuPhoto && (
-                  <div className={styles.photoItem}>
-                    <img
-                      src={selectedSubmission.data.menuPhoto}
-                      alt="Menu"
-                      className={styles.photo}
-                    />
-                    <p>Menu Photo</p>
-                  </div>
-                )}
-                {!selectedSubmission.data.restaurantPhoto && !selectedSubmission.data.menuPhoto && (
-                  <p>No photos uploaded</p>
+              </div>
+            </div>
+
+            <div className={styles.photosSection}>
+              <h3>Menu Photos</h3>
+              <div className={styles.photoGrid}>
+                {selectedSubmission.data.menuPhotos && selectedSubmission.data.menuPhotos.length > 0 ? (
+                  selectedSubmission.data.menuPhotos.map((photo, index) => (
+                    <div key={`menu-${index}`} className={styles.photoItem}>
+                      <img
+                        src={photo}
+                        alt={`Menu ${index + 1}`}
+                        className={styles.photo}
+                      />
+                      <p>Menu Photo {index + 1}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No menu photos uploaded</p>
                 )}
               </div>
             </div>
