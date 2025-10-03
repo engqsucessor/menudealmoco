@@ -58,29 +58,30 @@ def is_restaurant_open(hours: str) -> bool:
         else:
             # Normal hours: open if between start and before end (exclusive end)
             return start_time <= current_time < end_time
-    except Exception as e:
-        print(f"Error parsing hours '{hours}': {e}")
-        return True  # Default to open on error
+    except Exception:
+        # Silently default to open on error
+        return True
 
 class SubmissionReviewRequest(BaseModel):
     action: str = Field(..., pattern="^(approved|rejected|needs_changes)$")
     comment: str = Field(default="", max_length=500)
 
-def convert_db_to_response(db_restaurant: DBRestaurant, db: Session = None) -> dict:
-    """Convert database restaurant to API response format matching mock backend"""
+def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None) -> dict:
+    """Convert database restaurant to API response format matching mock backend
 
-    # Calculate menu rating and review count if db session is provided
+    Args:
+        db_restaurant: Database restaurant object
+        menu_stats: Pre-calculated menu rating stats dict with 'avg_rating' and 'review_count'
+    """
+
+    # Use pre-calculated stats if provided (much faster than querying)
     menu_rating = 0.0
     menu_reviews_count = 0
 
-    if db:
-        # Get all menu reviews for this restaurant
-        menu_reviews = db.query(MenuReview).filter(MenuReview.restaurant_id == db_restaurant.id).all()
-
-        if menu_reviews:
-            total_rating = sum(review.rating for review in menu_reviews)
-            menu_rating = round(total_rating / len(menu_reviews), 1)
-            menu_reviews_count = len(menu_reviews)
+    if menu_stats and db_restaurant.id in menu_stats:
+        stats = menu_stats[db_restaurant.id]
+        menu_rating = round(stats['avg_rating'], 1) if stats['avg_rating'] else 0.0
+        menu_reviews_count = stats['review_count']
 
     return {
         "id": str(db_restaurant.id),
@@ -148,11 +149,6 @@ async def get_restaurants(
     # Get query parameters for features and practicalFilters
     query_params = dict(request.query_params)
 
-    # Debug: print received parameters
-    print(f"🔍 Received query params: {query_params}")
-    print(f"🔍 showOnlyFavorites: {showOnlyFavorites}, openNow: {openNow}")
-    print(f"🔍 minGoogleRating: {minGoogleRating}, overallRating: {overallRating}")
-
     # Get all approved restaurants
     restaurants_query = db.query(DBRestaurant).filter(DBRestaurant.status == "approved")
 
@@ -165,8 +161,30 @@ async def get_restaurants(
 
     db_restaurants = restaurants_query.all()
 
-    # Convert to response format with menu rating calculation
-    restaurants = [convert_db_to_response(r, db) for r in db_restaurants]
+    # Get menu stats for all restaurants in ONE query (avoids N+1 problem)
+    restaurant_ids = [r.id for r in db_restaurants]
+    menu_stats = {}
+
+    if restaurant_ids:
+        from sqlalchemy import func
+        stats_query = db.query(
+            MenuReview.restaurant_id,
+            func.avg(MenuReview.rating).label('avg_rating'),
+            func.count(MenuReview.id).label('review_count')
+        ).filter(
+            MenuReview.restaurant_id.in_(restaurant_ids)
+        ).group_by(MenuReview.restaurant_id).all()
+
+        menu_stats = {
+            row.restaurant_id: {
+                'avg_rating': float(row.avg_rating) if row.avg_rating else 0.0,
+                'review_count': row.review_count
+            }
+            for row in stats_query
+        }
+
+    # Convert to response format with pre-calculated menu ratings
+    restaurants = [convert_db_to_response(r, menu_stats) for r in db_restaurants]
 
     # Apply text search filter
     if query:
