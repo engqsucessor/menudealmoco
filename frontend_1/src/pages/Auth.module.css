@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 .authContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 80vh;
+    font-family: 'Space Mono', monospace;
   }
 
   .form {
@@ -10,11 +13,52 @@
     flex-direction: column;
     gap: 1.5rem;
     padding: 3rem 2rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border: 2px solid #000000;
+    border-radius: 0;
     width: 400px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     background: white;
+  }
+
+  /* Brand Header Styles */
+  .brandHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .logoText {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .logoSubtext {
+    font-size: 12px;
+    font-weight: 400;
+    color: #000000;
+    letter-spacing: 0.2em;
+    margin: 4px 0 0 0;
+    text-align: center;
+    position: relative;
+    padding-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  .logoSubtext::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: #007bff;
+    border-radius: 2px;
   }
 
   .form h2 {
@@ -27,8 +71,11 @@
   .subtitle {
     text-align: center;
     color: #666;
-    font-size: 0.95rem;
-    margin: -0.5rem 0 0 0;
+    font-size: 12px;
+    font-weight: 400;
+    margin: 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
   
   .form input {
@@ -160,4 +207,10 @@
     display: flex;
     justify-content: center;
     width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  /* Remove old h2 styles since we're using brandHeader now */
+  .form h2 {
+    display: none;
   }

@@ -35,7 +35,10 @@ const Auth = () => {
   return (
     <div className={styles.authContainer}>
       <div className={styles.form}>
-        <h2>Welcome to MenuDealMoco</h2>
+        <div className={styles.brandHeader}>
+          <h1 className={styles.logoText}>MENU DEAL MOÇO</h1>
+          <h2 className={styles.logoSubtext}>OS MELHORES MENUS</h2>
+        </div>
         <p className={styles.subtitle}>Sign in with your Google account</p>
 
         <div className={styles.googleButton}>

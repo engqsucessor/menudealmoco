@@ -15,40 +15,31 @@ See **[S3_SETUP.md](./S3_SETUP.md)** for setup instructions.
 
 ## Scripts
 
-### 1. Backup Script (`backup.py`)
+### 1. S3 Backup Script (`s3_backup.py`)
 
-Creates timestamped backups of the SQLite database and manages old backups.
+Creates database backups and uploads them to S3 for safe, off-site storage.
+
+**Setup:** See [S3_SETUP.md](./S3_SETUP.md) for complete setup instructions.
 
 **Usage:**
 
 ```bash
-# Create a backup (from backend_jwt directory)
-uv run python app/maintenance/backup.py
+# Create backup and upload to S3
+docker-compose exec backend uv run python app/maintenance/s3_backup.py \
+  --s3-bucket menudealmoco-backups
 
-# Specify custom paths
-uv run python app/maintenance/backup.py --db-path ./data/menudealmoco.db --backup-dir ./backups
-
-# Keep only 7 most recent backups
-uv run python app/maintenance/backup.py --keep 7
-
-# List existing backups
-uv run python app/maintenance/backup.py --list
-```
-
-**In Docker:**
-
-```bash
-# From host machine
-docker-compose exec backend uv run python app/maintenance/backup.py
-
-# List backups
-docker-compose exec backend uv run python app/maintenance/backup.py --list
+# List S3 backups
+docker-compose exec backend uv run python app/maintenance/s3_backup.py \
+  --s3-bucket menudealmoco-backups \
+  --list
 ```
 
 **Features:**
 - Creates timestamped backups (format: `menudealmoco_YYYYMMDD_HHMMSS.db`)
-- Automatically cleans up old backups (keeps last 30 by default)
-- Shows backup size and statistics
+- Uploads to S3 with encryption
+- Automatically cleans up old S3 backups (keeps last 30)
+- Deletes local temp file after upload
+- Uses S3 Standard-IA for cost savings
 
 ### 2. Cleanup Script (`cleanup.py`)
 
