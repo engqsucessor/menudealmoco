@@ -2,6 +2,17 @@
 
 Automated scripts for database backup and cleanup.
 
+## ⚠️ Important: Use S3 for Production Backups
+
+**For production, use `s3_backup.py` instead of `backup.py`**
+
+- ✅ **Off-site storage** - Backups stored separately from production
+- ✅ **Cheaper** - S3 costs ~$0.005/month vs EC2 storage
+- ✅ **No disk space issues** - Unlimited storage
+- ✅ **More durable** - 99.999999999% durability
+
+See **[S3_SETUP.md](./S3_SETUP.md)** for setup instructions.
+
 ## Scripts
 
 ### 1. Backup Script (`backup.py`)
