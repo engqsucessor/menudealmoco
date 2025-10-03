@@ -481,7 +481,48 @@ const RestaurantDetail = () => {
     return <div>Restaurant not found</div>;
   }
 
-  const { name, city, district, menuPrice, whatsIncluded, photo, reviews, foodType, googleRating, googleReviews, menuReviews, menuPhoto, description } = restaurant;
+  const { name, city, district, menuPrice, whatsIncluded, reviews, foodType, googleRating, googleReviews, menuReviews, menuPhoto, description } = restaurant;
+
+  const pickFirstImage = (value) => {
+    if (!value) return null;
+
+    if (Array.isArray(value)) {
+      return value.find((entry) => typeof entry === 'string' && entry.trim()) || null;
+    }
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return null;
+      }
+
+      if (trimmed.startsWith('[')) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          if (Array.isArray(parsed)) {
+            return parsed.find((entry) => typeof entry === 'string' && entry.trim()) || null;
+          }
+        } catch (error) {
+          return trimmed;
+        }
+      }
+
+      return trimmed;
+    }
+
+    return null;
+  };
+
+  const heroImage =
+    pickFirstImage(restaurant.restaurantPhotos) ||
+    pickFirstImage(restaurant.restaurantPhoto) ||
+    pickFirstImage(restaurant.photos) ||
+    pickFirstImage(restaurant.photo) ||
+    pickFirstImage(restaurant.menuPhotos) ||
+    pickFirstImage(menuPhoto);
+
+  const resolvedMenuPrice = Number(menuPrice);
+  const menuPriceDisplay = Number.isFinite(resolvedMenuPrice) ? resolvedMenuPrice.toFixed(2) : menuPrice;
 
   // Calculate Menu de Almoço average rating
   const calculateMenuRating = () => {
@@ -505,8 +546,8 @@ const RestaurantDetail = () => {
     <div className={styles.detailPage}>
       <header className={styles.header}>
         <div className={styles.imageContainer}>
-          {photo ? (
-            <img src={photo} alt={name} className={styles.image} />
+          {heroImage ? (
+            <img src={heroImage} alt={name} className={styles.image} />
           ) : (
             <div className={styles.placeholderImage}>
               <span>No image available</span>
@@ -543,7 +584,7 @@ const RestaurantDetail = () => {
             </div>
           </div>
           <p>{location}</p>
-          <p className={styles.price}>€{menuPrice.toFixed(2)}</p>
+          <p className={styles.price}>€{menuPriceDisplay}</p>
           <div className={styles.included}>
             <strong>Included:</strong> {whatsIncluded && whatsIncluded.join(' + ')}
           </div>

@@ -89,6 +89,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Google Login function
+  const googleLogin = async (credential) => {
+    try {
+      const userData = await authApi.googleLogin(credential);
+      setUser(userData);
+      // Sync favorites after successful login
+      await syncFavorites();
+      return userData;
+    } catch (error) {
+      console.error('Google login error:', error);
+      return null;
+    }
+  };
+
   // Update display name function
   const updateDisplayName = async (newDisplayName) => {
     if (user && newDisplayName.trim()) {
@@ -113,6 +127,7 @@ export const AuthProvider = ({ children }) => {
     user,
     login,
     signup,
+    googleLogin,
     logout,
     updateDisplayName,
     loading,

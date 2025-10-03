@@ -87,6 +87,13 @@ export const authApi = {
     const { data } = await api.put('/auth/update-display-name', { displayName });
     return data;
   },
+
+  googleLogin: async (credential) => {
+    const { data } = await api.post('/auth/google', { credential });
+    sessionStorage.setItem('access_token', data.access_token);
+    sessionStorage.setItem('refresh_token', data.refresh_token);
+    return data.user;
+  },
 };
 
 // Restaurants API

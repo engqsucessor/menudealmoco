@@ -108,6 +108,7 @@ class UserResponse(BaseModel):
     email: str
     displayName: str
     isReviewer: bool
+    isAdmin: bool
     joinedAt: datetime
     reviews: List[dict] = []
 
@@ -176,3 +177,27 @@ class ReviewReportResponse(BaseModel):
 
     class Config:
         from_attributes = True
+# Reviewer Application models
+class ReviewerApplicationCreate(BaseModel):
+    motivation: str = Field(..., min_length=50, max_length=1000, description="Why you want to be a reviewer (50-1000 chars)")
+    experience: Optional[str] = Field(default="", max_length=1000, description="Your relevant experience (optional, max 1000 chars)")
+
+class ReviewerApplicationResponse(BaseModel):
+    id: int
+    userId: int
+    userName: str
+    userEmail: str
+    motivation: str
+    experience: Optional[str]
+    status: str  # pending, approved, rejected
+    appliedAt: datetime
+    reviewedById: Optional[int]
+    reviewedAt: Optional[datetime]
+    adminNotes: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+class ReviewerApplicationReview(BaseModel):
+    status: str = Field(..., pattern="^(approved|rejected)$", description="approved or rejected")
+    adminNotes: Optional[str] = Field(default="", max_length=500, description="Admin notes (optional, max 500 chars)")

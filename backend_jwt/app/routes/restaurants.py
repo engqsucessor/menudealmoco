@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from app.models.restaurant import RestaurantResponse
 from app.database.database import get_db
 from app.database.models import Restaurant as DBRestaurant, User, MenuReview, ReviewVote, ReviewReport, RestaurantSubmission, EditSuggestion
@@ -12,13 +13,15 @@ from pydantic import BaseModel, Field
 router = APIRouter()
 
 def is_restaurant_open(hours: str) -> bool:
-    """Check if restaurant is currently open based on hours string like '12:30-15:00'"""
+    """Check if restaurant is currently open based on hours string like '12:30-15:00'
+    Uses Portugal timezone (Europe/Lisbon) for accurate time comparison."""
     if not hours:
         return True  # Default to open if no hours specified
 
     try:
-        # Get current time
-        now = datetime.now()
+        # Get current time in Portugal timezone
+        portugal_tz = ZoneInfo("Europe/Lisbon")
+        now = datetime.now(portugal_tz)
         current_time = now.time()
 
         # Parse hours string (format: "12:30-15:00")
@@ -48,7 +51,13 @@ def is_restaurant_open(hours: str) -> bool:
         end_time = time(end_hour, end_min)
 
         # Check if current time is within range
-        return start_time <= current_time <= end_time
+        # Handle cases where restaurant is open past midnight (e.g., 19:00-01:00)
+        if end_time < start_time:
+            # Open past midnight: open if after start OR before end
+            return current_time >= start_time or current_time < end_time
+        else:
+            # Normal hours: open if between start and before end (exclusive end)
+            return start_time <= current_time < end_time
     except Exception as e:
         print(f"Error parsing hours '{hours}': {e}")
         return True  # Default to open on error

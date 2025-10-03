@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from typing import List
 import json
@@ -8,6 +9,49 @@ from app.auth.middleware import get_current_user, get_current_reviewer
 from datetime import datetime
 
 router = APIRouter()
+
+class ReportReviewRequest(BaseModel):
+    review_id: int = Field(..., description="ID of the review being reported")
+    restaurant_id: int = Field(..., description="Restaurant ID for validation")
+    reason: str = Field(..., min_length=3, max_length=500, description="Reason for reporting the review")
+
+@router.post("/reports/reviews")
+async def create_review_report(
+    payload: ReportReviewRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Allow authenticated users to report a review for moderator follow-up."""
+    review = db.query(MenuReview).filter(MenuReview.id == payload.review_id).first()
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    if review.restaurant_id != payload.restaurant_id:
+        raise HTTPException(status_code=400, detail="Review does not belong to the specified restaurant")
+
+    existing_report = db.query(ReviewReport).filter(
+        ReviewReport.review_id == payload.review_id,
+        ReviewReport.reporter_id == current_user.id,
+        ReviewReport.status == "pending"
+    ).first()
+    if existing_report:
+        raise HTTPException(status_code=400, detail="You have already reported this review")
+
+    report = ReviewReport(
+        review_id=payload.review_id,
+        reporter_id=current_user.id,
+        reason=payload.reason.strip(),
+        status="pending"
+    )
+
+    db.add(report)
+    try:
+        db.commit()
+        db.refresh(report)
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Failed to submit report") from exc
+
+    return {"message": "Review reported successfully", "report_id": str(report.id)}
 
 @router.get("/reports/reviews")
 async def get_reported_reviews(db: Session = Depends(get_db)):
@@ -114,3 +158,4 @@ async def resolve_report(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error resolving report: {str(e)}")
+

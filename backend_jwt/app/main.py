@@ -1,3 +1,9 @@
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file (for local development)
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -5,9 +11,8 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
-from app.routes import restaurants, auth, reviews, reports, edit_suggestions
+from app.routes import restaurants, auth, reviews, reports, edit_suggestions, reviewer_applications
 from app.database.database import init_db
-import os
 
 # Environment configuration
 ENV = os.getenv("ENV", "development")  # development, staging, production
@@ -110,6 +115,7 @@ app.include_router(restaurants.router, prefix="/api", tags=["restaurants"])
 app.include_router(reviews.router, prefix="/api", tags=["reviews"])
 app.include_router(reports.router, prefix="/api", tags=["reports"])
 app.include_router(edit_suggestions.router, prefix="/api", tags=["edit-suggestions"])
+app.include_router(reviewer_applications.router, prefix="/api", tags=["reviewer-applications"])
 
 @app.get("/")
 @limiter.limit("10/minute")

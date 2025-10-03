@@ -13,7 +13,7 @@ timeout /t 3 /nobreak > nul
 
 REM Start frontend in new window
 echo Starting Frontend Server...
-start "Frontend Server" cmd /k "cd frontend_1 && npm run dev"
+start "Frontend Server" cmd /k "cd frontend_1 && npm run dev -- --port 3000"
 
 echo.
 echo ========================================
@@ -21,7 +21,7 @@ echo Development servers starting...
 echo ========================================
 echo Backend:  http://localhost:8088
 echo Backend API Docs: http://localhost:8088/docs
-echo Frontend: http://localhost:5173
+echo Frontend: http://localhost:3000
 echo ========================================
 echo.
 echo Press any key to stop all servers...

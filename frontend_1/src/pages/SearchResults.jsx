@@ -36,7 +36,8 @@ const SearchResults = () => {
     priceRange: 'all',
     foodType: 'all',
     features: [],
-    sortBy: 'rating'
+    sortBy: 'rating',
+    openNow: false,
   });
 
   // Load restaurants on component mount and filter changes
@@ -62,7 +63,30 @@ const SearchResults = () => {
         recentSearches.add(filters.location.trim());
       }
 
-      const response = await restaurantsApi.getAll(filters);
+      const featuresSelection = Array.isArray(filters.features) ? filters.features : [];
+      const practicalFilters = {};
+      featuresSelection.forEach((feature) => {
+        if (feature !== 'openNow') {
+          practicalFilters[feature] = true;
+        }
+      });
+
+      const apiFilters = { ...filters };
+      delete apiFilters.features;
+
+      if (featuresSelection.includes('openNow') || filters.openNow) {
+        apiFilters.openNow = true;
+      } else {
+        delete apiFilters.openNow;
+      }
+
+      if (Object.keys(practicalFilters).length > 0) {
+        apiFilters.practicalFilters = practicalFilters;
+      } else {
+        delete apiFilters.practicalFilters;
+      }
+
+      const response = await restaurantsApi.getAll(apiFilters);
       const normalizedRestaurants = Array.isArray(response) ? response : (response?.restaurants || []);
       setRestaurants(normalizedRestaurants);
     } catch (err) {
@@ -86,12 +110,18 @@ const SearchResults = () => {
   };
 
   const handleFeatureToggle = (feature) => {
-    setFilters(prev => ({
-      ...prev,
-      features: prev.features.includes(feature)
+    setFilters(prev => {
+      const isSelected = prev.features.includes(feature);
+      const updatedFeatures = isSelected
         ? prev.features.filter(f => f !== feature)
-        : [...prev.features, feature]
-    }));
+        : [...prev.features, feature];
+
+      return {
+        ...prev,
+        features: updatedFeatures,
+        openNow: feature === 'openNow' ? !isSelected : prev.openNow,
+      };
+    });
   };
 
   const clearFilters = () => {
@@ -100,7 +130,8 @@ const SearchResults = () => {
       priceRange: 'all',
       foodType: 'all',
       features: [],
-      sortBy: 'rating'
+      sortBy: 'rating',
+      openNow: false,
     });
     navigate('/search', { replace: true });
   };

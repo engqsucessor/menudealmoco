@@ -17,9 +17,11 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
-    password_hash = Column(String, nullable=False)
+    password_hash = Column(String, nullable=True)  # Nullable for Google OAuth users
+    google_id = Column(String, unique=True, nullable=True)  # Google OAuth ID
     display_name = Column(String, nullable=False)
     is_reviewer = Column(Boolean, default=False)
+    is_admin = Column(Boolean, default=False)
     joined_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -29,6 +31,8 @@ class User(Base):
     favorite_restaurants = relationship("Restaurant", secondary=user_favorites, back_populates="favorited_by")
     reports_made = relationship("ReviewReport", foreign_keys="ReviewReport.reporter_id", back_populates="reporter")
     reports_resolved = relationship("ReviewReport", foreign_keys="ReviewReport.resolved_by_id", back_populates="resolver")
+    reviewer_applications = relationship("ReviewerApplication", foreign_keys="ReviewerApplication.user_id", back_populates="user")
+    reviewed_applications = relationship("ReviewerApplication", foreign_keys="ReviewerApplication.reviewed_by_id", back_populates="reviewer")
 
 class Restaurant(Base):
     __tablename__ = "restaurants"
@@ -179,3 +183,22 @@ class EditSuggestionVote(Base):
     # Relationships
     user = relationship("User")
     suggestion = relationship("EditSuggestion", back_populates="votes")
+
+class ReviewerApplication(Base):
+    __tablename__ = "reviewer_applications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    motivation = Column(Text, nullable=False)  # Why they want to be a reviewer
+    experience = Column(Text, nullable=True)  # Their relevant experience
+    status = Column(String, default="pending")  # pending, approved, rejected
+    applied_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Review process
+    reviewed_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    admin_notes = Column(Text, nullable=True)  # Admin's notes/reason
+
+    # Relationships
+    user = relationship("User", foreign_keys=[user_id], back_populates="reviewer_applications")
+    reviewer = relationship("User", foreign_keys=[reviewed_by_id], back_populates="reviewed_applications")

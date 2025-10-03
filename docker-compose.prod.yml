@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  backend:
+    image: 457393219772.dkr.ecr.eu-west-1.amazonaws.com/menudealmoco-backend:latest
+    ports:
+      - "127.0.0.1:8000:8088"
+    environment:
+      - ENV=production
+      - DATABASE_URL=sqlite:///./data/menudealmoco.db
+      - ALLOWED_ORIGINS=https://menudealmoco.duckdns.org,https://menudealmoco.pt,https://www.menudealmoco.pt
+      - ALLOWED_HOSTS=menudealmoco.duckdns.org,menudealmoco.pt,www.menudealmoco.pt,localhost,127.0.0.1,frontend,backend
+      - AWS_REGION=eu-west-1
+    volumes:
+      - backend_data:/app/data
+    networks:
+      - app-network
+    restart: always
+
+  frontend:
+    image: 457393219772.dkr.ecr.eu-west-1.amazonaws.com/menudealmoco-frontend:latest
+    ports:
+      - "127.0.0.1:3000:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    restart: always
+
+volumes:
+  backend_data:
+
+networks:
+  app-network:
+    driver: bridge

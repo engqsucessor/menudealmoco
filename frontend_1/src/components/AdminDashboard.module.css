@@ -1,0 +1,329 @@
+.adminDashboard {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: "Space Mono", monospace;
+}
+
+.adminDashboard h2 {
+  margin-bottom: 2rem;
+  color: #000000;
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: #1A1A1A;
+  padding: 2rem 1.5rem;
+  border: 2px solid #000000;
+  text-align: center;
+  color: #FFFFFF;
+  transition: all 0.2s;
+}
+
+.statCard:hover {
+  background: #000000;
+  transform: translateY(-2px);
+}
+
+.statCard h3 {
+  font-size: 3rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  font-family: "Space Mono", monospace;
+}
+
+.statCard p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: "Space Mono", monospace;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filters button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #000000;
+  background: #FFFFFF;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #000000;
+  font-family: "Space Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filters button:hover {
+  background: #F5F5F5;
+  transform: scale(1.02);
+}
+
+.filters button.active {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.applicationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.applicationCard {
+  background: #FFFFFF;
+  border: 2px solid #000000;
+  padding: 1.5rem;
+  transition: all 0.2s;
+  font-family: "Space Mono", monospace;
+}
+
+.applicationCard:hover {
+  background: #F5F5F5;
+  transform: translateX(4px);
+}
+
+.applicationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #E5E5E5;
+}
+
+.applicationHeader h3 {
+  margin: 0 0 0.25rem 0;
+  color: #000000;
+  font-weight: 700;
+  font-family: "Space Mono", monospace;
+}
+
+.email {
+  color: #666666;
+  font-size: 0.85rem;
+  margin: 0;
+  font-family: "Space Mono", monospace;
+}
+
+.status {
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid #000000;
+  font-family: "Space Mono", monospace;
+}
+
+.status.pending {
+  background: #E5E5E5;
+  color: #000000;
+}
+
+.status.approved {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.status.rejected {
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.applicationBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.section strong {
+  color: #000000;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: "Space Mono", monospace;
+}
+
+.section p {
+  margin: 0;
+  color: #333333;
+  line-height: 1.6;
+  background: #F5F5F5;
+  padding: 1rem;
+  border: 1px solid #E5E5E5;
+  font-family: "Space Mono", monospace;
+  font-size: 0.9rem;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  margin-top: 0.5rem;
+}
+
+.meta p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666666;
+  font-family: "Space Mono", monospace;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid #E5E5E5;
+}
+
+.approveButton,
+.rejectButton {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #000000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: "Space Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.approveButton {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.approveButton:hover {
+  background: #333333;
+  transform: scale(1.02);
+}
+
+.rejectButton {
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.rejectButton:hover {
+  background: #F5F5F5;
+  transform: scale(1.02);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #FFFFFF;
+  padding: 2rem;
+  border: 3px solid #000000;
+  max-width: 500px;
+  width: 90%;
+  font-family: "Space Mono", monospace;
+}
+
+.modalContent h3 {
+  margin-top: 0;
+  color: #000000;
+  font-weight: 700;
+  font-size: 1.5rem;
+  font-family: "Space Mono", monospace;
+  letter-spacing: -0.02em;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #000000;
+  font-family: "Space Mono", monospace;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #000000;
+  font-family: "Space Mono", monospace;
+  font-size: 0.9rem;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #000000;
+  background: #F5F5F5;
+}
+
+.reviewButtons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cancelButton {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #000000;
+  background: #FFFFFF;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #000000;
+  font-family: "Space Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cancelButton:hover {
+  background: #F5F5F5;
+  transform: scale(1.02);
+}

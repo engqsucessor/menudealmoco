@@ -162,7 +162,7 @@ const ReviewerDashboard = () => {
 
   const handleApprove = async (submissionId) => {
     try {
-      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'approve', '');
+      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'approved', '');
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -174,7 +174,7 @@ const ReviewerDashboard = () => {
 
   const handleReject = async (submissionId, comment) => {
     try {
-      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'reject', comment);
+      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'rejected', comment);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -187,7 +187,7 @@ const ReviewerDashboard = () => {
 
   const handleRequestChanges = async (submissionId, comment) => {
     try {
-      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'request_changes', comment);
+      const updatedSubmission = await restaurantsApi.reviewSubmission(submissionId, 'needs_changes', comment);
       if (updatedSubmission) {
         await loadSubmissions(); // Reload to get updated data
         setSelectedSubmission(null);
@@ -824,4 +824,5 @@ const ReviewerDashboard = () => {
 };
 
 export default ReviewerDashboard;
+
 
