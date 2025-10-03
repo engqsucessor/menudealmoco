@@ -113,58 +113,8 @@ const RestaurantCard = ({ restaurant, style, onFavoriteToggle }) => {
   // Combine what's included with food features
   const allIncluded = foodFeatures.length > 0 ? foodFeatures : (whatsIncluded || []);
 
-  // Count available photos
-  const getPhotoCount = () => {
-    let count = 0;
-
-    // Handle restaurantPhoto (can be string, JSON array string, or array)
-    if (restaurant.restaurantPhoto) {
-      if (Array.isArray(restaurant.restaurantPhoto)) {
-        count += restaurant.restaurantPhoto.filter(photo => photo && photo.trim()).length;
-      } else if (typeof restaurant.restaurantPhoto === 'string') {
-        try {
-          const parsed = JSON.parse(restaurant.restaurantPhoto);
-          if (Array.isArray(parsed)) {
-            count += parsed.filter(photo => photo && photo.trim()).length;
-          } else {
-            count++;
-          }
-        } catch {
-          count++; // Single photo URL
-        }
-      }
-    }
-
-    // Handle menuPhoto (can be string, JSON array string, or array)
-    if (restaurant.menuPhoto) {
-      if (Array.isArray(restaurant.menuPhoto)) {
-        count += restaurant.menuPhoto.filter(photo => photo && photo.trim()).length;
-      } else if (typeof restaurant.menuPhoto === 'string') {
-        try {
-          const parsed = JSON.parse(restaurant.menuPhoto);
-          if (Array.isArray(parsed)) {
-            count += parsed.filter(photo => photo && photo.trim()).length;
-          } else {
-            count++;
-          }
-        } catch {
-          count++; // Single photo URL
-        }
-      }
-    }
-
-    // Handle photos array
-    if (restaurant.photos && Array.isArray(restaurant.photos)) {
-      count += restaurant.photos.filter(photo => photo && photo.trim()).length;
-    }
-
-    // Legacy photo field
-    if (restaurant.photo && !restaurant.restaurantPhoto) count++;
-
-    return count;
-  };
-
-  const photoCount = getPhotoCount();
+  // Use photo count from backend (lightweight metadata, no base64 data)
+  const photoCount = restaurant.photoCount || 0;
 
   return (
     <article className={cardClasses} style={style}>

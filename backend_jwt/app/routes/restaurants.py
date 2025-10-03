@@ -116,19 +116,33 @@ def convert_db_to_response(db_restaurant: DBRestaurant, menu_stats: dict = None,
         "menuReviews": menu_reviews_count
     }
 
+    # Calculate photo counts (lightweight metadata)
+    restaurant_photos_list = json.loads(db_restaurant.restaurant_photo) if db_restaurant.restaurant_photo and db_restaurant.restaurant_photo.startswith('[') else ([db_restaurant.restaurant_photo] if db_restaurant.restaurant_photo else [])
+    menu_photos_list = json.loads(db_restaurant.menu_photo) if db_restaurant.menu_photo and db_restaurant.menu_photo.startswith('[') else ([db_restaurant.menu_photo] if db_restaurant.menu_photo else [])
+
+    restaurant_photo_count = len(restaurant_photos_list)
+    menu_photo_count = len(menu_photos_list)
+    total_photo_count = restaurant_photo_count + menu_photo_count
+
     # Only include heavy photo data if requested (for detail view)
     if include_photos:
         base_data.update({
             "photos": json.loads(db_restaurant.photos) if db_restaurant.photos else [],
             "restaurantPhoto": db_restaurant.restaurant_photo,
             "menuPhoto": db_restaurant.menu_photo,
-            "restaurantPhotos": json.loads(db_restaurant.restaurant_photo) if db_restaurant.restaurant_photo and db_restaurant.restaurant_photo.startswith('[') else ([db_restaurant.restaurant_photo] if db_restaurant.restaurant_photo else []),
-            "menuPhotos": json.loads(db_restaurant.menu_photo) if db_restaurant.menu_photo and db_restaurant.menu_photo.startswith('[') else ([db_restaurant.menu_photo] if db_restaurant.menu_photo else []),
+            "restaurantPhotos": restaurant_photos_list,
+            "menuPhotos": menu_photos_list,
+            "photoCount": total_photo_count,
+            "restaurantPhotoCount": restaurant_photo_count,
+            "menuPhotoCount": menu_photo_count,
         })
     else:
-        # For list views: just send photo count, not the actual data
+        # For list views: just send photo counts, not the actual data (saves 350KB+!)
         base_data.update({
-            "hasPhotos": bool(db_restaurant.restaurant_photo or db_restaurant.menu_photo),
+            "hasPhotos": total_photo_count > 0,
+            "photoCount": total_photo_count,
+            "restaurantPhotoCount": restaurant_photo_count,
+            "menuPhotoCount": menu_photo_count,
             "photos": [],
             "restaurantPhoto": None,
             "menuPhoto": None,
