@@ -461,7 +461,25 @@ async def get_restaurant(restaurant_id: str, db: Session = Depends(get_db)):
     if not db_restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
 
-    return convert_db_to_response(db_restaurant, db)
+    # Calculate menu stats for this restaurant
+    from sqlalchemy import func
+    menu_stats = {}
+    stats = db.query(
+        MenuReview.restaurant_id,
+        func.avg(MenuReview.rating).label('avg_rating'),
+        func.count(MenuReview.id).label('review_count')
+    ).filter(
+        MenuReview.restaurant_id == restaurant_id_int
+    ).group_by(MenuReview.restaurant_id).first()
+
+    if stats:
+        menu_stats[restaurant_id_int] = {
+            'avg_rating': float(stats.avg_rating) if stats.avg_rating else 0.0,
+            'review_count': stats.review_count
+        }
+
+    # Include photos for detail view
+    return convert_db_to_response(db_restaurant, menu_stats, include_photos=True)
 
 @router.get("/restaurants/{restaurant_id}/details")
 async def get_restaurant_details(
@@ -480,7 +498,24 @@ async def get_restaurant_details(
     if not db_restaurant:
         raise HTTPException(status_code=404, detail="Restaurant not found")
 
-    restaurant_data = convert_db_to_response(db_restaurant, db)
+    # Calculate menu stats for this restaurant
+    from sqlalchemy import func
+    menu_stats = {}
+    stats = db.query(
+        MenuReview.restaurant_id,
+        func.avg(MenuReview.rating).label('avg_rating'),
+        func.count(MenuReview.id).label('review_count')
+    ).filter(
+        MenuReview.restaurant_id == restaurant_id_int
+    ).group_by(MenuReview.restaurant_id).first()
+
+    if stats:
+        menu_stats[restaurant_id_int] = {
+            'avg_rating': float(stats.avg_rating) if stats.avg_rating else 0.0,
+            'review_count': stats.review_count
+        }
+
+    restaurant_data = convert_db_to_response(db_restaurant, menu_stats, include_photos=True)
 
     # Get reviews
     reviews = db.query(MenuReview).filter(
@@ -615,7 +650,31 @@ async def get_favorite_restaurants(
 ):
     """Get full restaurant data for all favorited restaurants"""
     favorite_restaurants = current_user.favorite_restaurants
-    restaurants = [convert_db_to_response(r, db) for r in favorite_restaurants]
+
+    # Calculate menu stats for all favorites in one query
+    from sqlalchemy import func
+    restaurant_ids = [r.id for r in favorite_restaurants]
+    menu_stats = {}
+
+    if restaurant_ids:
+        stats_query = db.query(
+            MenuReview.restaurant_id,
+            func.avg(MenuReview.rating).label('avg_rating'),
+            func.count(MenuReview.id).label('review_count')
+        ).filter(
+            MenuReview.restaurant_id.in_(restaurant_ids)
+        ).group_by(MenuReview.restaurant_id).all()
+
+        menu_stats = {
+            row.restaurant_id: {
+                'avg_rating': float(row.avg_rating) if row.avg_rating else 0.0,
+                'review_count': row.review_count
+            }
+            for row in stats_query
+        }
+
+    # Don't include photos in favorites list (same optimization as search)
+    restaurants = [convert_db_to_response(r, menu_stats, include_photos=False) for r in favorite_restaurants]
     return {"restaurants": restaurants}
 
 @router.post("/favorites/{restaurant_id}")
