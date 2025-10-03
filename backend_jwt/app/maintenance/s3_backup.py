@@ -1,11 +1,9 @@
 """
-Database backup script with S3 upload.
+Database backup script with S3 upload using boto3.
 Creates local backup, uploads to S3, then deletes local copy.
 """
 import sys
-import os
 import shutil
-import subprocess
 from datetime import datetime
 from pathlib import Path
 import logging
@@ -18,7 +16,7 @@ def backup_to_s3(
     db_path: str = "./data/menudealmoco.db",
     s3_bucket: str = None,
     s3_prefix: str = "backups/",
-    keep_local: int = 3,  # Only keep last 3 backups locally
+    keep_local: int = 3,
     aws_region: str = "eu-west-1"
 ):
     """
@@ -36,6 +34,9 @@ def backup_to_s3(
         return False
 
     try:
+        import boto3
+        from botocore.exceptions import ClientError
+
         # Check if database exists
         db_file = Path(db_path)
         if not db_file.exists():
@@ -58,24 +59,21 @@ def backup_to_s3(
         size_mb = temp_backup_path.stat().st_size / (1024 * 1024)
         logger.info(f"Backup created: {size_mb:.2f} MB")
 
-        # Upload to S3
+        # Upload to S3 using boto3
         s3_key = f"{s3_prefix}{backup_filename}"
         logger.info(f"Uploading to S3: s3://{s3_bucket}/{s3_key}")
 
-        # Use AWS CLI to upload
-        upload_cmd = [
-            "aws", "s3", "cp",
+        s3_client = boto3.client('s3', region_name=aws_region)
+
+        s3_client.upload_file(
             str(temp_backup_path),
-            f"s3://{s3_bucket}/{s3_key}",
-            "--region", aws_region,
-            "--storage-class", "STANDARD_IA"  # Infrequent Access - cheaper for backups
-        ]
-
-        result = subprocess.run(upload_cmd, capture_output=True, text=True)
-
-        if result.returncode != 0:
-            logger.error(f"S3 upload failed: {result.stderr}")
-            return False
+            s3_bucket,
+            s3_key,
+            ExtraArgs={
+                'StorageClass': 'STANDARD_IA',  # Infrequent Access - cheaper
+                'ServerSideEncryption': 'AES256'
+            }
+        )
 
         logger.info("✓ Successfully uploaded to S3")
 
@@ -88,6 +86,12 @@ def backup_to_s3(
 
         return True
 
+    except ImportError:
+        logger.error("boto3 not installed. Install with: pip install boto3")
+        return False
+    except ClientError as e:
+        logger.error(f"S3 upload failed: {e}")
+        return False
     except Exception as e:
         logger.error(f"Backup failed: {e}")
         return False
@@ -102,52 +106,48 @@ def cleanup_old_s3_backups(s3_bucket: str, s3_prefix: str, keep_count: int, aws_
     Remove old backups from S3, keeping only the most recent ones.
     """
     try:
+        import boto3
+        from botocore.exceptions import ClientError
+
         logger.info(f"Checking for old S3 backups to clean up (keeping {keep_count})...")
 
+        s3_client = boto3.client('s3', region_name=aws_region)
+
         # List all backups in S3
-        list_cmd = [
-            "aws", "s3api", "list-objects-v2",
-            "--bucket", s3_bucket,
-            "--prefix", s3_prefix,
-            "--query", "Contents[?contains(Key, 'menudealmoco_')].{Key:Key,LastModified:LastModified}",
-            "--region", aws_region,
-            "--output", "json"
-        ]
+        response = s3_client.list_objects_v2(
+            Bucket=s3_bucket,
+            Prefix=s3_prefix
+        )
 
-        result = subprocess.run(list_cmd, capture_output=True, text=True)
-
-        if result.returncode != 0:
-            logger.warning(f"Could not list S3 objects: {result.stderr}")
+        if 'Contents' not in response:
+            logger.info("No backups found in S3")
             return
 
-        import json
-        backups = json.loads(result.stdout or "[]")
+        # Filter only menudealmoco_ files and sort by LastModified
+        backups = [
+            obj for obj in response['Contents']
+            if 'menudealmoco_' in obj['Key']
+        ]
+        backups.sort(key=lambda x: x['LastModified'])
 
-        if not backups or len(backups) <= keep_count:
+        if len(backups) <= keep_count:
             logger.info(f"Currently have {len(backups)} S3 backups (keeping {keep_count})")
             return
-
-        # Sort by LastModified (oldest first)
-        backups.sort(key=lambda x: x['LastModified'])
 
         # Delete oldest backups
         backups_to_delete = backups[:-keep_count]  # Keep last 'keep_count'
         logger.info(f"Deleting {len(backups_to_delete)} old S3 backup(s)...")
 
         for backup in backups_to_delete:
-            delete_cmd = [
-                "aws", "s3", "rm",
-                f"s3://{s3_bucket}/{backup['Key']}",
-                "--region", aws_region
-            ]
-            result = subprocess.run(delete_cmd, capture_output=True, text=True)
-            if result.returncode == 0:
-                logger.info(f"  ✓ Deleted: {backup['Key']}")
-            else:
-                logger.warning(f"  ✗ Failed to delete: {backup['Key']}")
+            s3_client.delete_object(Bucket=s3_bucket, Key=backup['Key'])
+            logger.info(f"  ✓ Deleted: {backup['Key']}")
 
         logger.info(f"Cleanup complete. Kept {keep_count} most recent S3 backups.")
 
+    except ImportError:
+        logger.error("boto3 not installed")
+    except ClientError as e:
+        logger.error(f"Error cleaning up old S3 backups: {e}")
     except Exception as e:
         logger.error(f"Error cleaning up old S3 backups: {e}")
 
@@ -157,26 +157,40 @@ def list_s3_backups(s3_bucket: str, s3_prefix: str = "backups/", aws_region: str
     List all backups stored in S3.
     """
     try:
+        import boto3
+        from botocore.exceptions import ClientError
+
         logger.info("=" * 70)
         logger.info(f"S3 Backups in s3://{s3_bucket}/{s3_prefix}")
         logger.info("=" * 70)
 
-        list_cmd = [
-            "aws", "s3", "ls",
-            f"s3://{s3_bucket}/{s3_prefix}",
-            "--region", aws_region,
-            "--human-readable",
-            "--summarize"
-        ]
+        s3_client = boto3.client('s3', region_name=aws_region)
 
-        result = subprocess.run(list_cmd, capture_output=True, text=True)
+        response = s3_client.list_objects_v2(
+            Bucket=s3_bucket,
+            Prefix=s3_prefix
+        )
 
-        if result.returncode != 0:
-            logger.error(f"Failed to list S3 backups: {result.stderr}")
+        if 'Contents' not in response:
+            logger.info("No backups found")
             return
 
-        print(result.stdout)
+        backups = [obj for obj in response['Contents'] if 'menudealmoco_' in obj['Key']]
+        backups.sort(key=lambda x: x['LastModified'], reverse=True)
 
+        total_size = 0
+        for backup in backups:
+            size_mb = backup['Size'] / (1024 * 1024)
+            total_size += size_mb
+            logger.info(f"{backup['Key']:60} | {size_mb:8.2f} MB | {backup['LastModified']}")
+
+        logger.info("=" * 70)
+        logger.info(f"Total: {len(backups)} backups, {total_size:.2f} MB")
+
+    except ImportError:
+        logger.error("boto3 not installed")
+    except ClientError as e:
+        logger.error(f"Failed to list S3 backups: {e}")
     except Exception as e:
         logger.error(f"Error listing S3 backups: {e}")
 
