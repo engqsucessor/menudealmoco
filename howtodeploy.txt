@@ -1,0 +1,1 @@
+start the  deployment\scripts\deploy.sh script basically in gitbash this will do the full deploeuyemnt

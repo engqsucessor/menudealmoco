@@ -7,6 +7,10 @@ services:
       - "8000:8088"
     environment:
       - DATABASE_URL=sqlite:///./menudealmoco.db
+      - ALLOWED_ORIGINS=https://menudealmoco.duckdns.org,https://menudealmoco.pt,https://www.menudealmoco.pt,http://localhost:3000
+      - ALLOWED_HOSTS=menudealmoco.duckdns.org,menudealmoco.pt,www.menudealmoco.pt,localhost,127.0.0.1,frontend,backend,3.249.10.91
+      - AWS_REGION=eu-west-1
+      - ENV=production
     volumes:
       - backend_data:/app/data
     networks:
@@ -16,9 +20,9 @@ services:
   frontend:
     image: 457393219772.dkr.ecr.eu-west-1.amazonaws.com/menudealmoco-frontend:latest
     ports:
-      - "80:3000"
+      - "3000:80"
     environment:
-      - REACT_APP_API_URL=http://3.249.10.91:8000/api
+      - REACT_APP_API_URL=https://menudealmoco.duckdns.org/api
     depends_on:
       - backend
     networks:

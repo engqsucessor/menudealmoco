@@ -17,7 +17,7 @@ AWS_REGION="${AWS_REGION:-eu-west-1}"
 ECR_REGISTRY="${ECR_REGISTRY:-457393219772.dkr.ecr.eu-west-1.amazonaws.com}"
 BACKEND_REPO="menudealmoco-backend"
 FRONTEND_REPO="menudealmoco-frontend"
-EC2_HOST="${EC2_HOST}"
+EC2_HOST="${EC2_HOST:-3.249.10.91}"
 EC2_USER="${EC2_USER:-ubuntu}"
 SSH_KEY="${SSH_KEY:-menudealmoco-key.pem}"
 
@@ -94,6 +94,8 @@ login_to_ecr() {
 build_and_push_backend() {
     print_header "Building Backend Image"
 
+    # Navigate to project root first
+    cd ../../
     cd backend_jwt
 
     print_info "Building Docker image..."
@@ -125,6 +127,7 @@ build_and_push_backend() {
 build_and_push_frontend() {
     print_header "Building Frontend Image"
 
+    # We should already be in project root after backend build
     cd frontend_1
 
     print_info "Building Docker image..."
@@ -157,7 +160,7 @@ deploy_to_ec2() {
     print_header "Deploying to EC2"
 
     print_info "Copying docker-compose.prod.yml to EC2..."
-    scp -i "$SSH_KEY" deployment/docker-compose.prod.yml "$EC2_USER@$EC2_HOST:~/menudealmoco/docker-compose.yml"
+    scp -i "deployment/scripts/$SSH_KEY" deployment/docker-compose.prod.yml "$EC2_USER@$EC2_HOST:~/menudealmoco/docker-compose.yml"
 
     if [ $? -eq 0 ]; then
         print_success "docker-compose.yml copied"
@@ -167,7 +170,7 @@ deploy_to_ec2() {
     fi
 
     print_info "Connecting to EC2 and deploying..."
-    ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'EOF'
+    ssh -i "deployment/scripts/$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'EOF'
         set -e
         cd ~/menudealmoco
 
@@ -209,7 +212,7 @@ EOF
 show_logs() {
     print_header "Fetching Application Logs"
 
-    ssh -i "$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'EOF'
+    ssh -i "deployment/scripts/$SSH_KEY" "$EC2_USER@$EC2_HOST" << 'EOF'
         cd ~/menudealmoco
         docker-compose logs --tail=50
 EOF
