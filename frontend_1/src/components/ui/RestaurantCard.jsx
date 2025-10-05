@@ -122,7 +122,7 @@ const RestaurantCard = ({ restaurant, style, onFavoriteToggle }) => {
         {/* Content Section */}
         <div className={styles.contentSection}>
           {/* Header */}
-          <header className={styles.cardHeader}>
+          <header className={styles.cardHeader} data-price={menuPrice}>
             <div className={styles.nameSection}>
               <h3 className={styles.restaurantName}>{name}</h3>
               <p className={styles.location}>{district}, {city}</p>

@@ -16,7 +16,7 @@ def is_restaurant_open(hours: str) -> bool:
     """Check if restaurant is currently open based on hours string like '12:30-15:00'
     Uses Portugal timezone (Europe/Lisbon) for accurate time comparison."""
     if not hours:
-        return True  # Default to open if no hours specified
+        return False  # Default to closed if no hours specified
 
     try:
         # Get current time in Portugal timezone
@@ -26,11 +26,11 @@ def is_restaurant_open(hours: str) -> bool:
 
         # Parse hours string (format: "12:30-15:00")
         if '-' not in hours:
-            return True
+            return False
 
         parts = hours.split('-')
         if len(parts) != 2:
-            return True
+            return False
 
         # Parse start and end times
         start_str, end_str = parts[0].strip(), parts[1].strip()
@@ -40,7 +40,7 @@ def is_restaurant_open(hours: str) -> bool:
         end_parts = end_str.split(':')
 
         if len(start_parts) != 2 or len(end_parts) != 2:
-            return True
+            return False
 
         start_hour, start_min = int(start_parts[0]), int(start_parts[1])
         end_hour, end_min = int(end_parts[0]), int(end_parts[1])
@@ -53,14 +53,14 @@ def is_restaurant_open(hours: str) -> bool:
         # Check if current time is within range
         # Handle cases where restaurant is open past midnight (e.g., 19:00-01:00)
         if end_time < start_time:
-            # Open past midnight: open if after start OR before end
-            return current_time >= start_time or current_time < end_time
+            # Open past midnight: open if after start OR before end (inclusive)
+            return current_time >= start_time or current_time <= end_time
         else:
-            # Normal hours: open if between start and before end (exclusive end)
-            return start_time <= current_time < end_time
+            # Normal hours: open if between start and end (inclusive)
+            return start_time <= current_time <= end_time
     except Exception:
-        # Silently default to open on error
-        return True
+        # Default to closed on error
+        return False
 
 class SubmissionReviewRequest(BaseModel):
     action: str = Field(..., pattern="^(approved|rejected|needs_changes)$")

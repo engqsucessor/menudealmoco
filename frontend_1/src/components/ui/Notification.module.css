@@ -11,8 +11,8 @@
 }
 
 .notification.success {
-  background: white;
-  color: black;
+  background: var(--card-bg);
+  color: var(--text-color);
 }
 
 .notification.error {
@@ -63,7 +63,7 @@
 }
 
 .notification.success .notificationClose {
-  color: black;
+  color: var(--text-color);
 }
 
 .notification.error .notificationClose {

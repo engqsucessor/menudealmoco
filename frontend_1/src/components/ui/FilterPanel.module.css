@@ -2,8 +2,8 @@
 
 .filterPanel {
   font-family: 'Space Mono', monospace;
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
@@ -12,12 +12,12 @@
   display: none;
   width: 100%;
   padding: 16px 20px;
-  background: #f5f5f5;
+  background: var(--light-gray);
   border: none;
   font-family: 'Space Mono', monospace;
   font-size: 12px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-color);
   text-transform: uppercase;
   letter-spacing: 1px;
   cursor: pointer;
@@ -60,13 +60,13 @@
   align-items: center;
   margin-bottom: 32px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .filterTitle {
   font-size: 16px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-color);
   margin: 0;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -85,7 +85,7 @@
 .sectionTitle {
   font-size: 12px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-color);
   margin: 0 0 16px 0;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -99,13 +99,13 @@
 }
 
 .optionButton {
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   padding: 12px;
   font-family: 'Space Mono', monospace;
   font-size: 11px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
@@ -115,15 +115,15 @@
 }
 
 .optionButton:hover {
-  border-color: #000000;
-  color: #000000;
+  border-color: var(--text-color);
+  color: var(--text-color);
   transform: translateY(-1px);
 }
 
 .optionButton.active {
   background: #000000;
   color: #ffffff;
-  border-color: #000000;
+  border-color: var(--text-color);
 }
 
 .optionLabel {
@@ -146,13 +146,13 @@
 }
 
 .listButton {
-  background: #ffffff;
-  border: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   padding: 12px 16px;
   font-family: 'Space Mono', monospace;
   font-size: 11px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   cursor: pointer;
   text-align: left;
   transition: all 0.2s ease;
@@ -161,15 +161,15 @@
 }
 
 .listButton:hover {
-  border-color: #000000;
-  color: #000000;
+  border-color: var(--text-color);
+  color: var(--text-color);
   transform: translateX(4px);
 }
 
 .listButton.active {
   background: #000000;
   color: #ffffff;
-  border-color: #000000;
+  border-color: var(--text-color);
 }
 
 /* Checkbox Grid */
@@ -184,21 +184,21 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s ease;
-  background: #ffffff;
+  background: var(--card-bg);
 }
 
 .checkboxLabel:hover {
-  border-color: #000000;
+  border-color: var(--text-color);
   transform: translateX(2px);
 }
 
 .checkboxLabel.checked {
   background: #000000;
   color: #ffffff;
-  border-color: #000000;
+  border-color: var(--text-color);
 }
 
 .checkbox {
@@ -233,7 +233,7 @@
   font-size: 0.8rem;
   font-weight: 700;
   margin-bottom: 4px;
-  color: #666;
+  color: #999999;
 }
 
 .selectInput {
@@ -241,7 +241,7 @@
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: var(--card-bg);
   font-size: 0.9rem;
   -webkit-appearance: none;
   appearance: none;

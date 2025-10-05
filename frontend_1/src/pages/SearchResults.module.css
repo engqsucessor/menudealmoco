@@ -23,7 +23,7 @@
 .pageDescription {
   font-size: 18px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   line-height: 1.6;
 }
 
@@ -41,7 +41,7 @@
   flex: 1;
   padding: 16px;
   border: 3px solid #000000;
-  background: #ffffff;
+  background: var(--card-bg);
   font-size: 16px;
   font-family: 'Space Mono', monospace;
   font-weight: 400;
@@ -61,8 +61,8 @@
 }
 
 .searchButton:hover {
-  background: #ffffff;
-  color: #000000;
+  background: var(--card-bg);
+  color: var(--text-color);
 }
 
 .searchButton:disabled {
@@ -74,7 +74,7 @@
   padding: 12px 24px;
   border: 2px solid #666666;
   background: transparent;
-  color: #666666;
+  color: #999999;
   font-size: 12px;
   font-family: 'Space Mono', monospace;
   font-weight: 700;
@@ -84,13 +84,13 @@
 }
 
 .filterToggle:hover {
-  border-color: #000000;
-  color: #000000;
+  border-color: var(--text-color);
+  color: var(--text-color);
 }
 
 .filtersPanel {
-  border: 3px solid #e5e5e5;
-  background: #f5f5f5;
+  border: 3px solid var(--border-color);
+  background: var(--light-gray);
   padding: 32px;
   margin-bottom: 32px;
 }
@@ -112,13 +112,13 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .filterSelect {
   padding: 12px;
   border: 2px solid #999999;
-  background: #ffffff;
+  background: var(--card-bg);
   font-size: 14px;
   font-family: 'Space Mono', monospace;
   font-weight: 400;
@@ -128,7 +128,7 @@
   padding: 12px 24px;
   border: 2px solid #999999;
   background: transparent;
-  color: #666666;
+  color: #999999;
   font-size: 12px;
   font-family: 'Space Mono', monospace;
   font-weight: 700;
@@ -138,13 +138,13 @@
 }
 
 .clearButton:hover {
-  border-color: #000000;
-  color: #000000;
+  border-color: var(--text-color);
+  color: var(--text-color);
 }
 
 .featureFilters {
   padding-top: 24px;
-  border-top: 2px solid #e5e5e5;
+  border-top: 2px solid var(--border-color);
 }
 
 .featureButtons {
@@ -158,7 +158,7 @@
   padding: 8px 16px;
   border: 2px solid #999999;
   background: transparent;
-  color: #666666;
+  color: #999999;
   font-size: 12px;
   font-family: 'Space Mono', monospace;
   font-weight: 400;
@@ -167,12 +167,12 @@
 }
 
 .featureButton:hover {
-  border-color: #000000;
-  color: #000000;
+  border-color: var(--text-color);
+  color: var(--text-color);
 }
 
 .featureButtonActive {
-  border-color: #000000;
+  border-color: var(--text-color);
   background: #000000;
   color: #ffffff;
 }
@@ -185,25 +185,25 @@
 .resultsHeader {
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #e5e5e5;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .resultsCount {
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .loadingText {
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #666666;
+  color: #999999;
 }
 
 .errorMessage {
-  background: #f5f5f5;
+  background: var(--light-gray);
   border: 2px solid #999999;
   padding: 24px;
   text-align: center;
@@ -213,7 +213,7 @@
 .errorText {
   font-size: 14px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   margin-bottom: 16px;
   display: block;
 }
@@ -249,7 +249,7 @@
 .emptyDescription {
   font-size: 16px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   margin-bottom: 32px;
   line-height: 1.6;
 }
@@ -267,8 +267,8 @@
 }
 
 .emptyButton:hover {
-  background: #ffffff;
-  color: #000000;
+  background: var(--card-bg);
+  color: var(--text-color);
 }
 
 .restaurantList {
@@ -278,14 +278,14 @@
 }
 
 .restaurantCard {
-  border: 3px solid #e5e5e5;
-  background: #ffffff;
+  border: 3px solid var(--border-color);
+  background: var(--card-bg);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .restaurantCard:hover {
-  border-color: #000000;
+  border-color: var(--text-color);
   transform: translateY(-2px);
 }
 
@@ -323,19 +323,19 @@
   font-size: 32px;
   font-weight: 700;
   line-height: 1;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .priceRange {
   font-size: 12px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
 }
 
 .restaurantAddress {
   font-size: 14px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   margin-bottom: 16px;
   margin: 0;
 }
@@ -355,19 +355,19 @@
 
 .stars {
   font-size: 16px;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .ratingText {
   font-size: 14px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
 }
 
 .distance {
   font-size: 14px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .cardDetails {
@@ -381,14 +381,14 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: #000000;
+  color: var(--text-color);
   text-transform: uppercase;
 }
 
 .included {
   font-size: 14px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
 }
 
 .features {
@@ -400,16 +400,16 @@
 
 .feature {
   padding: 4px 8px;
-  border: 1px solid #e5e5e5;
-  background: #f5f5f5;
+  border: 1px solid var(--border-color);
+  background: var(--light-gray);
   font-size: 10px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
 }
 
 .cardAction {
   padding-top: 16px;
-  border-top: 2px solid #e5e5e5;
+  border-top: 2px solid var(--border-color);
   text-align: right;
 }
 
@@ -417,7 +417,7 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .loadMoreSection {
@@ -429,7 +429,7 @@
   padding: 16px 32px;
   border: 3px solid #000000;
   background: transparent;
-  color: #000000;
+  color: var(--text-color);
   font-size: 14px;
   font-family: 'Space Mono', monospace;
   font-weight: 700;

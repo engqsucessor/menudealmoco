@@ -1,8 +1,8 @@
 /* MONO Design System for Search Page */
 
 .searchPage {
-  background-color: #FFFFFF;
-  color: #000000;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   font-family: 'Space Mono', monospace;
   min-height: 100vh;
   padding: 0 1rem;
@@ -44,7 +44,7 @@
 .resultsCount {
   font-size: 1rem;
   font-weight: 400;
-  color: #666;
+  color: #999999;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -57,8 +57,8 @@
 
 .sortSelect {
   font-family: 'Space Mono', monospace;
-  background-color: #FFF;
-  color: #000;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   border: 1px solid #333;
   padding: 0.75rem 1rem;
   border-radius: 0;
@@ -72,7 +72,7 @@
 
 .sortSelect:focus {
   outline: 1px solid #666;
-  border-color: #666;
+  border-color: #999999;
 }
 
 /* Restaurant Grid */
@@ -120,7 +120,7 @@
 }
 
 .pageInfo {
-  color: #666;
+  color: #999999;
   font-size: 0.9rem;
   margin: 0 1rem;
   text-transform: uppercase;
@@ -133,7 +133,7 @@
 }
 
 .pageButton {
-  background: white;
+  background: var(--card-bg);
   border: 2px solid #333;
   color: #333;
   padding: 0.5rem 0.75rem;
@@ -158,7 +158,7 @@
 }
 
 .ellipsis {
-  color: #666;
+  color: #999999;
   font-weight: bold;
   padding: 0 0.25rem;
 }
@@ -204,7 +204,7 @@
   right: 2rem;
   width: 3rem;
   height: 3rem;
-  background-color: #000000;
+  background-color: var(--text-color);
   color: #FFFFFF;
   border: 2px solid #333;
   border-radius: 0;

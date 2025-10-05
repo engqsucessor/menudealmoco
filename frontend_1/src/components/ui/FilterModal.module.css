@@ -69,17 +69,33 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  background-color: #000;
-  border-bottom: 1px solid #333;
+  background-color: var(--card-bg);
+  border: 1px solid #333;
+  transition: all 0.2s ease;
+}
+
+.sectionHeader.clickable {
+  cursor: pointer;
+}
+
+.sectionHeader.clickable:hover {
+  background-color: var(--light-gray);
+}
+
+@media (min-width: 769px) {
+  .sectionHeader {
+    cursor: default;
+  }
 }
 
 .sectionTitle {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 700;
-  color: #FFF;
+  color: var(--text-color);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  user-select: none;
 }
 
 .sectionClearButton {
@@ -110,6 +126,9 @@
   flex-direction: column;
   gap: 1rem;
   animation: slideInContent 0.3s ease-out;
+  border: 1px solid #333;
+  border-top: none;
+  background-color: var(--background-color);
 }
 
 .sectionGrid {
@@ -157,7 +176,7 @@
   width: 18px;
   height: 18px;
   border: 2px solid #666;
-  background-color: #000;
+  background-color: var(--text-color);
   flex-shrink: 0;
   position: relative;
   transition: all 0.2s;
@@ -191,7 +210,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #000;
+  background-color: var(--text-color);
   transform: translate(-50%, -50%);
 }
 
@@ -215,7 +234,7 @@
 
 .radioInput:checked + .radioCustom::after {
   display: block;
-  background-color: #FFF;
+  background-color: var(--card-bg);
 }
 
 @keyframes checkPulse {
@@ -322,7 +341,7 @@
   width: 1000px;
   max-width: 95vw;
   height: 100%;
-  background-color: #000000;
+  background-color: var(--text-color);
   color: #FFFFFF;
   font-family: 'Space Mono', monospace;
   display: flex;
@@ -396,7 +415,7 @@
 
 .clearAllButton:hover {
   background: #999;
-  color: #000;
+  color: var(--text-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(153, 153, 153, 0.3);
 }
@@ -452,14 +471,44 @@
 @media (max-width: 768px) {
   .filterGrid {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
+
+  .filterSection {
+    margin-bottom: 0;
+  }
+
+  .sectionHeader {
+    padding: 0.75rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 0.8rem;
+  }
+
+  .sectionContent {
+    padding: 1rem;
+  }
+
   .modalHeader {
-    padding: 1.5rem;
+    padding: 1rem;
   }
+
   .modalContent {
-    padding: 1.5rem;
+    padding: 1rem;
   }
+
   .modalFooter {
-    padding: 1.5rem;
+    padding: 1rem;
+  }
+
+  .footerActions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .clearAllButton,
+  .applyButton {
+    width: 100%;
   }
 }

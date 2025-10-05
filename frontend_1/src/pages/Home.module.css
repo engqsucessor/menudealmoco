@@ -87,3 +87,18 @@
 .featureText {
   color: #aaa;
 }
+
+/* Add Restaurant Link */
+.hero a,
+.hero a:visited {
+  color: #3391ff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.hero a:hover {
+  opacity: 0.8;
+}

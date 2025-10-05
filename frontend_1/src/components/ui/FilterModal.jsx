@@ -16,6 +16,25 @@ import {
 const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
   const [localFilters, setLocalFilters] = useState(filters);
   const [clearFeedback, setClearFeedback] = useState('');
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [expandedSections, setExpandedSections] = useState({
+    price: true,
+    overallRating: true,
+    googleRating: true,
+    freshness: true,
+    cuisine: true,
+    included: true,
+    practical: true,
+    other: true
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     setLocalFilters(filters);
@@ -112,6 +131,15 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
     setLocalFilters(prev => ({ ...prev, [type]: value }));
   };
 
+  const toggleSection = (sectionName) => {
+    if (isMobile) {
+      setExpandedSections(prev => ({
+        ...prev,
+        [sectionName]: !prev[sectionName]
+      }));
+    }
+  };
+
   if (!isOpen) return null;
 
   const renderCheckbox = (category, key, label) => (
@@ -170,17 +198,19 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
           <div className={styles.filterGrid}>
             {/* Price Range */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Price Range</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('price')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.price ? '▼ ' : '▶ ')}Price Range
+                </h3>
                 <button
-                  onClick={() => handleClearSection('price')}
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('price'); }}
                   className={styles.sectionClearButton}
                   type="button"
                 >
                   Clear
                 </button>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.price && <div className={styles.sectionContent}>
                 <BudgetSlider
                   min={SLIDER_CONFIG.price.min}
                   max={SLIDER_CONFIG.price.max}
@@ -189,128 +219,149 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                   step={SLIDER_CONFIG.price.step}
                   label={SLIDER_CONFIG.price.label}
                 />
-              </div>
+              </div>}
             </div>
 
             {/* Overall Rating */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Overall Rating</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('overallRating')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.overallRating ? '▼ ' : '▶ ')}Menu de Almoço Rating
+                </h3>
                 <button
-                  onClick={() => handleClearSection('ratings')}
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('ratings'); }}
                   className={styles.sectionClearButton}
                   type="button"
                 >
                   Clear
                 </button>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.overallRating && <div className={styles.sectionContent}>
                 <MinimumRatingSlider
                   value={localFilters.overallRating || 0}
                   onChange={(value) => handleRatingChange('overallRating', value)}
                   label="Menu de Almoço rating"
                   step={0.1}
                 />
-              </div>
+              </div>}
             </div>
 
             {/* Google Rating */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Google Rating</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('googleRating')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.googleRating ? '▼ ' : '▶ ')}Google Rating
+                </h3>
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('ratings'); }}
+                  className={styles.sectionClearButton}
+                  type="button"
+                >
+                  Clear
+                </button>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.googleRating && <div className={styles.sectionContent}>
                 <MinimumRatingSlider
                   value={localFilters.minGoogleRating || 0}
                   onChange={(value) => handleRatingChange('minGoogleRating', value)}
                   label="Google rating"
                   step={0.1}
                 />
-              </div>
+              </div>}
             </div>
 
             {/* Data Freshness */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Data Freshness</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('freshness')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.freshness ? '▼ ' : '▶ ')}Data Freshness
+                </h3>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.freshness && <div className={styles.sectionContent}>
                 {renderRadioGroup('dataFreshness', 'lastUpdatedDays', DATA_FRESHNESS_OPTIONS)}
-              </div>
+              </div>}
             </div>
 
             {/* Cuisine Type */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Cuisine Type</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('cuisine')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.cuisine ? '▼ ' : '▶ ')}Cuisine Type
+                </h3>
                 <button
-                  onClick={() => handleClearSection('cuisine')}
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('cuisine'); }}
                   className={styles.sectionClearButton}
                   type="button"
                 >
                   Clear
                 </button>
               </div>
-              <div className={styles.sectionContent}>
-                {FOOD_TYPE_OPTIONS.map(foodType => 
+              {expandedSections.cuisine && <div className={styles.sectionContent}>
+                {FOOD_TYPE_OPTIONS.map(foodType =>
                   renderCheckbox('foodTypes', foodType, foodType)
                 )}
-              </div>
+              </div>}
             </div>
 
             {/* What's Included */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>What's Included</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('included')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.included ? '▼ ' : '▶ ')}What's Included
+                </h3>
                 <button
-                  onClick={() => handleClearSection('features')}
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('features'); }}
                   className={styles.sectionClearButton}
                   type="button"
                 >
                   Clear
                 </button>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.included && <div className={styles.sectionContent}>
                 {Object.entries(FEATURE_LABELS).map(([key, label]) =>
                   renderCheckbox('features', key, label)
                 )}
-              </div>
+              </div>}
             </div>
 
             {/* Practical Features */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Practical Features</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('practical')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.practical ? '▼ ' : '▶ ')}Practical Features
+                </h3>
                 <button
-                  onClick={() => handleClearSection('practical')}
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('practical'); }}
                   className={styles.sectionClearButton}
                   type="button"
                 >
                   Clear
                 </button>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.practical && <div className={styles.sectionContent}>
                 {renderCheckbox('practicalFilters', 'takesCards', 'Takes Cards')}
                 {renderCheckbox('practicalFilters', 'hasParking', 'Has Parking')}
                 {renderCheckbox('practicalFilters', 'quickService', 'Quick Service')}
                 {renderCheckbox('practicalFilters', 'groupFriendly', 'Group Friendly')}
                 {renderCheckbox('practicalFilters', 'nearMetro', 'Near Metro')}
-              </div>
+              </div>}
             </div>
 
             {/* Other */}
             <div className={styles.filterSection}>
-              <div className={styles.sectionHeader}>
-                <h3 className={styles.sectionTitle}>Other Options</h3>
+              <div className={`${styles.sectionHeader} ${isMobile ? styles.clickable : ''}`} onClick={() => toggleSection('other')}>
+                <h3 className={styles.sectionTitle}>
+                  {isMobile && (expandedSections.other ? '▼ ' : '▶ ')}Other Options
+                </h3>
                 <button
-                  onClick={() => handleClearSection('other')}
+                  onClick={(e) => { e.stopPropagation(); handleClearSection('other'); }}
                   className={styles.sectionClearButton}
                   type="button"
                 >
                   Clear
                 </button>
               </div>
-              <div className={styles.sectionContent}>
+              {expandedSections.other && <div className={styles.sectionContent}>
                 <label className={styles.checkboxLabel}>
                   <input
                     type="checkbox"
@@ -331,7 +382,7 @@ const FilterModal = ({ isOpen, onClose, filters, onFiltersChange }) => {
                   <span className={styles.checkboxCustom}></span>
                   <span className={styles.checkboxText}>Has Menu Reviews</span>
                 </label>
-              </div>
+              </div>}
             </div>
           </div>
         </main>

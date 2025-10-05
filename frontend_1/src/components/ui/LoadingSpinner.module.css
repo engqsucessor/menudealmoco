@@ -14,7 +14,7 @@
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #666666;
+  color: #999999;
   text-align: center;
 }
 
@@ -153,7 +153,7 @@
 .square {
   width: 40px;
   height: 40px;
-  border: 2px solid #e5e5e5;
+  border: 2px solid var(--border-color);
   border-top: 2px solid #000000;
   animation: squareRotate 1s linear infinite;
 }
@@ -188,7 +188,7 @@
 .loadingChar {
   font-size: 16px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-color);
   animation: textWave 1.5s ease-in-out infinite;
 }
 
@@ -235,11 +235,11 @@
 @keyframes textWave {
   0%, 60%, 100% {
     transform: translateY(0);
-    color: #666666;
+    color: #999999;
   }
   30% {
     transform: translateY(-10px);
-    color: #000000;
+    color: var(--text-color);
   }
 }
 

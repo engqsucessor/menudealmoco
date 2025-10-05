@@ -20,13 +20,13 @@
 
 /* Primary Variant - White on black background */
 .primary {
-  background-color: #FFF;
-  color: #000;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   border-color: #FFF;
 }
 
 .primary:hover:not(:disabled) {
-  background-color: #000;
+  background-color: var(--text-color);
   color: #FFF;
   border-color: #FFF;
 }
@@ -39,8 +39,8 @@
 }
 
 .secondary:hover:not(:disabled) {
-  background-color: #FFF;
-  color: #000;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   border-color: #FFF;
 }
 
@@ -53,7 +53,7 @@
 
 .gray:hover:not(:disabled) {
   background-color: #999;
-  color: #000;
+  color: var(--text-color);
   border-color: #999;
 }
 

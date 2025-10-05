@@ -2,8 +2,8 @@
 
 .header {
   font-family: 'Space Mono', monospace;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -37,7 +37,7 @@
 .logoText {
   font-size: 24px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-color);
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -45,7 +45,7 @@
 .logoSubtext {
   font-size: 10px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   letter-spacing: 4px;
   margin-top: -2px;
   text-align: center;
@@ -63,14 +63,14 @@
   border: none;
   font-family: 'Space Mono', monospace;
   font-size: 20px;
-  color: #000000;
+  color: var(--text-color);
   cursor: pointer;
   padding: 8px;
   transition: all 0.2s ease;
 }
 
 .menuToggle:hover {
-  color: #666666;
+  color: #999999;
   transform: scale(1.1);
 }
 
@@ -88,8 +88,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border-color);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   animation: slideDown 0.3s ease;
 }

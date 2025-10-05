@@ -39,18 +39,14 @@
 }
 
 .ctaButton {
-  font-family: 'Space Mono', monospace;
-  background-color: #f8f8f2;
-  color: #1a1a1a;
-  border: none;
   padding: 1rem 2rem;
   font-size: 1.1rem;
   font-weight: 700;
-  cursor: pointer;
   text-decoration: none;
-  transition: background-color 0.2s;
+  border-radius: 4px;
+  display: inline-block;
 }
 
-.ctaButton:hover {
-  background-color: #ccc;
+.ctaButton:visited {
+  color: var(--text-color);
 }

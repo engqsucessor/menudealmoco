@@ -2,7 +2,7 @@
 
 .container {
   font-family: 'Space Mono', monospace;
-  background-color: #000000;
+  background-color: var(--text-color);
   color: #ffffff;
   padding: 1.5rem;
   border: 1px solid #333;
@@ -39,7 +39,7 @@
 
 .valueDisplay:hover {
   color: #ffffff;
-  border-color: #666;
+  border-color: #999999;
 }
 
 /* Stars Display - MONO Compliant */
@@ -78,7 +78,7 @@
 }
 
 .star.empty {
-  color: #666;
+  color: #999999;
   font-weight: 400;
   text-shadow: none;
 }
@@ -156,7 +156,7 @@
   width: 20px;
   height: 20px;
   border-radius: 0;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border: 2px solid #000000;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -167,7 +167,7 @@
 
 .slider::-webkit-slider-thumb:hover {
   background-color: #3391ff;
-  border-color: #000000;
+  border-color: var(--text-color);
   box-shadow:
     0 0 0 2px #3391ff,
     0 0 4px rgba(51, 145, 255, 0.4),
@@ -184,7 +184,7 @@
   width: 20px;
   height: 20px;
   border-radius: 0;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border: 2px solid #000000;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -195,7 +195,7 @@
 
 .slider::-moz-range-thumb:hover {
   background-color: #3391ff;
-  border-color: #000000;
+  border-color: var(--text-color);
   box-shadow:
     0 0 0 2px #3391ff,
     0 0 4px rgba(51, 145, 255, 0.4),
@@ -237,7 +237,7 @@
 
 .fullTick .tickMark {
   height: 12px;
-  background-color: #666;
+  background-color: #999999;
 }
 
 .halfTick .tickMark {

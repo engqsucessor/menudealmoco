@@ -1,15 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 :root {
-  /* MONO Color Palette */
-  --primary-color: #000000; /* Black */
-  --secondary-color: #FFFFFF; /* White */
-  --accent-color: #333333; /* Dark Gray */
-  --background-color: #FFFFFF; /* White */
-  --text-color: #000000; /* Black */
-  --light-gray: #F5F5F5;
-  --border-color: #E5E5E5;
+  /* Dark Theme Color Palette */
+  --primary-color: #E8E8E8; /* Soft White */
+  --secondary-color: #0a0a0a; /* Very Dark Background */
+  --accent-color: #CCCCCC; /* Light Gray */
+  --background-color: #0a0a0a; /* Very Dark Background */
+  --text-color: #D0D0D0; /* Soft Gray Text */
+  --light-gray: #1a1a1a; /* Dark Gray */
+  --border-color: #2a2a2a; /* Dark Border */
   --white: #FFFFFF;
+  --card-bg: #141414; /* Card backgrounds */
 }
 
 body {
@@ -17,5 +18,20 @@ body {
   background-color: var(--background-color);
   color: var(--text-color);
   margin: 0;
+}
+
+/* Global Button Styles */
+button, .button, input[type="submit"] {
+  font-family: 'Space Mono', monospace;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover, .button:hover, input[type="submit"]:hover {
+  background-color: var(--light-gray);
+  border-color: var(--text-color);
 }
 

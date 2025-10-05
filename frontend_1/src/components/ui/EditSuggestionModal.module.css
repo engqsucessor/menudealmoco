@@ -15,7 +15,7 @@
 }
 
 .modalContent {
-  background: white;
+  background: var(--card-bg);
   border: 2px solid #000;
   max-width: 600px;
   width: 100%;
@@ -30,13 +30,13 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #000;
-  background: #f9f9f9;
+  background: var(--light-gray);
 }
 
 .title {
   font-size: 18px;
   font-weight: bold;
-  color: #000;
+  color: var(--text-color);
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -48,7 +48,7 @@
   font-size: 24px;
   font-weight: bold;
   cursor: pointer;
-  color: #666;
+  color: #999999;
   line-height: 1;
   padding: 0;
   width: 30px;
@@ -59,7 +59,7 @@
 }
 
 .closeButton:hover {
-  color: #000;
+  color: var(--text-color);
   background: #f0f0f0;
 }
 
@@ -85,7 +85,7 @@
 .label {
   font-size: 12px;
   font-weight: bold;
-  color: #000;
+  color: var(--text-color);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -95,8 +95,8 @@
   font-size: 12px;
   padding: 12px;
   border: 1px solid #000;
-  background: white;
-  color: #000;
+  background: var(--card-bg);
+  color: var(--text-color);
 }
 
 .input:focus, .textarea:focus {
@@ -125,8 +125,8 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 12px 24px;
-  background: white;
-  color: #666;
+  background: var(--card-bg);
+  color: #999999;
   border: 1px solid #666;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -152,8 +152,8 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background: white;
-  color: #000;
+  background: var(--card-bg);
+  color: var(--text-color);
 }
 
 .submitButton:disabled {

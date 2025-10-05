@@ -22,7 +22,7 @@
   font-family: 'Space Mono', monospace;
   font-size: 12px;
   font-weight: 400;
-  color: #666666;
+  color: #999999;
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -35,8 +35,12 @@
   position: relative;
 }
 
+.navLink:visited {
+  color: #999999;
+}
+
 .navLink:hover {
-  color: #000000;
+  color: var(--text-color);
   transform: translateY(-1px);
   text-decoration: underline;
 }
@@ -84,8 +88,8 @@
 
 /* Mobile Styles */
 .mobile {
-  background: #ffffff;
-  border-top: 1px solid #e5e5e5;
+  background: var(--card-bg);
+  border-top: 1px solid var(--border-color);
 }
 
 .mobile .navList {
@@ -108,7 +112,7 @@
 }
 
 .mobile .navLink:hover {
-  background: #f5f5f5;
+  background: var(--light-gray);
   transform: translateX(8px);
 }
 
@@ -123,7 +127,7 @@
 }
 
 .navLink[data-primary="true"]:hover {
-  color: #000000;
+  color: var(--text-color);
   letter-spacing: 2px;
 }
 
